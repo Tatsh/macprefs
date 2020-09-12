@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from itertools import chain
 from os import chmod, listdir, makedirs
 from os.path import realpath
 from pathlib import Path
@@ -31,9 +32,8 @@ async def _generate_domains(repo_prefs_dir: Path,
                                               stdout=sp.PIPE)
     deletions = []
     assert p.stdout is not None
-    domains_list = (await p.stdout.read()).decode('utf-8').replace(
-        ',', '').split(DOMAIN_SPLIT_DELIMITER)
-    for i, domain in enumerate(domains_list):
+    for i, domain in enumerate((await p.stdout.read()).decode('utf-8').replace(
+            ',', '').split(DOMAIN_SPLIT_DELIMITER)):
         if (len(domain.strip()) == 0
                 or domain == '$(PRODUCT_BUNDLE_IDENTIFIER)'):
             deletions.append(domain)
@@ -94,7 +94,7 @@ async def _defaults_export(
         return domain, await remove_data_fields(plistlib.load(f))
 
 
-async def _main(out_dir: str) -> int:
+async def _setup_out_dir(out_dir: str) -> Tuple[str, Path]:
     out_dir = realpath(out_dir)
     repo_prefs_dir = Path(out_dir).joinpath('Preferences')
     try:
@@ -102,6 +102,12 @@ async def _main(out_dir: str) -> int:
         makedirs(str(repo_prefs_dir))
     except FileExistsError:
         pass
+    return out_dir, repo_prefs_dir
+
+
+async def _main(out_dir: str) -> int:
+    out_dir, repo_prefs_dir = await _setup_out_dir(out_dir)
+
     export_tasks = []
     all_data: List[Tuple[str, Optional[PlistRoot]]] = []
     async for domain in _generate_domains(repo_prefs_dir, out_dir):
@@ -143,16 +149,13 @@ async def _main(out_dir: str) -> int:
     log = setup_logging_stderr(verbose=True)
 
     # Clean up very old plists
-    delete_with_git = [
-        str(j[1])
-        for j in ((file, file_)
-                  for file, file_ in ((x, repo_prefs_dir.joinpath(x))
-                                      for x in listdir(str(repo_prefs_dir))
-                                      if x != '.gitignore')
-                  if file[:-6] not in known_domains and file_.exists()
-                  if not file_.is_dir())
-    ]
-    await git(['rm', '-f', '--ignore-unmatch', '--'] + delete_with_git,
+    delete_with_git = (str(j[1]) for j in (
+        (file, file_) for file, file_ in ((x, repo_prefs_dir.joinpath(x))
+                                          for x in listdir(str(repo_prefs_dir))
+                                          if x != '.gitignore')
+        if file[:-6] not in known_domains and file_.exists()
+        if not file_.is_dir()))
+    await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git),
               check=True,
               work_tree=out_dir)
     all_files = ' '.join(map(quote, delete_with_git))
@@ -185,8 +188,7 @@ def main() -> int:
     """Entry point."""
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--output-directory', default='.')
-    args = parser.parse_args()
-    return asyncio.run(_main(args.output_directory))
+    return asyncio.run(_main(parser.parse_args().output_directory))
 
 
 if __name__ == "__main__":
