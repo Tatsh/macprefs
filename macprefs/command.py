@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from os import listdir, makedirs
+from os import chmod, listdir, makedirs
 from os.path import realpath
 from pathlib import Path
 from shlex import quote
@@ -22,7 +22,8 @@ from .utils import setup_logging_stderr
 __all__ = ('main', )
 
 
-async def _generate_domains(repo_prefs_dir: Path) -> AsyncIterator[str]:
+async def _generate_domains(repo_prefs_dir: Path,
+                            out_dir: str) -> AsyncIterator[str]:
     log = setup_logging_stderr(verbose=True)
     prefs_dir = Path.home().joinpath('Library/Preferences')
     can_skip: List[int] = []
@@ -68,7 +69,7 @@ async def _generate_domains(repo_prefs_dir: Path) -> AsyncIterator[str]:
         else:
             yield domain
     yield GLOBAL_DOMAIN_ARG
-    await delete_old_plists(deletions, repo_prefs_dir)
+    await delete_old_plists(deletions, repo_prefs_dir, work_tree=out_dir)
 
 
 async def _defaults_export(
@@ -95,15 +96,15 @@ async def _defaults_export(
 
 async def _main(out_dir: str) -> int:
     out_dir = realpath(out_dir)
+    repo_prefs_dir = Path(out_dir).joinpath('Preferences')
     try:
         makedirs(out_dir)
+        makedirs(str(repo_prefs_dir))
     except FileExistsError:
         pass
-    repo_prefs_dir = Path(out_dir).joinpath('Preferences')
-
     export_tasks = []
     all_data: List[Tuple[str, Optional[PlistRoot]]] = []
-    async for domain in _generate_domains(repo_prefs_dir):
+    async for domain in _generate_domains(repo_prefs_dir, out_dir):
         # spell-checker: disable
         if domain in ('com.apple.Music', 'com.apple.TV',
                       'com.apple.identityservices.idstatuscache',
@@ -135,6 +136,7 @@ async def _main(out_dir: str) -> int:
             p = await asyncio.create_subprocess_shell(
                 f'plutil -convert xml1 {quote(str(plist_path))}')
             tasks.append(p.wait())
+    chmod(str(exec_defaults), 0o755)
 
     await asyncio.wait(tasks)
 
@@ -151,7 +153,8 @@ async def _main(out_dir: str) -> int:
                   if not file_.is_dir())
     ]
     await git(['rm', '-f', '--ignore-unmatch', '--'] + delete_with_git,
-              check=True)
+              check=True,
+              work_tree=out_dir)
     all_files = ' '.join(map(quote, delete_with_git))
     cmd = f'rm -f -- {all_files}'
     log.debug('Executing: %s', cmd)
@@ -167,7 +170,8 @@ async def _main(out_dir: str) -> int:
         delete_with_git_.append(str(plist))
         delete_with_rm.append(quote(str(plist)))
     await git(['rm', '-f', '--ignore-unmatch', '--'] + delete_with_git_,
-              check=True)
+              check=True,
+              work_tree=out_dir)
     deletions = ' '.join(delete_with_rm)
     cmd = f'rm -f -- {deletions}'
     log.debug('Executing: %s', cmd)
