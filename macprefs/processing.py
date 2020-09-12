@@ -1,7 +1,8 @@
 from copy import deepcopy
+from typing import cast
 import plistlib
 
-from .mp_typing import PlistList, PlistRoot
+from .mp_typing import MutablePlistList, MutablePlistRoot, PlistList, PlistRoot
 
 __all__ = (
     'remove_data_fields',
@@ -11,16 +12,17 @@ __all__ = (
 
 async def remove_data_fields_list(pl_list: PlistList) -> PlistList:
     """Clean up data fields from a PlistList."""
-    ret = deepcopy(pl_list)
+    ret = cast(MutablePlistList, deepcopy(pl_list))
     index = 0
     for value in pl_list:
         if not isinstance(value, plistlib.Data):
             if isinstance(value, dict):
-                ret[index] = await remove_data_fields(value)
+                ret[index] = cast(MutablePlistRoot, await
+                                  remove_data_fields(value))
             elif isinstance(value, list):
-                ret[index] = await remove_data_fields_list(value)
-            if ((isinstance(value, list) or isinstance(value, dict))
-                    and not ret[index]):
+                ret[index] = cast(MutablePlistList, await
+                                  remove_data_fields_list(value))
+            if isinstance(value, (list, dict)) and not ret[index]:
                 del ret[index]
             index = max(0, index - 1)
             continue
@@ -31,13 +33,15 @@ async def remove_data_fields_list(pl_list: PlistList) -> PlistList:
 
 async def remove_data_fields(root: PlistRoot) -> PlistRoot:
     """Clean up data fields from a PlistRoot."""
-    ret = deepcopy(root)
+    ret = cast(MutablePlistRoot, deepcopy(root))
     for key, value in root.items():
         if not isinstance(value, plistlib.Data):
             if isinstance(value, list):
-                ret[key] = await remove_data_fields_list(value)
+                ret[key] = cast(MutablePlistList, await
+                                remove_data_fields_list(value))
             elif isinstance(value, dict):
-                ret[key] = await remove_data_fields(value)
+                ret[key] = cast(MutablePlistRoot, await
+                                remove_data_fields(value))
             if isinstance(value, (list, dict, set)) and not ret[key]:
                 del ret[key]
             continue

@@ -1,7 +1,7 @@
 from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, AnyStr, List, Mapping, Optional, Union, ValuesView
+from typing import Any, AnyStr, Mapping, Optional, Sequence, Union, ValuesView
 import logging
 import plistlib
 import sys
@@ -30,7 +30,7 @@ def setup_logging_stderr(name: Optional[str] = None,
 
 
 async def is_simple(
-    x: Union[Mapping[Any, NonSimpleInnerTypes], List[NonSimpleInnerTypes],
+    x: Union[Mapping[Any, NonSimpleInnerTypes], Sequence[NonSimpleInnerTypes],
              ValuesView]
 ) -> bool:
     """Check if a value is a simple type of value."""
@@ -58,8 +58,4 @@ async def to_str(x: AnyStr) -> str:
     if isinstance(x, bytes):
         return x.decode('utf-8')
     ret = str(x)
-    if ret == 'True':
-        return 'true'
-    if ret == 'False':
-        return 'false'
-    return ret
+    return ret.lower() if ret in ('True', 'False') else ret

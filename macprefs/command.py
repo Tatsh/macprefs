@@ -4,7 +4,7 @@ from os import chmod, listdir, makedirs
 from os.path import realpath
 from pathlib import Path
 from shlex import quote
-from typing import AsyncIterator, List, Optional, Tuple
+from typing import AsyncIterator, List, Tuple
 import argparse
 import asyncio
 import asyncio.subprocess as sp
@@ -72,8 +72,8 @@ async def _generate_domains(repo_prefs_dir: Path,
     await delete_old_plists(deletions, repo_prefs_dir, work_tree=out_dir)
 
 
-async def _defaults_export(
-        domain: str, repo_prefs_dir: Path) -> Tuple[str, Optional[PlistRoot]]:
+async def _defaults_export(domain: str,
+                           repo_prefs_dir: Path) -> Tuple[str, PlistRoot]:
     command = f'defaults export {quote(domain)}'
     out_domain = 'globalDomain' if domain == GLOBAL_DOMAIN_ARG else domain
     plist_out = repo_prefs_dir.joinpath(f'{out_domain}.plist')
@@ -109,7 +109,7 @@ async def _main(out_dir: str) -> int:
     out_dir, repo_prefs_dir = await _setup_out_dir(out_dir)
 
     export_tasks = []
-    all_data: List[Tuple[str, Optional[PlistRoot]]] = []
+    all_data: List[Tuple[str, PlistRoot]] = []
     async for domain in _generate_domains(repo_prefs_dir, out_dir):
         # spell-checker: disable
         if domain in ('com.apple.Music', 'com.apple.TV',
