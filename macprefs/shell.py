@@ -1,8 +1,9 @@
+from itertools import chain
 from os import chdir, getcwd, makedirs
 from os.path import isfile, realpath
 from pathlib import Path
 from shlex import quote
-from typing import Optional, Sequence
+from typing import Iterable, Optional
 import asyncio
 import asyncio.subprocess as sp
 
@@ -14,7 +15,7 @@ __all__ = (
 )
 
 
-async def git(cmd: Sequence[str],
+async def git(cmd: Iterable[str],
               check: Optional[bool] = False,
               work_tree: str = '.',
               git_dir: Optional[Path] = None) -> sp.Process:
@@ -51,13 +52,13 @@ async def git(cmd: Sequence[str],
     return p
 
 
-async def delete_old_plists(domains: Sequence[str],
+async def delete_old_plists(domains: Iterable[str],
                             repo_prefs_dir: Path,
                             work_tree: str = '.',
                             git_dir: Optional[Path] = None) -> None:
     """Use Git to remove no-longer-existant preferences."""
-    await git(('rm', '-f') +
-              tuple(x for x in (str(repo_prefs_dir.joinpath(f'{y}.plist'))
-                                for y in domains) if isfile(x)),
+    await git(chain(('rm', '-f'),
+                    (x for x in (str(repo_prefs_dir.joinpath(f'{y}.plist'))
+                                 for y in domains) if isfile(x))),
               work_tree=work_tree,
               git_dir=git_dir)
