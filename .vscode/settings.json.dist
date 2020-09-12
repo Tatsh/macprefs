@@ -1,0 +1,40 @@
+{
+  "cSpell.ignorePaths": [
+    "**/lib/python*/**/*.py",
+    "**/package-lock.json",
+    "**/node_modules/**",
+    "**/vscode-extension/**",
+    "**/.git/objects/**",
+    ".vscode",
+    "exec-defaults.sh",
+    "Preferences/**"
+  ],
+  "cSpell.ignoreWords": [
+    "asyncio",
+    "crashlyt",
+    "dynload",
+    "ehthumbs",
+    "googlecode",
+    "iterm",
+    "l",
+    "macprefs",
+    "mypy",
+    "noqa",
+    "objectdb",
+    "plist",
+    "plistlib",
+    "plists",
+    "plutil",
+    "prefs",
+    "pycache",
+    "ropeproject",
+    "sqlite",
+    "strftime",
+    "udvare",
+    "undos",
+    "unmatch",
+    "vcss"
+  ],
+  "python.linting.pylintEnabled": true,
+  "python.pythonPath": "/opt/local/bin/python"
+}
