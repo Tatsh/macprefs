@@ -1,6 +1,5 @@
-from itertools import chain
 from os import chdir, getcwd, makedirs
-from os.path import isfile, realpath
+from os.path import realpath
 from pathlib import Path
 from shlex import quote
 from typing import Iterable, Optional
@@ -9,18 +8,16 @@ import asyncio.subprocess as sp
 
 from .utils import setup_logging_stderr
 
-__all__ = (
-    'delete_old_plists',
-    'git',
-)
+__all__ = ('git', )
 
 
 async def git(cmd: Iterable[str],
               check: Optional[bool] = False,
-              work_tree: str = '.',
-              git_dir: Optional[Path] = None) -> sp.Process:
+              debug: bool = False,
+              git_dir: Optional[Path] = None,
+              work_tree: str = '.') -> sp.Process:
     """Run a Git command."""
-    log = setup_logging_stderr(verbose=True)
+    log = setup_logging_stderr(verbose=debug)
     rest = ' '.join(map(quote, cmd))
     if not git_dir:
         git_dir = Path(realpath(work_tree)).joinpath('.git')
@@ -50,15 +47,3 @@ async def git(cmd: Iterable[str],
         raise RuntimeError(
             f'Non-zero return code: {p.returncode}, STDERR: {stderr}')
     return p
-
-
-async def delete_old_plists(domains: Iterable[str],
-                            repo_prefs_dir: Path,
-                            work_tree: str = '.',
-                            git_dir: Optional[Path] = None) -> None:
-    """Use Git to remove no-longer-existant preferences."""
-    await git(chain(('rm', '-f'),
-                    (x for x in (str(repo_prefs_dir.joinpath(f'{y}.plist'))
-                                 for y in domains) if isfile(x))),
-              work_tree=work_tree,
-              git_dir=git_dir)
