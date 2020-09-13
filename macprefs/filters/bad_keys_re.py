@@ -16,11 +16,11 @@ BAD_KEYS_RE = re.compile(r'^(' + '|'.join({
     'NSStatusItem Preferred Position',
     'OSAStandardAdditions ChooseApplication Bounds',
     'QtUi.MainWin(Geometry|State|Pos|Size)',
-    r'QuickLookPreview_[A-Z0-9-\.]+',
     'SPSelfBeaconUUIDKey',
     'SUEnableAutomaticChecks',
     'SULastCheckTime',
     'recentFilesList',
+    r'QuickLookPreview_[A-Z0-9-\.]+',
     re.escape('Qt Factory Cache'),
     re.escape('last-messagetrace-stamp'),
 }) + r')\b')
