@@ -11,7 +11,7 @@ __all__ = ('plist_to_defaults_commands', )
 
 
 async def plist_to_defaults_commands(domain: str,
-                                     root: PlistRoot) -> AsyncIterator[str]:
+                                     root: PlistRoot, debug: bool = False) -> AsyncIterator[str]:
     """Given a PlistRoot, generate a series of `defaults write` commands."""
     if domain in BAD_DOMAINS:
         return
@@ -22,7 +22,7 @@ async def plist_to_defaults_commands(domain: str,
     yield f'# {domain}'
 
     prefix = 'defaults write {}'.format(quote(domain))
-    log = setup_logging_stderr(verbose=True)
+    log = setup_logging_stderr(verbose=debug)
 
     for key, value in sorted(root.items()):
         if re.match(BAD_KEYS_RE, key):
