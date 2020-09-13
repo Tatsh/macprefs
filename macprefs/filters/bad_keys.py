@@ -15,8 +15,10 @@ BAD_KEYS = {
     'com.apple.accountsd': {'AuthenticationPluginCache', 'LastSystemVersion'},
     'com.apple.ServicesMenu.Services': {'NSServices'},
     'com.apple.dt.Xcode': {
-        'DVTTextCompletionRecentCompletions', 'DeveloperAccountForProject',
-        'IDESourceControlKnownSSHHostsDefaultsKey', 're:lastRecordedRefresh$'
+        'DVTTextCompletionRecentCompletions',
+        'DeveloperAccountForProject',
+        'IDESourceControlKnownSSHHostsDefaultsKey',
+        're:lastRecordedRefresh$',
     },
     'com.apple.TelephonyUtilities': {'registeredProviders'},
     'org.videolan.vlc': {r're:^recentlyPlayed'},
@@ -24,13 +26,17 @@ BAD_KEYS = {
     'com.apple.AddressBook':
     {'ABDefaultSourceID', 'ABMetaDataChangeCount', 'ABMetadataLastOilChange'},
     'com.apple.appstored': {
-        'ArcadePayoutDeviceID', 'ArcadeDeviceID', 'LastUpdatesCheck',
-        r're:^TargetDate', r're:^Arcade.*Date$'
+        'ArcadeDeviceID',
+        'ArcadePayoutDeviceID',
+        'LastUpdatesCheck',
+        r're:^Arcade.*Date$',
+        r're:^TargetDate',
     },
     'com.apple.assistant.backedup': {'Cloud Sync User ID'},
     'com.apple.AppStore': {
-        r're:^lastBootstrap', 'JE.MediaAPIToken',
-        'MetricsSamplingLotteryWindowStart_pageRender'
+        'JE.MediaAPIToken',
+        'MetricsSamplingLotteryWindowStart_pageRender',
+        r're:^lastBootstrap',
     },
     'com.apple.AppleMediaServices': {'AMSMetricsTimingWindowStartTime'},
     'com.apple.bird': {r're:^icloud\-drive\.account\-migration\-status'},
@@ -40,11 +46,16 @@ BAD_KEYS = {
     'com.apple.cloudpaird':
     {'PreviousToken', 'UploadedHSA2KeysForLocalDevice'},
     'com.apple.commerce': {
-        'LastUpdateNotificationOSMajorVersion', r'^re:PrivacyConsent\:',
-        'AvailableUpdatesAtLastNotification'
+        'AvailableUpdatesAtLastNotification',
+        'LastUpdateNotificationOSMajorVersion',
+        r'^re:PrivacyConsent\:',
     },
-    'com.apple.CallHistorySyncHelper':
-    {'CallHistoryDeviceCount', 'ChangeToken', r're:.*Date$', r're:^/Users/'},
+    'com.apple.CallHistorySyncHelper': {
+        'CallHistoryDeviceCount',
+        'ChangeToken',
+        r're:.*Date$',
+        r're:^/Users/',
+    },
     'com.apple.Console': {'ConsoleSearch'},
     'com.apple.configurator': {'Storefront'},
     'com.apple.configurator.ui': {'LastAcceptedConfiguratorLicenseVersion'},
@@ -55,60 +66,88 @@ BAD_KEYS = {
     'com.apple.dock': {'mod-count'},
     'com.apple.driver.AppleBluetoothMultitouch.trackpad': {'version'},
     'com.apple.dt.Instruments': {
-        'DTWirelessUniqueShortTypeLocationID', 'DTDKLastLSRegisterHashes',
-        'RecentTemplates.array'
+        'DTDKLastLSRegisterHashes',
+        'DTWirelessUniqueShortTypeLocationID',
+        'RecentTemplates.array',
     },
     'com.apple.FaceTime': {'AccountSortOrder'},
     'com.apple.finder': {
-        'CopyProgressWindowLocation', 'EmptyTrashProgressWindowLocation',
-        'FXConnectToBounds', 'FXConnectToLastURL',
-        'FXPreferencesWindow.Location', 'GoToField', 'GoToFieldHistory',
-        'MountProgressWindowLocation', 'RecentMoveAndCopyDestinations',
-        'TagsCloudSerialNumber'
+        'CopyProgressWindowLocation',
+        'EmptyTrashProgressWindowLocation',
+        'FXConnectToBounds',
+        'FXConnectToLastURL',
+        'FXPreferencesWindow.Location',
+        'GoToField',
+        'GoToFieldHistory',
+        'MountProgressWindowLocation',
+        'RecentMoveAndCopyDestinations',
+        'TagsCloudSerialNumber',
     },
     'com.apple.iBooksX': {
         r're:^BKBookViewerPlugInInstanceDescriptor',
-        r're:^MZBookKeeper\.LastDsid'
+        r're:^MZBookKeeper\.LastDsid',
     },
     'com.apple.iBooksX.commerce': {'Storefront'},
     'com.apple.iCal': {
-        'AccountDisplayOrder', 'CalAgentNS_Preference_DefaultReminderCalendar',
-        'LastCheckForIgnoredPseudoEvents', 'last selected calendar list item',
-        'first shown minute of day', 'iCal version', 'lastViewsTimeZone',
-        'CalFirstVisibleDate'
+        'AccountDisplayOrder',
+        'CalAgentNS_Preference_DefaultReminderCalendar',
+        'CalFirstVisibleDate',
+        'LastCheckForIgnoredPseudoEvents',
+        'first shown minute of day',
+        'iCal version',
+        'last selected calendar list item',
+        'lastViewsTimeZone',
     },
     'com.apple.iChat': {
         'AccountSortOrder',
         'ChatWindowControllerUnifiedFrame',
-        'LastFailedMessageIMDNotificationPostedDate',
         'KeepMessagesVersionID',
+        'LastFailedMessageIMDNotificationPostedDate',
         'LastIMDNotificationPostedDate',
         'UnifiedChatWindowControllerSelectionGUIDSet',
         r're:^messageTracer',
     },
-    'com.apple.iTunes':
-    {'Store Apple ID', 'Store DSID', 'WirelessBuddyID', 'storefront'},
+    'com.apple.iTunes': {
+        'Store Apple ID',
+        'Store DSID',
+        'WirelessBuddyID',
+        'storefront',
+    },
     'com.apple.iWork.Numbers': {
-        'TSAICloudAuthorNameKey', 'TSKRemoteStringsETag',
-        'TSURemoteDefaultsETag'
+        'TSAICloudAuthorNameKey',
+        'TSKRemoteStringsETag',
+        'TSURemoteDefaultsETag',
     },
     'com.apple.iWork.Pages': {
-        'TSAICloudAuthorNameKey', 're:^TSAICloudDocumentPreferencePrefix',
-        'TSKRemoteStringsETag', 'TSURemoteDefaultsETag'
+        'TSAICloudAuthorNameKey',
+        'TSKRemoteStringsETag',
+        'TSURemoteDefaultsETag',
+        're:^TSAICloudDocumentPreferencePrefix',
     },
     'com.apple.internetconnect': {'ServiceID'},
     'com.apple.iphonesimulator': {'CurrentDeviceUDID'},
     'com.apple.keychainaccess': {'Last Selected Keychain'},
-    'com.apple.logic10': {r're:^DefaultDir', 'lastSelectedKeyCommandsPath'},
+    'com.apple.logic10': {
+        'lastSelectedKeyCommandsPath',
+        r're:^DefaultDir',
+    },
     'com.apple.languageassetd': {'LastSystemVersion'},
     'com.apple.mail': {
-        'AccountInfoLastSelectedAccountId', 'AccountOrdering',
-        'CurrentTransferMailboxURLString', 'MailSections', 'LastAttachedDir',
-        'LastMessageTracingDate', 'LastChatSyncTime', 'SignaturesSelected',
-        'MailUpgraderPrePersistenceVersion', 'MailUpgraderVersion',
-        'MailVisibleSections', 'NumberOfMessagesMarkedAsJunk',
-        'NumberOfMessagesMarkedAsNotJunk', 'SignatureSelectionMethods',
-        'com.apple.mail.searchableIndex.lastProcessedAttachmentIDKey'
+        'AccountInfoLastSelectedAccountId',
+        'AccountOrdering',
+        'CurrentTransferMailboxURLString',
+        'LastAttachedDir',
+        'LastChatSyncTime',
+        'LastMessageTracingDate',
+        'MailSections',
+        'MailUpgraderPrePersistenceVersion',
+        'MailUpgraderVersion',
+        'MailVisibleSections',
+        'NumberOfMessagesMarkedAsJunk',
+        'NumberOfMessagesMarkedAsNotJunk',
+        'SignatureSelectionMethods',
+        'SignaturesSelected',
+        'com.apple.mail.searchableIndex.lastProcessedAttachmentIDKey',
     },
     'com.apple.PhotoBooth': {'LibraryBookmark'},
     'com.apple.Preferences': {r're:^UserDictionary'},
@@ -116,35 +155,57 @@ BAD_KEYS = {
     {'IK_Scanner_downloadURL', 'IK_Scanner_selectedTag'},
     'com.apple.searchd': {r're:^engagementCount'},
     'com.apple.Spotlight': {
-        'GEOUsageSessionID', 'startTime', 'version',
-        'engagementCount-com.apple.Spotlight', r're:.*Count$'
+        'GEOUsageSessionID',
+        'engagementCount-com.apple.Spotlight',
+        'startTime',
+        'version',
+        r're:.*Count$',
     },
-    'com.apple.SystemProfiler': {'CPU Names', r're:^SPLast'},
+    'com.apple.SystemProfiler': {
+        'CPU Names',
+        r're:^SPLast',
+    },
     'com.apple.Terminal': {'CommandHistory'},
     'com.apple.Safari.SafeBrowsing': {r're:.*Date$'},
     'com.apple.sms': {'hasBeenApprovedForSMSRelay'},
     'com.apple.stocks': {'lastModified'},
-    'com.apple.systempreferences':
-    {'ThirdPartyCount', 'com.apple.SecurityPref.Privacy.LastSourceSelected'},
-    'com.apple.talagent': {'LastKeyChange'},
-    'cx.c3.theunarchiver': {'_sid', 'DM_SID'},
-    'com.parallels.Parallels Desktop': {
-        r're:{[0-9a-f]{8}\-[0-9a-f]{4}]\-[0-9a-f]{4}\-[0-9a-f]{4}\-'
-        r'[0-9a-f]{12}\}\.', r're:^Guest OS Sources'
+    'com.apple.systempreferences': {
+        'ThirdPartyCount',
+        'com.apple.SecurityPref.Privacy.LastSourceSelected',
     },
-    'com.monosnap.monosnap':
-    {r're:^[0-9a-f]{24}\&0$', 'last online time', 'mono_pref_time'},
+    'com.apple.talagent': {'LastKeyChange'},
+    'cx.c3.theunarchiver': {
+        'DM_SID',
+        '_sid',
+    },
+    'com.parallels.Parallels Desktop': {
+        r'[0-9a-f]{12}\}\.', r're:^Guest OS Sources',
+        r're:{[0-9a-f]{8}\-[0-9a-f]{4}]\-[0-9a-f]{4}\-[0-9a-f]{4}\-'
+    },
+    'com.monosnap.monosnap': {
+        'last online time',
+        'mono_pref_time',
+        r're:^[0-9a-f]{24}\&0$',
+    },
     'com.googlecode.iterm2': {
-        'NoSyncInstallationId', r're:^NeverWarnAboutShortLivedSessions',
-        'Default Bookmark Guid'
+        'Default Bookmark Guid',
+        'NoSyncInstallationId',
+        r're:^NeverWarnAboutShortLivedSessions',
     },
     'com.etresoft.EtreCheckMAS': {'asset'},
     'com.etresoft.EtreCheck4': {'asset'},
     'org.quassel-irc.quasselclient': {
         r're:^CoreAccounts\.\d+\.General\.JumpKeyMap',
-        r're:^CoreAccounts\.\d+\.Password'
+        r're:^CoreAccounts\.\d+\.Password',
     },
-    'ThnkDev.QuickRes': {'DM_SID', 'DevMateLaunchCount', 'matchedIds'},
-    'ch.tripmode.TripMode': {r're:^ActivationOverrides?', 'Networks'},
+    'ThnkDev.QuickRes': {
+        'DM_SID',
+        'DevMateLaunchCount',
+        'matchedIds',
+    },
+    'ch.tripmode.TripMode': {
+        'Networks',
+        r're:^ActivationOverrides?',
+    },
     'com.apple.ActivityMonitor': {'cacheTableSortDescriptors'},
 }
