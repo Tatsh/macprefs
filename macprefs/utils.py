@@ -6,7 +6,7 @@ import logging
 import plistlib
 import sys
 
-from .mp_typing import NonSimpleInnerTypes
+from .mp_typing import ComplexInnerTypes
 
 __all__ = (
     'is_simple',
@@ -30,7 +30,7 @@ def setup_logging_stderr(name: Optional[str] = None,
 
 
 async def is_simple(
-    x: Union[Mapping[Any, NonSimpleInnerTypes], Sequence[NonSimpleInnerTypes],
+    x: Union[Mapping[Any, ComplexInnerTypes], Sequence[ComplexInnerTypes],
              ValuesView]
 ) -> bool:
     """Check if a value is a simple type of value."""

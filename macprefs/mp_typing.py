@@ -3,13 +3,13 @@ from typing import Any, Dict, Mapping, List, Sequence, Union
 import plistlib
 
 __all__ = (
-    'NonSimpleInnerTypes',
+    'ComplexInnerTypes',
     'PlistList',
     'PlistRoot',
     'PlistValue',
 )
 
-NonSimpleInnerTypes = Union[Sequence[Any], Mapping[str, Any], bytes]
+ComplexInnerTypes = Union[Sequence[Any], Mapping[str, Any], bytes]
 PlistValue = Union[plistlib.Data, Mapping[str, Any], Sequence[Any], bool, int,
                    float, str, datetime, bytes]
 PlistList = Sequence[PlistValue]
