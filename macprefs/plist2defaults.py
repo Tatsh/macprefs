@@ -65,11 +65,11 @@ async def plist_to_defaults_commands(
             # [] required for this line, otherwise TypeError: can only join an
             # iterable
             rest = ' \\\n'.join(
-                [f'{spaces}{quote(await to_str(x))}' for x in value[1:]])
+                [f'{spaces}{quote(to_str(x))}' for x in value[1:]])
             yield f'{prefix} {key} -array {"".join(first + rest)}'
         elif isinstance(value, dict) and await is_simple(value):
             dict_values = [
-                f'{quote(await to_str(x))} {quote(await to_str(y))}'
+                f'{quote(to_str(x))} {quote(to_str(y))}'
                 for x, y in value.items()
             ]
             f_dict_values = (f'{dict_values[0]}\\\n'
