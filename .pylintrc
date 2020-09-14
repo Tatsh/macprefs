@@ -4,13 +4,13 @@ ignore=CVS
 jobs=0
 limit-inference-results=100
 load-plugins=pylint.extensions.broad_try_clause,
-             pylint.extensions.emptystring,
-             pylint.extensions.comparetozero,
-             pylint.extensions.docstyle,
              pylint.extensions.check_elif,
-             pylint.extensions.redefined_variable_type,
-             pylint.extensions.overlapping_exceptions,
+             pylint.extensions.comparetozero,
              pylint.extensions.docparams
+             pylint.extensions.docstyle,
+             pylint.extensions.emptystring,
+             pylint.extensions.overlapping_exceptions,
+             pylint.extensions.redefined_variable_type,
 persistent=yes
 suggestion-mode=yes
 unsafe-load-any-extension=no
