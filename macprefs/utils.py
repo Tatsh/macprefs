@@ -29,6 +29,14 @@ def setup_logging_stderr(name: Optional[str] = None,
     return log
 
 
+async def _can_decode_unicode(x: bytes) -> bool:
+    try:
+        x.decode('utf-8')
+    except UnicodeDecodeError:
+        return False
+    return True
+
+
 async def is_simple(
     x: Union[Mapping[Any, ComplexInnerTypes], Sequence[ComplexInnerTypes],
              ValuesView]
@@ -37,19 +45,9 @@ async def is_simple(
     if isinstance(x, dict):
         x = x.values()
     for y in x:
-        if isinstance(y, datetime):
+        if (isinstance(y, (datetime, list, dict, plistlib.Data))
+                or (isinstance(y, bytes) and not _can_decode_unicode(y))):
             return False
-        if isinstance(y, list):
-            return False
-        if isinstance(y, dict):
-            return False
-        if isinstance(y, plistlib.Data):
-            return False
-        if isinstance(y, bytes):
-            try:
-                y.decode('utf-8')
-            except UnicodeDecodeError:
-                return False
     return True
 
 
