@@ -37,10 +37,11 @@ async def _can_decode_unicode(x: bytes) -> bool:
     return True
 
 
-async def is_simple(
-    x: Union[Mapping[Any, ComplexInnerTypes], Sequence[ComplexInnerTypes],
-             ValuesView]
-) -> bool:
+IsSimpleArg = Union[Mapping[Any, ComplexInnerTypes],
+                    Sequence[ComplexInnerTypes], ValuesView]
+
+
+async def is_simple(x: IsSimpleArg) -> bool:
     """Check if a value is a simple type of value."""
     if isinstance(x, dict):
         x = x.values()

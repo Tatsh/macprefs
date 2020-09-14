@@ -1,3 +1,4 @@
+# pylint: disable=too-many-locals,too-many-branches
 from datetime import datetime
 from shlex import quote
 from typing import AsyncIterator
@@ -29,18 +30,17 @@ async def plist_to_defaults_commands(
     for key, value in sorted(root.items()):
         if re.match(BAD_KEYS_RE, key):
             continue
-        try:
-            if key in BAD_KEYS[domain]:
-                continue
+        if domain in BAD_KEYS and key in BAD_KEYS[domain]:
+            continue
+        if domain in BAD_KEYS:
             found = False
             for x in filter(lambda y: y.startswith('re:'),
                             list(BAD_KEYS[domain])):
                 if re.match(x[3:], key):
                     found = True
+                    break
             if found:
                 continue
-        except KeyError:
-            pass
 
         if isinstance(value, bool):
             yield f'{prefix} {quote(key)} -bool {"true" if value else "false"}'

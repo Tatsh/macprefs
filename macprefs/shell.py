@@ -1,3 +1,4 @@
+# pylint: disable=compare-to-zero
 from os import chdir, getcwd, makedirs
 from os.path import realpath
 from pathlib import Path

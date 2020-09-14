@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# pylint: disable=too-many-locals,compare-to-zero
 from itertools import chain
 from os import chmod, listdir, makedirs
 from os.path import realpath
@@ -64,11 +65,13 @@ async def _defaults_export(domain: str,
 async def _setup_out_dir(out_dir: str) -> Tuple[str, Path]:
     out_dir = realpath(out_dir)
     repo_prefs_dir = Path(out_dir).joinpath('Preferences')
+    # pylint: disable=too-many-try-statements
     try:
         makedirs(out_dir)
         makedirs(str(repo_prefs_dir))
     except FileExistsError:
         pass
+    # pylint: enable=too-many-try-statements
     return out_dir, repo_prefs_dir
 
 
