@@ -14,6 +14,8 @@ BAD_KEYS_RE = re.compile(r'^(' + '|'.join({
     'NSSplitView Subview Frames',
     'NSSplitView [^ ]+ Expanded Position',
     'NSStatusItem Preferred Position',
+    'NSTableView (?:Hidden )?Columns',
+    'NSTableView Sort Ordering',
     'OSAStandardAdditions ChooseApplication Bounds',
     'QtUi.MainWin(Geometry|State|Pos|Size)',
     'SPSelfBeaconUUIDKey',

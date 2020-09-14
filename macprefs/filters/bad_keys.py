@@ -208,4 +208,5 @@ BAD_KEYS = {
         r're:^ActivationOverrides?',
     },
     'com.apple.ActivityMonitor': {'cacheTableSortDescriptors'},
+    'com.vmware.fusion': {'DUISettingsItemCDROM_recentItems'},
 }
