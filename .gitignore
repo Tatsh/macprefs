@@ -30,11 +30,8 @@ Thumbs.db
 
 # Bad files
 *,*
-.*.plist
-*.LSSharedFileList*
-.plist
-*crashlyt*
+*.plist
 /.mypy_cache/
 /.vscode/.ropeproject/objectdb
 /.vscode/settings.json
-/Preferences/com.googlecode.iterm2.private.plist
+exec-defaults.sh
