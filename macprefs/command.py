@@ -169,7 +169,11 @@ def main() -> int:
     parser.add_argument('-o', '--output-directory', default='.')
     parser.add_argument('-d', '--debug', action='store_true')
     args = parser.parse_args()
-    return asyncio.run(_main(args.output_directory, debug=args.debug))
+    loop = asyncio.get_event_loop()
+    ret = loop.run_until_complete(
+        _main(args.output_directory, debug=args.debug))
+    loop.close()
+    return ret
 
 
 if __name__ == "__main__":
