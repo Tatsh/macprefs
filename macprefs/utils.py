@@ -55,6 +55,9 @@ async def is_simple(x: IsSimpleArg) -> bool:
 def to_str(x: AnyStr) -> str:
     """Convert a value to a string for shell."""
     if isinstance(x, bytes):
-        return x.decode('utf-8')
+        try:
+            return x.decode('utf-8')
+        except UnicodeDecodeError:
+            return ''.join(hex(y)[2:] for y in x)
     ret = str(x)
     return ret.lower() if ret in ('True', 'False') else ret
