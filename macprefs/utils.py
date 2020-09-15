@@ -47,7 +47,7 @@ async def is_simple(x: IsSimpleArg) -> bool:
         x = x.values()
     for y in x:
         if (isinstance(y, (datetime, list, dict, plistlib.Data))
-                or (isinstance(y, bytes) and not _can_decode_unicode(y))):
+                or (isinstance(y, bytes) and not (await _can_decode_unicode(y)))):
             return False
     return True
 
