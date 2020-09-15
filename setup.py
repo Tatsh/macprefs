@@ -1,5 +1,5 @@
 """Module for macprefs."""
-from setuptools import setup
+from setuptools import find_packages, setup
 
 setup(
     author='Andrew Udvare',
@@ -10,7 +10,7 @@ setup(
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     name='macprefs',
-    packages=['macprefs'],
+    packages=find_packages(),
     tests_require=['coveralls', 'nose', 'requests-mock'],
     url='https://github.com/Tatsh/macprefs',
     version='0.0.2')
