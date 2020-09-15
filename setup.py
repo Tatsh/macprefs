@@ -13,4 +13,4 @@ setup(
     packages=find_packages(),
     tests_require=['coveralls', 'nose', 'requests-mock'],
     url='https://github.com/Tatsh/macprefs',
-    version='0.0.2')
+    version='0.0.3')
