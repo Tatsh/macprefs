@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # pylint: disable=too-many-locals,compare-to-zero
+from datetime import datetime
 from itertools import chain
 from os import chmod, listdir, makedirs
 from os.path import realpath
 from pathlib import Path
 from shlex import quote
-from typing import AsyncIterator, List, Tuple
+from typing import AsyncIterator, List, Tuple, cast
 import argparse
 import asyncio
 import asyncio.subprocess as sp
@@ -75,7 +76,9 @@ async def _setup_out_dir(out_dir: str) -> Tuple[str, Path]:
     return out_dir, repo_prefs_dir
 
 
-async def _main(out_dir: str, debug: bool = False) -> int:
+async def _main(out_dir: str,
+                debug: bool = False,
+                commit: bool = False) -> int:
     log = setup_logging_stderr(verbose=debug)
     has_git = await _has_git()
 
@@ -160,18 +163,41 @@ async def _main(out_dir: str, debug: bool = False) -> int:
     p = await asyncio.create_subprocess_shell(cmd)
     await p.wait()
 
+    if has_git and commit:
+        log.debug('Commiting changes')
+        await git(('add', '.'), work_tree=out_dir, check=True)
+        await git(('commit', '--no-gpg-sign', '--quiet', '--no-verify',
+                   '--author=macprefs <macprefs@tat.sh>', '-m',
+                   f'Automatic commit @ {datetime.now().strftime("%c")}'),
+                  work_tree=out_dir,
+                  check=True)
+
     return 0
+
+
+class Namespace(argparse.Namespace):
+    """Arguments to main()."""
+    output_directory: str
+    debug: bool
+    commit: bool
 
 
 def main() -> int:
     """Entry point."""
     parser = argparse.ArgumentParser()
-    parser.add_argument('-o', '--output-directory', default='.')
+    parser.add_argument('-o',
+                        '--output-directory',
+                        default='.',
+                        help='Where to store the exported data')
     parser.add_argument('-d', '--debug', action='store_true')
-    args = parser.parse_args()
+    parser.add_argument('-c',
+                        '--commit',
+                        action='store_true',
+                        help='Commit the changes with Git')
+    args = cast(Namespace, parser.parse_args())
     loop = asyncio.get_event_loop()
     ret = loop.run_until_complete(
-        _main(args.output_directory, debug=args.debug))
+        _main(args.output_directory, debug=args.debug, commit=args.commit))
     loop.close()
     return ret
 
