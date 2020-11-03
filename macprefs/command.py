@@ -175,7 +175,7 @@ async def _main(out_dir: str,
     return 0
 
 
-class Namespace(argparse.Namespace):
+class Namespace(argparse.Namespace):  # pylint: disable=too-few-public-methods
     """Arguments to main()."""
     output_directory: str
     debug: bool
