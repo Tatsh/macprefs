@@ -234,10 +234,6 @@ async def _install_job(output_dir: str) -> int:
     <string>{home}/Library/Logs/macprefs.log</string>
     <key>RunAtLoad</key>
     <true />
-    <key>UserName</key>
-    <string>@USER@</string>
-    <key>GroupName</key>
-    <string>staff</string>
   </dict>
 </plist>
 ''')
