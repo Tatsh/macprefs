@@ -35,3 +35,6 @@ Thumbs.db
 /.vscode/.ropeproject/objectdb
 /.vscode/settings.json
 exec-defaults.sh
+
+/build/
+/dist/
