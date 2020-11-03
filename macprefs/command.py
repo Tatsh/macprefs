@@ -2,8 +2,8 @@
 # pylint: disable=too-many-locals,compare-to-zero
 from datetime import datetime
 from itertools import chain
-from os import chmod, listdir, makedirs
-from os.path import realpath
+from os import chmod, environ, listdir, makedirs
+from os.path import expanduser, realpath
 from pathlib import Path
 from shlex import quote
 from typing import AsyncIterator, List, Tuple, cast
@@ -198,6 +198,78 @@ def main() -> int:
     loop = asyncio.get_event_loop()
     ret = loop.run_until_complete(
         _main(args.output_directory, debug=args.debug, commit=args.commit))
+    loop.close()
+    return ret
+
+
+async def _install_job(output_dir: str) -> int:
+    p = await sp.create_subprocess_shell('bash -c "command -v prefs-export"',
+                                         stdout=sp.PIPE)
+    assert p.stdout is not None
+    prefs_export_path = (await p.stdout.read()).decode().strip()
+    home = environ['HOME']
+    plist_path = expanduser('~/Library/LaunchAgents/sh.tat.macprefs.plist')
+    with open(plist_path, 'w+') as f:
+        f.write(f'''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>sh.tat.macprefs</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>{prefs_export_path}</string>
+      <string>--output-directory</string>
+      <string>{realpath(output_dir)}</string>
+      <string>--commit</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+      <key>Hour</key>
+      <integer>0</integer>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>{home}/Library/Logs/macprefs.log</string>
+    <key>StandardErrorPath</key>
+    <string>{home}/Library/Logs/macprefs.log</string>
+    <key>RunAtLoad</key>
+    <true />
+    <key>UserName</key>
+    <string>@USER@</string>
+    <key>GroupName</key>
+    <string>staff</string>
+  </dict>
+</plist>
+''')
+    await (await sp.create_subprocess_exec('launchctl',
+                                           'stop',
+                                           plist_path,
+                                           stderr=sp.PIPE,
+                                           stdout=sp.PIPE)).wait()
+    await (await sp.create_subprocess_exec('launchctl',
+                                           'unload',
+                                           '-w',
+                                           plist_path,
+                                           stderr=sp.PIPE,
+                                           stdout=sp.PIPE)).wait()
+    proc1 = await sp.create_subprocess_exec('launchctl', 'load', '-w',
+                                            plist_path)
+    await proc1.wait()
+    proc2 = await sp.create_subprocess_exec('launchctl', 'start', plist_path)
+    await proc2.wait()
+    return 0 if proc1.returncode == 0 and proc2.returncode == 0 else 1
+
+
+def install_job() -> int:
+    """Job installer command entry point."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-o',
+                        '--output-directory',
+                        default=expanduser('~/.config/defaults'),
+                        help='Where to store the exported data')
+    args = cast(Namespace, parser.parse_args())
+    loop = asyncio.get_event_loop()
+    ret = loop.run_until_complete(_install_job(args.output_directory))
     loop.close()
     return ret
 
