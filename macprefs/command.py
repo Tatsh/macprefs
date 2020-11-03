@@ -227,6 +227,8 @@ async def _install_job(output_dir: str) -> int:
     <dict>
       <key>Hour</key>
       <integer>0</integer>
+      <key>Minute</key>
+      <integer>0</integer>
     </dict>
     <key>StandardOutPath</key>
     <string>{home}/Library/Logs/macprefs.log</string>
