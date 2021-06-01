@@ -15,6 +15,7 @@ setup(author='Andrew Udvare',
       long_description_content_type='text/markdown',
       name='macprefs',
       packages=find_packages(),
+      python_requires='>=3.9',
       tests_require=['coveralls', 'nose', 'requests-mock'],
       url='https://github.com/Tatsh/macprefs',
       version='0.0.5')
