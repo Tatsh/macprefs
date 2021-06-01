@@ -1,6 +1,5 @@
 from copy import deepcopy
 from typing import cast
-import plistlib
 
 from .mp_typing import MutablePlistList, MutablePlistRoot, PlistList, PlistRoot
 
@@ -15,7 +14,7 @@ async def remove_data_fields_list(pl_list: PlistList) -> PlistList:
     ret = cast(MutablePlistList, deepcopy(pl_list))
     index = 0
     for value in pl_list:
-        if not isinstance(value, plistlib.Data):
+        if not isinstance(value, bytes):
             if isinstance(value, dict):
                 ret[index] = cast(MutablePlistRoot, await
                                   remove_data_fields(value))
@@ -35,7 +34,7 @@ async def remove_data_fields(root: PlistRoot) -> PlistRoot:
     """Clean up data fields from a PlistRoot."""
     ret = cast(MutablePlistRoot, deepcopy(root))
     for key, value in root.items():
-        if not isinstance(value, plistlib.Data):
+        if not isinstance(value, bytes):
             if isinstance(value, list):
                 ret[key] = cast(MutablePlistList, await
                                 remove_data_fields_list(value))

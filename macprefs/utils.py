@@ -1,9 +1,9 @@
+from collections.abc import ValuesView
 from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, AnyStr, Mapping, Optional, Sequence, Union, ValuesView
+from typing import Any, AnyStr, Mapping, Optional, Sequence, Union
 import logging
-import plistlib
 import sys
 
 from .mp_typing import ComplexInnerTypes
@@ -37,16 +37,16 @@ async def _can_decode_unicode(x: bytes) -> bool:
     return True
 
 
-IsSimpleArg = Union[Mapping[Any, ComplexInnerTypes],
-                    Sequence[ComplexInnerTypes], ValuesView]
+SimpleArg = Union[Mapping[Any, ComplexInnerTypes],
+                    Sequence[ComplexInnerTypes], ValuesView[str]]
 
 
-async def is_simple(x: IsSimpleArg) -> bool:
+async def is_simple(x: SimpleArg) -> bool:
     """Check if a value is a simple type of value."""
     if isinstance(x, dict):
         x = x.values()
     for y in x:
-        if (isinstance(y, (datetime, list, dict, plistlib.Data))
+        if (isinstance(y, (datetime, list, dict))
                 or (isinstance(y, bytes) and not await _can_decode_unicode(y))):
             return False
     return True
