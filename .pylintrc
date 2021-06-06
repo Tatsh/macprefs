@@ -21,7 +21,7 @@ disable=missing-module-docstring,
 
 [DESIGN]
 good-names=cb,p,f,x,y,z
-max-statements=60
+max-statements=70
 
 [REFACTORING]
 max-nested-blocks=5

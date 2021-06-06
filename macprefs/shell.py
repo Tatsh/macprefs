@@ -12,11 +12,13 @@ from .utils import setup_logging_stderr
 __all__ = ('git', )
 
 
-async def git(cmd: Iterable[str],
-              check: Optional[bool] = False,
-              debug: bool = False,
-              git_dir: Optional[Path] = None,
-              work_tree: str = '.') -> sp.Process:
+async def git(  # pylint: disable=too-many-arguments
+        cmd: Iterable[str],
+        check: Optional[bool] = False,
+        debug: bool = False,
+        git_dir: Optional[Path] = None,
+        work_tree: str = '.',
+        ssh_key: Optional[str] = None) -> sp.Process:
     """Run a Git command."""
     log = setup_logging_stderr(verbose=debug)
     rest = ' '.join(map(quote, cmd))
@@ -35,6 +37,11 @@ async def git(cmd: Iterable[str],
                                                       stderr=sp.PIPE)
             await p.wait()
             chdir(cwd)
+    if ssh_key:
+        await git(
+            ('config', 'core.sshCommand',
+             (f'ssh -i {ssh_key} -F /dev/null -o UserKnownHostsFile=/dev/null '
+              '-o StrictHostKeyChecking=no')))
     full_command = (f'git "--git-dir={git_dir}" '
                     f'"--work-tree={work_tree}" {rest}')
     log.debug('Running: %s', full_command)
