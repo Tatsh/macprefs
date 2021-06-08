@@ -227,7 +227,7 @@ async def _install_job(output_dir: str,
             Label='sh.tat.macprefs',
             StartCalendarInterval=dict(Hour=0, Minute=0),
             StandardOutPath=log_path,
-            SandardErrorPath=log_path,
+            StandardErrorPath=log_path,
             RunAtLoad=True,
             ProgramArguments=[
                 prefs_export_path, '--output-directory',
