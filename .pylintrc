@@ -17,7 +17,8 @@ unsafe-load-any-extension=no
 
 [GENERAL]
 disable=missing-module-docstring,
-        ungrouped-imports
+        ungrouped-imports,
+        unspecified-encoding
 
 [DESIGN]
 good-names=cb,p,f,x,y,z
