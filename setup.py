@@ -17,4 +17,4 @@ with open('README.md') as f:
           python_requires='>=3.9',
           tests_require=['coveralls', 'nose', 'requests-mock'],
           url='https://github.com/Tatsh/macprefs',
-          version='0.2.1')
+          version='0.2.2')
