@@ -45,8 +45,7 @@ async def _defaults_export(domain: str,
                            debug: bool = False) -> Tuple[str, PlistRoot]:
     command = f'defaults export {quote(domain)}'
     out_domain = 'globalDomain' if domain == GLOBAL_DOMAIN_ARG else domain
-    repo_prefs_dir.mkdir(parents=True, exist_ok=True)
-    plist_out = repo_prefs_dir.joinpath(f'{out_domain}.plist')
+    plist_out = repo_prefs_dir / f'{out_domain}.plist'
     path_quoted = quote(str(plist_out))
     command += f' {path_quoted}'
     log = setup_logging_stderr(verbose=debug)
@@ -61,19 +60,20 @@ async def _defaults_export(domain: str,
         raise RuntimeError(
             f'Non-zero exit status from defaults. STDERR: {err}')
     with plist_out.open('rb') as f:
-        return domain, await remove_data_fields(plistlib.load(f))
+        try:
+            plist_parsed = plistlib.load(f)
+        except plistlib.InvalidFileException:
+            # If this condition is reached, the domain is likely in the
+            # BAD_DOMANIS list so the output will be discarded
+            return domain, {}
+        return domain, await remove_data_fields(plist_parsed)
 
 
 async def _setup_out_dir(out_dir: str) -> Tuple[str, Path]:
     out_dir = realpath(out_dir)
     repo_prefs_dir = Path(out_dir).joinpath('Preferences')
-    # pylint: disable=too-many-try-statements
-    try:
-        makedirs(out_dir)
-        makedirs(str(repo_prefs_dir))
-    except FileExistsError:
-        pass
-    # pylint: enable=too-many-try-statements
+    Path(out_dir).mkdir(exist_ok=True, parents=True)
+    repo_prefs_dir.mkdir(exist_ok=True, parents=True)
     return out_dir, repo_prefs_dir
 
 
