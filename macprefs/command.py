@@ -45,6 +45,7 @@ async def _defaults_export(domain: str,
                            debug: bool = False) -> Tuple[str, PlistRoot]:
     command = f'defaults export {quote(domain)}'
     out_domain = 'globalDomain' if domain == GLOBAL_DOMAIN_ARG else domain
+    repo_prefs_dir.mkdir(parents=True, exist_ok=True)
     plist_out = repo_prefs_dir.joinpath(f'{out_domain}.plist')
     path_quoted = quote(str(plist_out))
     command += f' {path_quoted}'
