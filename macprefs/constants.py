@@ -1,7 +1,6 @@
-__all__ = (
-    'GLOBAL_DOMAIN_ARG',
-    'MAX_CONCURRENT_EXPORT_TASKS',
-)
+from typing import Final
 
-GLOBAL_DOMAIN_ARG = '-globalDomain'
-MAX_CONCURRENT_EXPORT_TASKS = 40
+__all__ = ('GLOBAL_DOMAIN_ARG', 'MAX_CONCURRENT_EXPORT_TASKS')
+
+GLOBAL_DOMAIN_ARG: Final[str] = '-globalDomain'
+MAX_CONCURRENT_EXPORT_TASKS: Final[int] = 40

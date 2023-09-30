@@ -8,16 +8,11 @@ import sys
 
 from .mp_typing import ComplexInnerTypes
 
-__all__ = (
-    'is_simple',
-    'setup_logging_stderr',
-    'to_str',
-)
+__all__ = ('is_simple', 'setup_logging_stderr', 'to_str')
 
 
 @lru_cache()
-def setup_logging_stderr(name: Optional[str] = None,
-                         verbose: bool = False) -> logging.Logger:
+def setup_logging_stderr(name: Optional[str] = None, verbose: bool = False) -> logging.Logger:
     """Logging utility."""
     name = name if name else Path(sys.argv[0]).name
     log = logging.getLogger(name)
@@ -37,8 +32,7 @@ async def _can_decode_unicode(x: bytes) -> bool:
     return True
 
 
-SimpleArg = Union[Mapping[Any, ComplexInnerTypes], Sequence[ComplexInnerTypes],
-                  ValuesView[str]]
+SimpleArg = Union[Mapping[Any, ComplexInnerTypes], Sequence[ComplexInnerTypes], ValuesView[str]]
 
 
 async def is_simple(x: SimpleArg) -> bool:
@@ -46,8 +40,8 @@ async def is_simple(x: SimpleArg) -> bool:
     if isinstance(x, dict):
         x = x.values()
     for y in x:
-        if (isinstance(y, (datetime, list, dict)) or
-            (isinstance(y, bytes) and not await _can_decode_unicode(y))):
+        if (isinstance(y, (datetime, list, dict))
+                or (isinstance(y, bytes) and not await _can_decode_unicode(y))):
             return False
     return True
 

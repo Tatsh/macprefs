@@ -1,6 +1,9 @@
-__all__ = ('BAD_KEYS', )
+from typing import Final
+
+__all__ = ('BAD_KEYS',)
 # spell-checker: disable
-BAD_KEYS = {
+
+BAD_KEYS: Final[dict[str, set[str]]] = {
     '-globalDomain': {
         'AKLastEmailListRequestDateKey',
         'AppleInterfaceStyle',
@@ -23,8 +26,9 @@ BAD_KEYS = {
     'com.apple.TelephonyUtilities': {'registeredProviders'},
     'org.videolan.vlc': {r're:^recentlyPlayed'},
     'com.apple.amp.mediasharingd': {r're:.*\-id$'},
-    'com.apple.AddressBook':
-    {'ABDefaultSourceID', 'ABMetaDataChangeCount', 'ABMetadataLastOilChange'},
+    'com.apple.AddressBook': {
+        'ABDefaultSourceID', 'ABMetaDataChangeCount', 'ABMetadataLastOilChange'
+    },
     'com.apple.appstored': {
         'ArcadeDeviceID',
         'ArcadePayoutDeviceID',
@@ -41,10 +45,8 @@ BAD_KEYS = {
     'com.apple.AppleMediaServices': {'AMSMetricsTimingWindowStartTime'},
     'com.apple.bird': {r're:^icloud\-drive\.account\-migration\-status'},
     'com.apple.calculateframework': {'currencyCache'},
-    'com.apple.cloudd':
-    {'com.apple.private.cloudkit.shouldUseGeneratedDeviceID'},
-    'com.apple.cloudpaird':
-    {'PreviousToken', 'UploadedHSA2KeysForLocalDevice'},
+    'com.apple.cloudd': {'com.apple.private.cloudkit.shouldUseGeneratedDeviceID'},
+    'com.apple.cloudpaird': {'PreviousToken', 'UploadedHSA2KeysForLocalDevice'},
     'com.apple.commerce': {
         'AvailableUpdatesAtLastNotification',
         'LastUpdateNotificationOSMajorVersion',
@@ -59,10 +61,8 @@ BAD_KEYS = {
     'com.apple.Console': {'ConsoleSearch'},
     'com.apple.configurator': {'Storefront'},
     'com.apple.configurator.ui': {'LastAcceptedConfiguratorLicenseVersion'},
-    'com.apple.configurator.ui.commerce':
-    {'re:^PrimaryAccount', 're:^Storefront'},
-    'com.apple.coreservices.useractivityd':
-    {'re:k(?:Local|Remote)PasteboardBlobName'},
+    'com.apple.configurator.ui.commerce': {'re:^PrimaryAccount', 're:^Storefront'},
+    'com.apple.coreservices.useractivityd': {'re:k(?:Local|Remote)PasteboardBlobName'},
     'com.apple.dock': {'mod-count'},
     'com.apple.driver.AppleBluetoothMultitouch.trackpad': {'version'},
     'com.apple.dt.Instruments': {
@@ -151,8 +151,7 @@ BAD_KEYS = {
     },
     'com.apple.PhotoBooth': {'LibraryBookmark'},
     'com.apple.Preferences': {r're:^UserDictionary'},
-    'com.apple.print.PrinterProxy':
-    {'IK_Scanner_downloadURL', 'IK_Scanner_selectedTag'},
+    'com.apple.print.PrinterProxy': {'IK_Scanner_downloadURL', 'IK_Scanner_selectedTag'},
     'com.apple.searchd': {r're:^engagementCount'},
     'com.apple.Spotlight': {
         'GEOUsageSessionID',

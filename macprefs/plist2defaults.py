@@ -1,4 +1,3 @@
-# pylint: disable=too-many-locals,too-many-branches
 from datetime import datetime
 from shlex import quote
 from typing import AsyncIterator
@@ -8,13 +7,12 @@ from .filters import BAD_DOMAINS, BAD_DOMAIN_PREFIXES, BAD_KEYS, BAD_KEYS_RE
 from .mp_typing import PlistRoot
 from .utils import is_simple, setup_logging_stderr, to_str
 
-__all__ = ('plist_to_defaults_commands', )
+__all__ = ('plist_to_defaults_commands',)
 
 
-async def plist_to_defaults_commands(
-        domain: str,
-        root: PlistRoot,
-        debug: bool = False) -> AsyncIterator[str]:
+async def plist_to_defaults_commands(domain: str,
+                                     root: PlistRoot,
+                                     debug: bool = False) -> AsyncIterator[str]:
     """Given a PlistRoot, generate a series of `defaults write` commands."""
     if domain in BAD_DOMAINS:
         return
@@ -34,8 +32,7 @@ async def plist_to_defaults_commands(
             continue
         if domain in BAD_KEYS:
             found = False
-            for x in filter(lambda y: y.startswith('re:'),
-                            list(BAD_KEYS[domain])):
+            for x in filter(lambda y: y.startswith('re:'), list(BAD_KEYS[domain])):
                 if re.match(x[3:], key):
                     found = True
                     break
@@ -58,26 +55,19 @@ async def plist_to_defaults_commands(
                 continue
             yield f'{prefix} {quote(key)} -string {quote(value)}'
         elif isinstance(value, list) and await is_simple(value):
-            first = (quote(str(value[0])) +
-                     ' \\\n' if len(value) > 1 else quote(str(value[0])))
+            first = (quote(str(value[0])) + ' \\\n' if len(value) > 1 else quote(str(value[0])))
             key = quote(key)
             spaces = ' ' * (len(prefix) + 1 + len(key) + 1 + 7)
             # [] required for this line, otherwise TypeError: can only join an
             # iterable
-            rest = ' \\\n'.join(
-                [f'{spaces}{quote(to_str(x))}' for x in value[1:]])
+            rest = ' \\\n'.join([f'{spaces}{quote(to_str(x))}' for x in value[1:]])
             yield f'{prefix} {key} -array {"".join(first + rest)}'
         elif isinstance(value, dict) and await is_simple(value):
-            dict_values = [
-                f'{quote(to_str(x))} {quote(to_str(y))}'
-                for x, y in value.items()
-            ]
-            f_dict_values = (f'{dict_values[0]}\\\n'
-                             if len(dict_values) > 1 else dict_values[0])
+            dict_values = [f'{quote(to_str(x))} {quote(to_str(y))}' for x, y in value.items()]
+            f_dict_values = (f'{dict_values[0]}\\\n' if len(dict_values) > 1 else dict_values[0])
             key = quote(key)
             spaces = ' ' * (len(prefix) + 1 + len(key) + 1 + 10)
-            dict_values_ = ' \\\n'.join(f'{spaces}{x}'
-                                        for x in dict_values[1:])
+            dict_values_ = ' \\\n'.join(f'{spaces}{x}' for x in dict_values[1:])
             yield f'{prefix} {key} -dict {f_dict_values}{dict_values_}'
         elif isinstance(value, datetime):
             full_date = quote(value.strftime('%Y-%m-%d %I:%M:%S +0000'))

@@ -28,13 +28,13 @@ __pycache__/
 ehthumbs.db
 Thumbs.db
 
-# Bad files
 *,*
 *.plist
-/.mypy_cache/
-/.vscode/.ropeproject/objectdb
-/.vscode/settings.json
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
 exec-defaults.sh
-
-/build/
-/dist/
+build/
+dist/
+docs/_build
+node_modules/

@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-# pylint: disable=too-many-locals,compare-to-zero
 from datetime import datetime
 from itertools import chain
-from os import chmod, environ, listdir, makedirs
+from os import chmod, environ, listdir
 from os.path import expanduser, realpath
 from pathlib import Path
 from shlex import quote
@@ -11,7 +9,6 @@ import argparse
 import asyncio
 import asyncio.subprocess as sp
 import plistlib
-import sys
 
 from .constants import GLOBAL_DOMAIN_ARG, MAX_CONCURRENT_EXPORT_TASKS
 from .filters import BAD_DOMAINS
@@ -21,21 +18,19 @@ from .processing import remove_data_fields
 from .shell import git
 from .utils import setup_logging_stderr
 
-__all__ = ('main', )
+__all__ = ('main',)
 
 
 async def _has_git() -> bool:
-    p = await sp.create_subprocess_shell('bash -c "command -v git"',
-                                         stdout=sp.PIPE)
+    p = await sp.create_subprocess_shell('bash -c "command -v git"', stdout=sp.PIPE)
     await p.wait()
     return p.returncode == 0
 
 
 async def _generate_domains() -> AsyncIterator[str]:
-    for plist in (x for x in (
-            Path.home().joinpath('Library/Preferences').glob('*.plist'))
-                  if x.stem and x.stem != '$(PRODUCT_BUNDLE_IDENTIFIER)'
-                  and not x.name.startswith('.')):
+    for plist in (
+            x for x in (Path.home().joinpath('Library/Preferences').glob('*.plist'))
+            if x.stem and x.stem != '$(PRODUCT_BUNDLE_IDENTIFIER)' and not x.name.startswith('.')):
         yield plist.stem
     yield GLOBAL_DOMAIN_ARG
 
@@ -50,21 +45,18 @@ async def _defaults_export(domain: str,
     command += f' {path_quoted}'
     log = setup_logging_stderr(verbose=debug)
     log.debug('Running: %s', command)
-    p = await asyncio.create_subprocess_shell(command,
-                                              stdout=sp.PIPE,
-                                              stderr=sp.PIPE)
+    p = await asyncio.create_subprocess_shell(command, stdout=sp.PIPE, stderr=sp.PIPE)
     await p.wait()
     if p.returncode != 0:
         assert p.stderr is not None
         err = (await p.stderr.read()).decode('utf-8')
-        raise RuntimeError(
-            f'Non-zero exit status from defaults. STDERR: {err}')
+        raise RuntimeError(f'Non-zero exit status from defaults. STDERR: {err}')
     with plist_out.open('rb') as f:
         try:
             plist_parsed = plistlib.load(f)
         except plistlib.InvalidFileException:
             # If this condition is reached, the domain is likely in the
-            # BAD_DOMANIS list so the output will be discarded
+            # BAD_DOMAINS list so the output will be discarded
             return domain, {}
         return domain, await remove_data_fields(plist_parsed)
 
@@ -88,8 +80,7 @@ async def _main(out_dir: str,
     all_data: List[Tuple[str, PlistRoot]] = []
     async for domain in _generate_domains():
         # spell-checker: disable
-        if domain in ('com.apple.Music', 'com.apple.TV',
-                      'com.apple.identityservices.idstatuscache',
+        if domain in ('com.apple.Music', 'com.apple.TV', 'com.apple.identityservices.idstatuscache',
                       'com.apple.security.KCN'):
             # spell-checker: enable
             continue
@@ -110,8 +101,7 @@ async def _main(out_dir: str,
                 continue
             async for line in plist_to_defaults_commands(domain, root, debug):
                 f.write(line + '\n')
-            out_domain = ('globalDomain'
-                          if domain == GLOBAL_DOMAIN_ARG else domain)
+            out_domain = ('globalDomain' if domain == GLOBAL_DOMAIN_ARG else domain)
             known_domains.append(out_domain)
             plist_path = repo_prefs_dir.joinpath(f'{out_domain}.plist')
             cmd = f'plutil -convert xml1 {quote(str(plist_path))}'
@@ -123,16 +113,14 @@ async def _main(out_dir: str,
     if has_git:
         # Clean up very old plists
         delete_with_git = [
-            str(j[1])
-            for j in ((file, file_)
-                      for file, file_ in ((x, repo_prefs_dir.joinpath(x))
-                                          for x in listdir(str(repo_prefs_dir))
-                                          if x != '.gitignore')
-                      if file[:-6] not in known_domains and file_.exists()
-                      if not file_.is_dir())
+            str(j[1]) for j in ((file, file_)
+                                for file, file_ in ((x, repo_prefs_dir.joinpath(x))
+                                                    for x in listdir(str(repo_prefs_dir))
+                                                    if x != '.gitignore')
+                                if file[:-6] not in known_domains and file_.exists()
+                                if not file_.is_dir())
         ]
-        await git(chain(('rm', '-f', '--ignore-unmatch', '--'),
-                        delete_with_git),
+        await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git),
                   check=True,
                   work_tree=out_dir,
                   debug=debug)
@@ -150,8 +138,7 @@ async def _main(out_dir: str,
         delete_with_git_.append(str(plist))
         delete_with_rm.append(quote(str(plist)))
     if has_git:
-        await git(chain(('rm', '-f', '--ignore-unmatch', '--'),
-                        delete_with_git_),
+        await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git_),
                   check=True,
                   debug=debug,
                   work_tree=out_dir)
@@ -161,7 +148,7 @@ async def _main(out_dir: str,
     p = await asyncio.create_subprocess_shell(cmd)
     await p.wait()
     if has_git and commit:
-        log.debug('Commiting changes')
+        log.debug('Committing changes')
         await git(('add', '.'), work_tree=out_dir, check=True)
         await git(('commit', '--no-gpg-sign', '--quiet', '--no-verify',
                    '--author=macprefs <macprefs@tat.sh>', '-m',
@@ -169,9 +156,7 @@ async def _main(out_dir: str,
                   work_tree=out_dir,
                   check=True)
         if deploy_key:
-            stdout = (await git(('branch', '--show-current'),
-                                check=True,
-                                work_tree=out_dir)).stdout
+            stdout = (await git(('branch', '--show-current'), check=True, work_tree=out_dir)).stdout
             assert stdout is not None
             await git(('push', '-u', '--porcelain', '--no-signed', 'origin',
                        (await stdout.read()).decode().strip()),
@@ -180,7 +165,7 @@ async def _main(out_dir: str,
     return 0
 
 
-class Namespace(argparse.Namespace):  # pylint: disable=too-few-public-methods
+class Namespace(argparse.Namespace):
     """Arguments to main()."""
     output_directory: str
     debug: bool
@@ -195,10 +180,7 @@ def main() -> int:
                         default='.',
                         help='Where to store the exported data')
     parser.add_argument('-d', '--debug', action='store_true')
-    parser.add_argument('-c',
-                        '--commit',
-                        action='store_true',
-                        help='Commit the changes with Git')
+    parser.add_argument('-c', '--commit', action='store_true', help='Commit the changes with Git')
     parser.add_argument('-K',
                         '--deploy-key',
                         required=False,
@@ -214,27 +196,23 @@ def main() -> int:
     return ret
 
 
-async def _install_job(output_dir: str,
-                       deploy_key: Optional[str] = None) -> int:
-    p = await sp.create_subprocess_shell('bash -c "command -v prefs-export"',
-                                         stdout=sp.PIPE)
+async def _install_job(output_dir: str, deploy_key: Optional[str] = None) -> int:
+    p = await sp.create_subprocess_shell('bash -c "command -v prefs-export"', stdout=sp.PIPE)
     assert p.stdout is not None
     prefs_export_path = (await p.stdout.read()).decode().strip()
     home = environ['HOME']
     plist_path = expanduser('~/Library/LaunchAgents/sh.tat.macprefs.plist')
     log_path = f'{home}/Library/Logs/macprefs.log'
     with open(plist_path, 'wb+') as f:
-        plistlib.dump(dict(
-            Label='sh.tat.macprefs',
-            StartCalendarInterval=dict(Hour=0, Minute=0),
-            StandardOutPath=log_path,
-            StandardErrorPath=log_path,
-            RunAtLoad=True,
-            ProgramArguments=[
-                prefs_export_path, '--output-directory',
-                realpath(output_dir), '--commit'
-            ] +
-            (['--deploy-key', realpath(deploy_key)] if deploy_key else [])),
+        plistlib.dump(dict(Label='sh.tat.macprefs',
+                           StartCalendarInterval=dict(Hour=0, Minute=0),
+                           StandardOutPath=log_path,
+                           StandardErrorPath=log_path,
+                           RunAtLoad=True,
+                           ProgramArguments=[
+                               prefs_export_path, '--output-directory',
+                               realpath(output_dir), '--commit'
+                           ] + (['--deploy-key', realpath(deploy_key)] if deploy_key else [])),
                       f,
                       fmt=plistlib.PlistFormat.FMT_XML)
     await (await sp.create_subprocess_exec('launchctl',
@@ -248,12 +226,11 @@ async def _install_job(output_dir: str,
                                            plist_path,
                                            stderr=sp.PIPE,
                                            stdout=sp.PIPE)).wait()
-    proc1 = await sp.create_subprocess_exec('launchctl', 'load', '-w',
-                                            plist_path)
-    await proc1.wait()
-    proc2 = await sp.create_subprocess_exec('launchctl', 'start', plist_path)
-    await proc2.wait()
-    return 0 if proc1.returncode == 0 and proc2.returncode == 0 else 1
+    process1 = await sp.create_subprocess_exec('launchctl', 'load', '-w', plist_path)
+    await process1.wait()
+    process2 = await sp.create_subprocess_exec('launchctl', 'start', plist_path)
+    await process2.wait()
+    return 0 if process1.returncode == 0 and process2.returncode == 0 else 1
 
 
 def install_job() -> int:
@@ -269,11 +246,6 @@ def install_job() -> int:
                         help='Key for pushing to Git repository')
     args = cast(Namespace, parser.parse_args())
     loop = asyncio.get_event_loop()
-    ret = loop.run_until_complete(
-        _install_job(args.output_directory, args.deploy_key))
+    ret = loop.run_until_complete(_install_job(args.output_directory, args.deploy_key))
     loop.close()
     return ret
-
-
-if __name__ == "__main__":
-    sys.exit(main())
