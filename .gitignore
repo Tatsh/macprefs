@@ -30,11 +30,13 @@ Thumbs.db
 
 *,*
 *.plist
+.coverage
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
-exec-defaults.sh
 build/
 dist/
 docs/_build
+exec-defaults.sh
+htmlcov/
 node_modules/
