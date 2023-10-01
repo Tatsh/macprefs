@@ -2,6 +2,7 @@ from datetime import datetime
 from itertools import chain
 from pathlib import Path
 from shlex import quote
+import shutil
 from typing import AsyncIterator
 import asyncio
 import asyncio.subprocess as sp
@@ -35,22 +36,12 @@ async def _generate_domains() -> AsyncIterator[str]:
     yield GLOBAL_DOMAIN_ARG
 
 
-async def _defaults_export(domain: str,
-                           repo_prefs_dir: Path,
-                           debug: bool = False) -> tuple[str, PlistRoot]:
-    command = f'defaults export {quote(domain)}'
-    out_domain = 'globalDomain' if domain == GLOBAL_DOMAIN_ARG else domain
-    plist_out = repo_prefs_dir / f'{out_domain}.plist'
-    path_quoted = quote(str(plist_out))
-    command += f' {path_quoted}'
-    setup_logging(debug)
-    logger.debug('Running: %s', command)
-    p = await asyncio.create_subprocess_shell(command, stdout=sp.PIPE, stderr=sp.PIPE)
-    await p.wait()
-    if p.returncode != 0:
-        assert p.stderr is not None
-        err = (await p.stderr.read()).decode('utf-8')
-        raise RuntimeError(f'Non-zero exit status from defaults. STDERR: {err}')
+async def _defaults_export(domain: str, repo_prefs_dir: Path) -> tuple[str, PlistRoot]:
+    plist_out = (repo_prefs_dir /
+                 f'{"globalDomain" if domain == GLOBAL_DOMAIN_ARG else domain}.plist')
+    shutil.copy(
+        Path.home() / 'Library/Preferences' /
+        f'{"GlobalPreferences" if domain == GLOBAL_DOMAIN_ARG else domain}.plist', plist_out)
     with plist_out.open('rb') as f:
         try:
             plist_parsed = plistlib.load(f)
