@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "macprefs"
-version = "0.2.2"
+version = "0.3.0"
 authors = ["Andrew Udvare <audvare@gmail.com>"]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -169,3 +169,6 @@ split_penalty_for_added_line_split = 30
 split_penalty_import_names = 0
 split_penalty_logical_operator = 300
 use_tabs = false
+
+[tool.yapfignore]
+ignore_patterns = ["node_modules/**"]
