@@ -4,11 +4,11 @@ macprefs
 Commands
 --------
 
-.. click:: macprefs.command:main
+.. click:: macprefs:prefs_export
   :prog: prefs-export
   :nested: full
 
-.. click:: macprefs.command:install_job
+.. click:: macprefs:install_job
   :prog: macprefs-install-job
   :nested: full
 
@@ -17,8 +17,12 @@ Library
 .. automodule:: macprefs.constants
    :members:
 
-Utilities
----------
+.. automodule:: macprefs.plist2defaults
+   :members:
+
+.. automodule:: macprefs.processing
+   :members:
+
 .. automodule:: macprefs.utils
    :members:
 
