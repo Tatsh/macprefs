@@ -2,8 +2,6 @@ archiver
 automodule
 commitizen
 concat
-cookiecutter
-docparams
 docutils
 ecda
 eeyore
@@ -20,11 +18,13 @@ isort
 itertools
 jinja
 levelname
+levelno
+linters
+loguru
 macprefs
 maxdepth
 modindex
 mypy
-numpy
 paren
 parens
 pipx
