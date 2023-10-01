@@ -1169,10 +1169,10 @@ prettier-plugin-ini@^1.1.0:
   dependencies:
     prettier ">=2.3"
 
-prettier-plugin-sort-json@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-sort-json/-/prettier-plugin-sort-json-1.0.0.tgz#fe677d5537b6d79d12ffaf1604046a3d3ee2427c"
-  integrity sha512-XgcaF/Sojax1vD6j53wNIByx0rp7ecang+A8W0eM+Ks3yBFu/qXjJNvUtC1lEWeYbNfmRs/d8FyYJCYozAVENw==
+prettier-plugin-sort-json@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-sort-json/-/prettier-plugin-sort-json-2.0.0.tgz#8bffd7d01a38b9a95466a88e0b2bc054bc95d0d9"
+  integrity sha512-3gSjdNOZm1ZsNurYGMFIya7m7KDTjcGBq/D5ymiWP770uvLyjGE1sE+IFNwA7igGRRTDjI9pPoikRCICKS131w==
   dependencies:
     "@types/prettier" "^2.7.2"
 
