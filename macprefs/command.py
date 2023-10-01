@@ -41,7 +41,7 @@ async def _defaults_export(domain: str, repo_prefs_dir: Path) -> tuple[str, Plis
                  f'{"globalDomain" if domain == GLOBAL_DOMAIN_ARG else domain}.plist')
     shutil.copy(
         Path.home() / 'Library/Preferences' /
-        f'{"GlobalPreferences" if domain == GLOBAL_DOMAIN_ARG else domain}.plist', plist_out)
+        f'{".GlobalPreferences" if domain == GLOBAL_DOMAIN_ARG else domain}.plist', plist_out)
     with plist_out.open('rb') as f:
         try:
             plist_parsed = plistlib.load(f)
@@ -54,11 +54,10 @@ async def _defaults_export(domain: str, repo_prefs_dir: Path) -> tuple[str, Plis
 
 
 async def _setup_out_dir(out_dir: Path) -> tuple[Path, Path]:
-    out_dir_p = out_dir.resolve(strict=True)
-    repo_prefs_dir = out_dir_p / 'Preferences'
-    out_dir_p.mkdir(exist_ok=True, parents=True)
+    repo_prefs_dir = out_dir / 'Preferences'
+    out_dir.mkdir(exist_ok=True, parents=True)
     repo_prefs_dir.mkdir(exist_ok=True, parents=True)
-    return out_dir_p, repo_prefs_dir
+    return out_dir, repo_prefs_dir
 
 
 async def _main(out_dir: Path,
@@ -97,7 +96,7 @@ async def _main(out_dir: Path,
                 known_domains.append(out_domain)
                 plist_path = repo_prefs_dir / f'{out_domain}.plist'
                 cmd = f'plutil -convert xml1 {quote(str(plist_path))}'
-                logger.debug('Executing: %s', cmd)
+                logger.debug(f'Executing: {cmd}')
                 p = await asyncio.create_subprocess_shell(cmd)
                 tasks.append(asyncio.create_task(p.wait()))
         exec_defaults.chmod(0o755)
