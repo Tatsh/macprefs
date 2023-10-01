@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 async def plist_to_defaults_commands(domain: str,
                                      root: PlistRoot,
                                      debug: bool = False) -> AsyncIterator[str]:
-    """Given a PlistRoot, generate a series of `defaults write` commands."""
+    """Given a ``PlistRoot``, generate a series of ``defaults write`` commands."""
     if domain in BAD_DOMAINS:
         return
     for prefix in BAD_DOMAIN_PREFIXES:
