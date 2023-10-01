@@ -7,7 +7,7 @@ __all__ = ('remove_data_fields', 'remove_data_fields_list')
 
 
 async def remove_data_fields_list(pl_list: PlistList) -> PlistList:
-    """Clean up data fields from a PlistList."""
+    """Clean up data fields from a ``PlistList``."""
     ret = cast(MutablePlistList, deepcopy(pl_list))
     index = 0
     for value in pl_list:
@@ -26,7 +26,7 @@ async def remove_data_fields_list(pl_list: PlistList) -> PlistList:
 
 
 async def remove_data_fields(root: PlistRoot) -> PlistRoot:
-    """Clean up data fields from a PlistRoot."""
+    """Clean up data fields from a ``PlistRoot``."""
     ret = cast(MutablePlistRoot, deepcopy(root))
     for key, value in root.items():
         if not isinstance(value, bytes):
