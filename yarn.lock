@@ -24,6 +24,33 @@
     chalk "^2.4.2"
     js-tokens "^4.0.0"
 
+"@chevrotain/cst-dts-gen@10.5.0":
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/@chevrotain/cst-dts-gen/-/cst-dts-gen-10.5.0.tgz#922ebd8cc59d97241bb01b1b17561a5c1ae0124e"
+  integrity sha512-lhmC/FyqQ2o7pGK4Om+hzuDrm9rhFYIJ/AXoQBeongmn870Xeb0L6oGEiuR8nohFNL5sMaQEJWCxr1oIVIVXrw==
+  dependencies:
+    "@chevrotain/gast" "10.5.0"
+    "@chevrotain/types" "10.5.0"
+    lodash "4.17.21"
+
+"@chevrotain/gast@10.5.0":
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/@chevrotain/gast/-/gast-10.5.0.tgz#e4e614bc46d17a8892742f38e56cd33f1f3ad162"
+  integrity sha512-pXdMJ9XeDAbgOWKuD1Fldz4ieCs6+nLNmyVhe2gZVqoO7v8HXuHYs5OV2EzUtbuai37TlOAQHrTDvxMnvMJz3A==
+  dependencies:
+    "@chevrotain/types" "10.5.0"
+    lodash "4.17.21"
+
+"@chevrotain/types@10.5.0":
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/@chevrotain/types/-/types-10.5.0.tgz#52a97d74a8cfbc197f054636d93ecd8912d33d21"
+  integrity sha512-f1MAia0x/pAVPWH/T73BJVyO2XU5tI4/iE7cnxb7tqdNTNhQI3Uq3XkqcoteTmD4t1aM0LbHCJOhgIDn07kl2A==
+
+"@chevrotain/utils@10.5.0":
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/@chevrotain/utils/-/utils-10.5.0.tgz#0ee36f65b49b447fbac71b9e5af5c5c6c98ac057"
+  integrity sha512-hBzuU5+JjB2cqNZyszkDHZgOSrUUT8V3dhgRl8Q9Gp6dAj/H5+KILGjbhDpc3Iy9qmqlm/akuOI2ut9VUtzJxQ==
+
 "@cspell/cspell-bundled-dicts@6.31.3":
   version "6.31.3"
   resolved "https://registry.yarnpkg.com/@cspell/cspell-bundled-dicts/-/cspell-bundled-dicts-6.31.3.tgz#b9d7fc363b6ce3e0e49e945a563d9d012346ceb6"
@@ -368,20 +395,20 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@toml-tools/lexer@^0.3.5":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@toml-tools/lexer/-/lexer-0.3.5.tgz#e040da6bbb74a7c06dced03d0b3a8cf40800c6e0"
-  integrity sha512-549zoTUhz4WvSNX0U+G5M+SqCPBVaLyKvE3Rfi43ww6LyJt98cwZR9kMBjkcMS28/cyLgIiShBbS12mqeo4Vsw==
+"@toml-tools/lexer@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@toml-tools/lexer/-/lexer-0.4.0.tgz#d050ef53971c388769a3a1c8db3c8245482e1d28"
+  integrity sha512-67Rm2I6lATi9TN5hwcMSiYqipYqwU402W1wXuMk+X3nki38LZCQSIMOoOkD7SzKfXE8QD/mhXDUKVTkiTy3iCw==
   dependencies:
-    chevrotain "^4.1.1"
+    chevrotain "^10.4.2"
 
-"@toml-tools/parser@^0.3.5":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@toml-tools/parser/-/parser-0.3.5.tgz#cd009a27c7ebcdde7a6d733f1c5003eaa324dc02"
-  integrity sha512-ba1GnL5zc+X/nxkzrq+AvdxQv/0lqoI9PM2s6CZFGiKl/ftP49VhojoA/SSdC7FexYczeq/O81jyJk0+oHa+NQ==
+"@toml-tools/parser@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@toml-tools/parser/-/parser-0.4.0.tgz#4a835233bb1162acecde7f43d22cbfacccb7841a"
+  integrity sha512-3T7YvAvbvpan0GY8VAzurSP53sXb45bHwgf5hITTipqNdSh6Ukx69AejtZ48SmMXet/vhpFH6PdhPJW9d3s1lQ==
   dependencies:
-    "@toml-tools/lexer" "^0.3.5"
-    chevrotain "^4.1.1"
+    "@toml-tools/lexer" "^0.4.0"
+    chevrotain "^10.4.2"
 
 "@types/prettier@^2.7.2":
   version "2.7.3"
@@ -459,12 +486,17 @@ chalk@^4.1.2:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chevrotain@^4.1.1:
-  version "4.8.1"
-  resolved "https://registry.yarnpkg.com/chevrotain/-/chevrotain-4.8.1.tgz#9a4d120ae31f63ab3260c589f9eb9362d51acb2b"
-  integrity sha512-Dd2oHFdscdm8MSmG0ejTXdMlqKR5ryeKuwLpsf1ZOs3l8HD/jPfIY0MYs9Eh4X3gm9h0CR155zpVYFK+uAI3tA==
+chevrotain@^10.4.2:
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/chevrotain/-/chevrotain-10.5.0.tgz#9c1dc62ef0753bb562dbe521b5f72d041bad624e"
+  integrity sha512-Pkv5rBY3+CsHOYfV5g/Vs5JY9WTHHDEKOlohI2XeygaZhUeqhAlldZ8Hz9cRmxu709bvS08YzxHdTPHhffc13A==
   dependencies:
-    regexp-to-ast "0.4.0"
+    "@chevrotain/cst-dts-gen" "10.5.0"
+    "@chevrotain/gast" "10.5.0"
+    "@chevrotain/types" "10.5.0"
+    "@chevrotain/utils" "10.5.0"
+    lodash "4.17.21"
+    regexp-to-ast "0.5.0"
 
 clear-module@^4.1.2:
   version "4.1.2"
@@ -946,6 +978,11 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash@4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
+
 lru-cache@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-6.0.0.tgz#6d6fe6570ebd96aaf90fcad1dafa3b2566db3a94"
@@ -1112,21 +1149,20 @@ prettier-plugin-sort-json@^1.0.0:
   dependencies:
     "@types/prettier" "^2.7.2"
 
-prettier-plugin-toml@^0.3.1:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-toml/-/prettier-plugin-toml-0.3.5.tgz#4f63e8c27865d1e7bfaf3a9c601042eed58b10b2"
-  integrity sha512-yP8dTVjFn1m1RfMAQ2jSjxi41+prv7YSeCwD5k7BCazFDYl+bj1vrEJm8OJTrDa/U20pQsXjYLoVYlHEqEja3Q==
+prettier-plugin-toml@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-toml/-/prettier-plugin-toml-0.4.0.tgz#958af65906251fc869d0a21f309e5578dec7a971"
+  integrity sha512-xieqXjxJmAEqE/rHy7Hym3cpYphNU1fdsrgqXVBNlZhx7HDbSXS64ULeD3nIPzf1QtO6kbgTIHy/ob/dCsVWrw==
   dependencies:
-    "@toml-tools/lexer" "^0.3.5"
-    "@toml-tools/parser" "^0.3.5"
-    prettier "^1.16.0 || ^2.0.0"
+    "@toml-tools/lexer" "^0.4.0"
+    "@toml-tools/parser" "^0.4.0"
 
 prettier@>=2.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.0.3.tgz#432a51f7ba422d1469096c0fdc28e235db8f9643"
   integrity sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==
 
-"prettier@^1.16.0 || ^2.0.0", prettier@^2.8.7:
+prettier@^2.8.7:
   version "2.8.8"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.8.tgz#e8c5d7e98a4305ffe3de2e1fc4aca1a71c28b1da"
   integrity sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==
@@ -1136,10 +1172,10 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-regexp-to-ast@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/regexp-to-ast/-/regexp-to-ast-0.4.0.tgz#f3dbcb42726cd71902ba50193f63eab5325cd7cb"
-  integrity sha512-4qf/7IsIKfSNHQXSwial1IFmfM1Cc/whNBQqRwe0V2stPe7KmN1U0tWQiIx6JiirgSrisjE0eECdNf7Tav1Ntw==
+regexp-to-ast@0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/regexp-to-ast/-/regexp-to-ast-0.5.0.tgz#56c73856bee5e1fef7f73a00f1473452ab712a24"
+  integrity sha512-tlbJqcMHnPKI9zSrystikWKwHkBqu2a/Sgw01h3zFjvYrMxEDYHzzoMZnUrbIfpTFEsoRnnviOXNCzFiSc54Qw==
 
 repeat-string@^1.6.1:
   version "1.6.1"
