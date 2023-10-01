@@ -2,11 +2,11 @@ from datetime import datetime
 from itertools import chain
 from pathlib import Path
 from shlex import quote
-import shutil
-from typing import AsyncIterator
+from typing import AsyncIterator, cast
 import asyncio
 import asyncio.subprocess as sp
 import plistlib
+import shutil
 
 from loguru import logger
 import click
@@ -101,7 +101,7 @@ async def _main(out_dir: Path,
                 p = await asyncio.create_subprocess_shell(cmd)
                 tasks.append(asyncio.create_task(p.wait()))
         exec_defaults.chmod(0o755)
-        results: set[asyncio.Future[int]] = (await asyncio.wait(tasks))[0]
+        results = cast(set[asyncio.Future[int]], (await asyncio.wait(tasks))[0])
         if any(future.result() != 0 for future in results):
             raise RuntimeError('At least one plist conversion failed')
         if has_git:

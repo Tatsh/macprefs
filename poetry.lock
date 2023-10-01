@@ -1297,6 +1297,17 @@ doc = ["packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme"]
 test = ["mypy (>=0.991)", "pytest (>=7)"]
 
 [[package]]
+name = "types-mock"
+version = "5.1.0.2"
+description = "Typing stubs for mock"
+optional = false
+python-versions = "*"
+files = [
+    {file = "types-mock-5.1.0.2.tar.gz", hash = "sha256:de48d3766e4e3034efd8b26da9e09e4908f31e53137a5fe2efbf1fbabee16996"},
+    {file = "types_mock-5.1.0.2-py3-none-any.whl", hash = "sha256:924ab5d5a0dbe9fd8100e073b7ed922748e7b0ad0987dc725f1a5835ce70d178"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.8.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -1383,4 +1394,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<4"
-content-hash = "8b6014ee6d7f7f2e087a9e65296bd8ed71f99001408977c794892ce8231b3d75"
+content-hash = "af767c16e137318693a495048547981348c4f2030aeca29bd21d0ab2f8ad476d"

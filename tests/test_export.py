@@ -1,15 +1,15 @@
 from asyncio.subprocess import Process
-import base64
 from io import BytesIO
+from os.path import splitext
 from pathlib import Path
 from typing import Any
+import base64
 
 from click.testing import CliRunner
 from mock import MagicMock
 from pytest_mock.plugin import MockerFixture
 
 from macprefs import prefs_export
-from os.path import splitext
 
 # spell-checker: disable
 SAFARI_PLIST_BASE64 = ('YnBsaXN0MDDRAQJfEBFSZXNldENsb3VkSGlzdG9yeQkICx8AAAAAAAABAQAAAAAAAAADAAAAAAA'
