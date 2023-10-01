@@ -1,5 +1,14 @@
 # macprefs
 
+[![QA](https://github.com/Tatsh/macprefs/actions/workflows/qa.yml/badge.svg)](https://github.com/Tatsh/macprefs/actions/workflows/qa.yml)
+[![Tests](https://github.com/Tatsh/macprefs/actions/workflows/tests.yml/badge.svg)](https://github.com/Tatsh/macprefs/actions/workflows/tests.yml)
+[![Coverage Status](https://coveralls.io/repos/github/Tatsh/macprefs/badge.svg?branch=master)](https://coveralls.io/github/Tatsh/macprefs?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/macprefs/badge/?version=latest)](https://macprefs.readthedocs.io/en/latest/?badge=latest)
+![PyPI - Version](https://img.shields.io/pypi/v/macprefs)
+![GitHub tag (with filter)](https://img.shields.io/github/v/tag/Tatsh/macprefs)
+![GitHub](https://img.shields.io/github/license/Tatsh/macprefs)
+![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/macprefs/v0.2.2/master)
+
 Export and keep track of changes to your preferences.
 
 ## How to use
