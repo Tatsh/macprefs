@@ -7,7 +7,7 @@
 ![PyPI - Version](https://img.shields.io/pypi/v/macprefs)
 ![GitHub tag (with filter)](https://img.shields.io/github/v/tag/Tatsh/macprefs)
 ![GitHub](https://img.shields.io/github/license/Tatsh/macprefs)
-![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/macprefs/v0.3.0/master)
+![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/macprefs/v0.3.1/master)
 
 Export and keep track of changes to your preferences.
 
