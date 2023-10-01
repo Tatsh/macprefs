@@ -54,3 +54,4 @@ udvare
 urllib
 valign
 yapf
+yapfignore
