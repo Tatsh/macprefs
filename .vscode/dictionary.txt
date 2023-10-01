@@ -4,6 +4,7 @@ automodule
 commitizen
 concat
 deepdiff
+doctrees
 docutils
 ecda
 eeyore

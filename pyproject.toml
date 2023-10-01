@@ -12,7 +12,8 @@ classifiers = [
 ]
 description = "Command and library to export macOS preferences."
 documentation = "https://macprefs.readthedocs.io/en/latest/"
-keywords = ["macos", "preferences"]
+include = ["man"]
+keywords = ["command line", "macos", "preferences", "utilities"]
 license = "MIT"
 packages = [{ include = "macprefs" }]
 readme = "README.md"
@@ -69,7 +70,7 @@ prefs-export = "macprefs:prefs_export"
 
 [tool.commitizen]
 tag_format = "v$version"
-version_files = ["README.md", "package.json"]
+version_files = ["README.md", "man/macprefs.1", "package.json"]
 version_provider = "poetry"
 
 [tool.isort]
