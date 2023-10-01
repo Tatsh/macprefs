@@ -1,2 +1,2 @@
 sphinx-click>=4.4.0
-toml>=0.10.2
+tomlkit>=0.12.1
