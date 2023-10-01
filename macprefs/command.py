@@ -115,8 +115,7 @@ async def _main(out_dir: Path,
             ]
             await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git),
                       check=True,
-                      work_tree=out_dir,
-                      debug=debug)
+                      work_tree=out_dir)
             all_files = ' '.join(map(quote, delete_with_git))
             cmd = f'rm -f -- {all_files}'
             logger.debug('Executing: %s', cmd)
@@ -133,7 +132,6 @@ async def _main(out_dir: Path,
         if has_git:
             await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git_),
                       check=True,
-                      debug=debug,
                       work_tree=out_dir)
         deletions = ' '.join(delete_with_rm)
         cmd = f'rm -f -- {deletions}'

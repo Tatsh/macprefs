@@ -13,7 +13,6 @@ log = logging.getLogger(__name__)
 
 async def git(cmd: Iterable[str],
               check: bool | None = False,
-              debug: bool = False,
               git_dir: Path | None = None,
               work_tree: Path | None = None,
               ssh_key: str | None = None) -> sp.Process:
