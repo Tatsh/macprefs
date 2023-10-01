@@ -15,6 +15,7 @@
   "editor.tabSize": 2,
   "editor.wordWrapColumn": 100,
   "esbonio.sphinx.confDir": "${workspaceFolder}/docs",
+  "esbonio.sphinx.srcDir": "${workspaceFolder}/docs",
   "eslint.lintTask.enable": true,
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
@@ -26,6 +27,7 @@
     "reportUnknownMemberType": "none",
     "reportUnknownVariableType": "none"
   },
+  "python.analysis.ignore": ["/opt/**/*.py", "/usr/**/*.py", "/**/site-packages/**/*.py"],
   "python.analysis.importFormat": "relative",
   "python.analysis.indexing": true,
   "python.analysis.inlayHints.functionReturnTypes": true,
@@ -40,5 +42,14 @@
   "python.analysis.stubPath": ".stubs",
   "python.analysis.typeCheckingMode": "strict",
   "python.languageServer": "Pylance",
+  "restructuredtext.linter.disabledLinters": ["rstcheck"],
+  "restructuredtext.linter.run": "onSave",
+  "ruff.args": [
+    "--extend-exclude=/**/site-packages/**/*.py",
+    "--extend-exclude=/opt/**/*.py",
+    "--extend-exclude=/usr/**/*.py",
+    "--force-exclude",
+    "--respect-gitignore"
+  ],
   "yaml.format.printWidth": 100
 }
