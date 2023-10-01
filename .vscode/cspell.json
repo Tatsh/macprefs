@@ -71,7 +71,8 @@
     "build/**",
     "dist/**",
     "docs/_build/**",
-    "htmlcov/**"
+    "htmlcov/**",
+    "man/**"
   ],
   "language": "en-GB",
   "languageSettings": [
