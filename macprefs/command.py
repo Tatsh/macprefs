@@ -1,14 +1,14 @@
 from datetime import datetime
 from itertools import chain
-from os import chmod, environ, listdir
-from os.path import expanduser, realpath
 from pathlib import Path
 from shlex import quote
-from typing import AsyncIterator, List, Optional, Tuple, cast
-import argparse
+from typing import AsyncIterator
 import asyncio
 import asyncio.subprocess as sp
 import plistlib
+
+from loguru import logger
+import click
 
 from .constants import GLOBAL_DOMAIN_ARG, MAX_CONCURRENT_EXPORT_TASKS
 from .filters import BAD_DOMAINS
@@ -16,7 +16,7 @@ from .mp_typing import PlistRoot
 from .plist2defaults import plist_to_defaults_commands
 from .processing import remove_data_fields
 from .shell import git
-from .utils import setup_logging_stderr
+from .utils import setup_logging
 
 __all__ = ('main',)
 
@@ -37,14 +37,14 @@ async def _generate_domains() -> AsyncIterator[str]:
 
 async def _defaults_export(domain: str,
                            repo_prefs_dir: Path,
-                           debug: bool = False) -> Tuple[str, PlistRoot]:
+                           debug: bool = False) -> tuple[str, PlistRoot]:
     command = f'defaults export {quote(domain)}'
     out_domain = 'globalDomain' if domain == GLOBAL_DOMAIN_ARG else domain
     plist_out = repo_prefs_dir / f'{out_domain}.plist'
     path_quoted = quote(str(plist_out))
     command += f' {path_quoted}'
-    log = setup_logging_stderr(verbose=debug)
-    log.debug('Running: %s', command)
+    setup_logging(debug)
+    logger.debug('Running: %s', command)
     p = await asyncio.create_subprocess_shell(command, stdout=sp.PIPE, stderr=sp.PIPE)
     await p.wait()
     if p.returncode != 0:
@@ -61,23 +61,23 @@ async def _defaults_export(domain: str,
         return domain, await remove_data_fields(plist_parsed)
 
 
-async def _setup_out_dir(out_dir: str) -> Tuple[str, Path]:
-    out_dir = realpath(out_dir)
-    repo_prefs_dir = Path(out_dir).joinpath('Preferences')
-    Path(out_dir).mkdir(exist_ok=True, parents=True)
+async def _setup_out_dir(out_dir: Path) -> tuple[Path, Path]:
+    out_dir_p = out_dir.resolve(strict=True)
+    repo_prefs_dir = out_dir_p / 'Preferences'
+    out_dir_p.mkdir(exist_ok=True, parents=True)
     repo_prefs_dir.mkdir(exist_ok=True, parents=True)
-    return out_dir, repo_prefs_dir
+    return out_dir_p, repo_prefs_dir
 
 
-async def _main(out_dir: str,
+async def _main(out_dir: Path,
                 debug: bool = False,
                 commit: bool = False,
-                deploy_key: Optional[str] = None) -> int:
-    log = setup_logging_stderr(verbose=debug)
+                deploy_key: str | None = None) -> int:
+    setup_logging(debug)
     has_git = await _has_git()
     out_dir, repo_prefs_dir = await _setup_out_dir(out_dir)
     export_tasks = []
-    all_data: List[Tuple[str, PlistRoot]] = []
+    all_data: list[tuple[str, PlistRoot]] = []
     async for domain in _generate_domains():
         # spell-checker: disable
         if domain in ('com.apple.Music', 'com.apple.TV', 'com.apple.identityservices.idstatuscache',
@@ -105,19 +105,18 @@ async def _main(out_dir: str,
             known_domains.append(out_domain)
             plist_path = repo_prefs_dir.joinpath(f'{out_domain}.plist')
             cmd = f'plutil -convert xml1 {quote(str(plist_path))}'
-            log.debug('Executing: %s', cmd)
+            logger.debug('Executing: %s', cmd)
             p = await asyncio.create_subprocess_shell(cmd)
             tasks.append(p.wait())
-    chmod(str(exec_defaults), 0o755)
+    exec_defaults.chmod(0o755)
     await asyncio.wait(tasks)
     if has_git:
         # Clean up very old plists
         delete_with_git = [
-            str(j[1]) for j in ((file, file_)
-                                for file, file_ in ((x, repo_prefs_dir.joinpath(x))
-                                                    for x in listdir(str(repo_prefs_dir))
-                                                    if x != '.gitignore')
-                                if file[:-6] not in known_domains and file_.exists()
+            str(j[1]) for j in ((file, file_) for file, file_ in ((x, repo_prefs_dir.joinpath(x))
+                                                                  for x in repo_prefs_dir.iterdir()
+                                                                  if x != '.gitignore')
+                                if str(file)[:-6] not in known_domains and file_.exists()
                                 if not file_.is_dir())
         ]
         await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git),
@@ -126,7 +125,7 @@ async def _main(out_dir: str,
                   debug=debug)
         all_files = ' '.join(map(quote, delete_with_git))
         cmd = f'rm -f -- {all_files}'
-        log.debug('Executing: %s', cmd)
+        logger.debug('Executing: %s', cmd)
         p = await asyncio.create_subprocess_shell(f'rm -f -- {all_files}')
         await p.wait()
     delete_with_git_ = []
@@ -144,11 +143,11 @@ async def _main(out_dir: str,
                   work_tree=out_dir)
     deletions = ' '.join(delete_with_rm)
     cmd = f'rm -f -- {deletions}'
-    log.debug('Executing: %s', cmd)
+    logger.debug('Executing: %s', cmd)
     p = await asyncio.create_subprocess_shell(cmd)
     await p.wait()
     if has_git and commit:
-        log.debug('Committing changes')
+        logger.debug('Committing changes')
         await git(('add', '.'), work_tree=out_dir, check=True)
         await git(('commit', '--no-gpg-sign', '--quiet', '--no-verify',
                    '--author=macprefs <macprefs@tat.sh>', '-m',
@@ -165,54 +164,46 @@ async def _main(out_dir: str,
     return 0
 
 
-class Namespace(argparse.Namespace):
-    """Arguments to main()."""
-    output_directory: str
-    debug: bool
-    commit: bool
+@click.command('prefs-export')
+@click.option('-K',
+              '--deploy-key',
+              help='Key for pushing to Git repository.',
+              type=click.Path(dir_okay=False, exists=True, resolve_path=True))
+@click.option('-c', '--commit', help='Commit the changes with Git.', is_flag=True)
+@click.option('-d', '--debug', help='Enable debug logging.', is_flag=True)
+@click.option('-o',
+              '--output-directory',
+              default='.',
+              help='Where to store the exported data.',
+              type=click.Path(file_okay=False, resolve_path=True))
+def main(commit: bool = False,
+         debug: bool = False,
+         deploy_key: str | None = None,
+         output_directory: str = '.') -> None:
+    """Export preferences."""
+    setup_logging(debug)
+    asyncio.run(_main(Path(output_directory), debug=debug, commit=commit, deploy_key=deploy_key),
+                debug=debug)
 
 
-def main() -> int:
-    """Entry point."""
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-o',
-                        '--output-directory',
-                        default='.',
-                        help='Where to store the exported data')
-    parser.add_argument('-d', '--debug', action='store_true')
-    parser.add_argument('-c', '--commit', action='store_true', help='Commit the changes with Git')
-    parser.add_argument('-K',
-                        '--deploy-key',
-                        required=False,
-                        help='Key for pushing to Git repository')
-    args = cast(Namespace, parser.parse_args())
-    loop = asyncio.get_event_loop()
-    ret = loop.run_until_complete(
-        _main(args.output_directory,
-              debug=args.debug,
-              commit=args.commit,
-              deploy_key=args.deploy_key))
-    loop.close()
-    return ret
-
-
-async def _install_job(output_dir: str, deploy_key: Optional[str] = None) -> int:
+async def _install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
     p = await sp.create_subprocess_shell('bash -c "command -v prefs-export"', stdout=sp.PIPE)
     assert p.stdout is not None
     prefs_export_path = (await p.stdout.read()).decode().strip()
-    home = environ['HOME']
-    plist_path = expanduser('~/Library/LaunchAgents/sh.tat.macprefs.plist')
+    home = Path.home()
+    plist_path = home / 'Library/LaunchAgents/sh.tat.macprefs.plist'
     log_path = f'{home}/Library/Logs/macprefs.log'
-    with open(plist_path, 'wb+') as f:
-        plistlib.dump(dict(Label='sh.tat.macprefs',
-                           StartCalendarInterval=dict(Hour=0, Minute=0),
-                           StandardOutPath=log_path,
-                           StandardErrorPath=log_path,
-                           RunAtLoad=True,
-                           ProgramArguments=[
-                               prefs_export_path, '--output-directory',
-                               realpath(output_dir), '--commit'
-                           ] + (['--deploy-key', realpath(deploy_key)] if deploy_key else [])),
+    with plist_path.open('wb+') as f:
+        plistlib.dump(dict(
+            Label='sh.tat.macprefs',
+            ProgramArguments=[
+                prefs_export_path, '--output-directory',
+                output_dir.resolve(strict=True), '--commit'
+            ] + (['--deploy-key', deploy_key.resolve(strict=True)] if deploy_key else []),
+            RunAtLoad=True,
+            StandardErrorPath=log_path,
+            StandardOutPath=log_path,
+            StartCalendarInterval=dict(Hour=0, Minute=0)),
                       f,
                       fmt=plistlib.PlistFormat.FMT_XML)
     await (await sp.create_subprocess_exec('launchctl',
@@ -233,19 +224,21 @@ async def _install_job(output_dir: str, deploy_key: Optional[str] = None) -> int
     return 0 if process1.returncode == 0 and process2.returncode == 0 else 1
 
 
-def install_job() -> int:
-    """Job installer command entry point."""
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-o',
-                        '--output-directory',
-                        default=expanduser('~/.config/defaults'),
-                        help='Where to store the exported data')
-    parser.add_argument('-k',
-                        '--deploy-key',
-                        required=False,
-                        help='Key for pushing to Git repository')
-    args = cast(Namespace, parser.parse_args())
-    loop = asyncio.get_event_loop()
-    ret = loop.run_until_complete(_install_job(args.output_directory, args.deploy_key))
-    loop.close()
-    return ret
+@click.command('macprefs-install-job')
+@click.option('-K',
+              '--deploy-key',
+              help='Key for pushing to Git repository.',
+              type=click.Path(dir_okay=False, exists=True, resolve_path=True))
+@click.option('-d', '--debug', help='Enable debug logging.', is_flag=True)
+@click.option('-o',
+              '--output-directory',
+              default=str(Path.home() / '.local/share/prefs-export'),
+              help='Where to store the exported data.',
+              type=click.Path(file_okay=False, resolve_path=True))
+def install_job(output_directory: str, debug: bool = False, deploy_key: str | None = None) -> None:
+    """Job installer."""
+    setup_logging(debug)
+    if (asyncio.run(_install_job(Path(output_directory),
+                                 Path(deploy_key) if deploy_key else None),
+                    debug=debug) != 0):
+        raise click.Abort()

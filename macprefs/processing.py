@@ -3,10 +3,7 @@ from typing import cast
 
 from .mp_typing import MutablePlistList, MutablePlistRoot, PlistList, PlistRoot
 
-__all__ = (
-    'remove_data_fields',
-    'remove_data_fields_list',
-)
+__all__ = ('remove_data_fields', 'remove_data_fields_list')
 
 
 async def remove_data_fields_list(pl_list: PlistList) -> PlistList:

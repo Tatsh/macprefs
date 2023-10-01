@@ -1,13 +1,16 @@
 from datetime import datetime
 from shlex import quote
 from typing import AsyncIterator
+import logging
 import re
 
 from .filters import BAD_DOMAINS, BAD_DOMAIN_PREFIXES, BAD_KEYS, BAD_KEYS_RE
 from .mp_typing import PlistRoot
-from .utils import is_simple, setup_logging_stderr, to_str
+from .utils import is_simple, to_str
 
 __all__ = ('plist_to_defaults_commands',)
+
+log = logging.getLogger(__name__)
 
 
 async def plist_to_defaults_commands(domain: str,
@@ -19,12 +22,8 @@ async def plist_to_defaults_commands(domain: str,
     for prefix in BAD_DOMAIN_PREFIXES:
         if domain.startswith(prefix):
             return
-
     yield f'# {domain}'
-
     prefix = f'defaults write {quote(domain)}'
-    log = setup_logging_stderr(verbose=debug)
-
     for key, value in sorted(root.items()):
         if re.match(BAD_KEYS_RE, key):
             continue
@@ -38,7 +37,6 @@ async def plist_to_defaults_commands(domain: str,
                     break
             if found:
                 continue
-
         if isinstance(value, bool):
             yield f'{prefix} {quote(key)} -bool {"true" if value else "false"}'
         elif isinstance(value, int):

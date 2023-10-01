@@ -21,6 +21,7 @@ repository = "https://github.com/Tatsh/macprefs"
 [tool.poetry.dependencies]
 python = ">=3.10,<4"
 click = "^8.1.7"
+loguru = "^0.7.2"
 
 [tool.poetry.group.dev]
 optional = true
@@ -37,9 +38,10 @@ yapf = "^0.40.2"
 optional = true
 
 [tool.poetry.group.docs.dependencies]
+doc8 = "^1.1.1"
 docutils = "^0.20.1"
 esbonio = "^0.16.1"
-rstcheck = { extras = ["sphinx"], version = "^6.2.0" }
+restructuredtext-lint = "^1.4.0"
 sphinx = "^7.2.6"
 sphinx-click = "^5.0.1"
 tomlkit = "^0.12.1"
@@ -49,18 +51,20 @@ optional = true
 
 [tool.poetry.group.tests.dependencies]
 coveralls = "^3.3.1"
+deepdiff = "^6.5.0"
 mock = "^5.1.0"
 pytest = "^7.4.2"
 pytest-cov = "^4.1.0"
 pytest-mock = "^3.11.1"
+pytest-asyncio = "^0.21.1"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core"]
 
 [tool.poetry.scripts]
-macprefs-install-job = "macprefs.command:install_job"
-prefs-export = "macprefs.command:main"
+macprefs-install-job = "macprefs:install_job"
+prefs-export = "macprefs:prefs_export"
 
 [tool.commitizen]
 tag_format = "v$version"
@@ -81,6 +85,7 @@ disallow_untyped_calls = true
 disallow_untyped_defs = true
 disallow_untyped_decorators = true
 disallow_subclassing_any = true
+mypy_path = "./.stubs"
 show_column_numbers = true
 show_error_codes = true
 strict_equality = true
@@ -94,7 +99,7 @@ warn_unused_ignores = true
 mock_use_standalone_module = true
 
 [tool.rstcheck]
-ignore_directives = ["automodule"]
+ignore_directives = ["automodule", "click", "include"]
 recursive = true
 
 [tool.ruff]

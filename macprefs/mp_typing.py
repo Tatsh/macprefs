@@ -1,13 +1,14 @@
 from datetime import datetime
-from typing import Any, Dict, List, Mapping, Sequence, Union
+from typing import Any, Mapping, Sequence
 
-__all__ = ('ComplexInnerTypes', 'PlistList', 'PlistRoot', 'PlistValue')
+__all__ = ('ComplexInnerTypes', 'MutablePlistList', 'MutablePlistRoot', 'MutablePlistValue',
+           'PlistList', 'PlistRoot', 'PlistValue')
 
-ComplexInnerTypes = Union[Sequence[Any], Mapping[str, Any], bytes]
-PlistValue = Union[Mapping[str, Any], Sequence[Any], bool, int, float, str, datetime, bytes]
+ComplexInnerTypes = list[Any] | Mapping[str, Any] | bytes
+PlistValue = Mapping[str, Any] | list[Any] | bool | int | float | str | datetime | bytes
 PlistList = Sequence[PlistValue]
 PlistRoot = Mapping[str, PlistValue]
 
-MutablePlistValue = Union[Dict[str, Any], List[Any], bool, int, float, str, datetime, bytes]
-MutablePlistList = List[MutablePlistValue]
-MutablePlistRoot = Dict[str, MutablePlistValue]
+MutablePlistValue = dict[str, Any] | list[Any] | bool | int | float | str | datetime | bytes
+MutablePlistList = list[MutablePlistValue]
+MutablePlistRoot = dict[str, MutablePlistValue]

@@ -1,33 +1,30 @@
-from os import chdir, getcwd, makedirs
-from os.path import realpath
+from os import chdir
 from pathlib import Path
 from shlex import quote
-from typing import Iterable, Optional
+from typing import Iterable
 import asyncio
 import asyncio.subprocess as sp
-
-from .utils import setup_logging_stderr
+import logging
 
 __all__ = ('git',)
 
+log = logging.getLogger(__name__)
+
 
 async def git(cmd: Iterable[str],
-              check: Optional[bool] = False,
+              check: bool | None = False,
               debug: bool = False,
-              git_dir: Optional[Path] = None,
-              work_tree: str = '.',
-              ssh_key: Optional[str] = None) -> sp.Process:
+              git_dir: Path | None = None,
+              work_tree: Path | None = None,
+              ssh_key: str | None = None) -> sp.Process:
     """Run a Git command."""
-    log = setup_logging_stderr(verbose=debug)
+    work_tree = work_tree or Path('.')
     rest = ' '.join(map(quote, cmd))
     if not git_dir:
-        git_dir = Path(realpath(work_tree)).joinpath('.git')
+        git_dir = Path(work_tree).resolve(strict=True) / '.git'
         if not git_dir.exists():
-            try:
-                makedirs(work_tree)
-            except FileExistsError:
-                pass
-            cwd = getcwd()
+            work_tree.mkdir(parents=True, exist_ok=True)
+            cwd = Path.cwd()
             chdir(work_tree)
             log.debug('Running: git init')
             p = await asyncio.create_subprocess_shell('git init', stdout=sp.PIPE, stderr=sp.PIPE)
