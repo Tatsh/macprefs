@@ -1,7 +1,9 @@
 archiver
+asyncio
 automodule
 commitizen
 concat
+deepdiff
 docutils
 ecda
 eeyore
