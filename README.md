@@ -5,13 +5,17 @@ Export and keep track of changes to your preferences.
 ## How to use
 
 ```plain
-usage: prefs-export [-h] [-o OUTPUT_DIRECTORY] [-c]
+Usage: prefs-export [OPTIONS]
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -o OUTPUT_DIRECTORY, --output-directory OUTPUT_DIRECTORY
-                        Where to store the exported data
-  -c, --commit          Commit the changes with Git
+  Export preferences.
+
+Options:
+  -K, --deploy-key FILE           Key for pushing to Git repository.
+  -c, --commit                    Commit the changes with Git.
+  -d, --debug                     Enable debug logging.
+  -o, --output-directory DIRECTORY
+                                  Where to store the exported data.
+  --help                          Show this message and exit.
 ```
 
 `prefs-export` is the main utility. You can export preferences, generate a
@@ -44,12 +48,15 @@ A command `macprefs-install-job` is included which will install a daily launchd 
 `sh.tat.macprefs`
 
 ```plain
-usage: macprefs-install-job [-h] [-o OUTPUT_DIRECTORY]
+Usage: macprefs-install-job [OPTIONS]
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -o OUTPUT_DIRECTORY, --output-directory OUTPUT_DIRECTORY
-                        Where to store the exported data
+  Job installer.
+
+Options:
+  -K, --deploy-key FILE           Key for pushing to Git repository.
+  -o, --output-directory DIRECTORY
+                                  Where to store the exported data.
+  --help                          Show this message and exit.
 ```
 
 If the output directory has a `.git` directory, a commit will be automatically made. Be aware that
