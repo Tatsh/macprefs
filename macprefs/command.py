@@ -81,6 +81,7 @@ async def _main(out_dir: Path,
                 export_tasks = []
         all_data.extend(await asyncio.gather(*export_tasks))
         exec_defaults = Path(out_dir) / 'exec-defaults.sh'
+        is_new = not exec_defaults.exists()
         tasks = []
         known_domains = []
         with exec_defaults.open('w+') as f:
@@ -103,7 +104,7 @@ async def _main(out_dir: Path,
         results = cast(set[asyncio.Future[int]], (await asyncio.wait(tasks))[0])
         if any(future.result() != 0 for future in results):
             raise RuntimeError('At least one plist conversion failed')
-        if has_git:
+        if has_git and not is_new:
             # Clean up very old plists
             delete_with_git = [
                 str(j[1]) for j in ((file, file_)
