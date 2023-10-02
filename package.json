@@ -31,5 +31,5 @@
     "ruff": "poetry run ruff .",
     "test": "poetry run pytest"
   },
-  "version": "0.3.3"
+  "version": "0.3.4"
 }

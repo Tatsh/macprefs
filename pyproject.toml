@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "macprefs"
-version = "0.3.3"
+version = "0.3.4"
 authors = ["Andrew Udvare <audvare@gmail.com>"]
 classifiers = [
   "Development Status :: 4 - Beta",
