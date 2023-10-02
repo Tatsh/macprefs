@@ -38,13 +38,14 @@ async def _generate_domains() -> AsyncIterator[str]:
 async def _defaults_export(domain: str, repo_prefs_dir: Path) -> tuple[str, PlistRoot]:
     plist_out = (repo_prefs_dir /
                  f'{"globalDomain" if domain == GLOBAL_DOMAIN_ARG else domain}.plist')
+    plist_in = (Path.home() / 'Library/Preferences' /
+                f'{".GlobalPreferences" if domain == GLOBAL_DOMAIN_ARG else domain}.plist')
     try:
-        shutil.copy(
-            Path.home() / 'Library/Preferences' /
-            f'{".GlobalPreferences" if domain == GLOBAL_DOMAIN_ARG else domain}.plist', plist_out)
+        shutil.copy(plist_in, plist_out)
     except PermissionError:
         # Restrictive environment
         return domain, {}
+    logger.info(f'Copied {plist_in} to {plist_out}')
     with plist_out.open('rb') as f:
         try:
             plist_parsed = plistlib.load(f)
@@ -114,8 +115,7 @@ async def _main(out_dir: Path,
                 if x.name != '.gitignore' and x.name[:-6] not in known_domains and x.exists()
                 if not x.is_dir()
             ]
-            await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git),
-                      work_tree=out_dir)
+            await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git), out_dir)
             logger.debug(f'Executing: rm -f -- {" ".join(map(quote, delete_with_git))}')
             p = await asyncio.create_subprocess_exec('rm',
                                                      '-f',
@@ -132,25 +132,26 @@ async def _main(out_dir: Path,
             delete_with_git_.append(str(plist))
             delete_with_rm.append(str(plist))
         if has_git:
-            await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git_),
-                      work_tree=out_dir)
+            await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git_), out_dir)
         cmd = f'rm -f -- {" ".join(delete_with_rm)}'
         logger.debug(f'Executing: {cmd}')
         p = await asyncio.create_subprocess_exec('rm', '-f', '--', *delete_with_rm)
         await p.wait()
         if has_git and commit:
             logger.debug('Committing changes')
-            await git(('add', '.'), work_tree=out_dir)
-            await git(('commit', '--no-gpg-sign', '--quiet', '--no-verify',
-                       '--author=macprefs <macprefs@tat.sh>', '-m',
-                       f'Automatic commit @ {datetime.now().strftime("%c")}'),
-                      work_tree=out_dir)
-            if deploy_key:
-                stdout = (await git(('branch', '--show-current'), work_tree=out_dir)).stdout
-                assert stdout is not None
-                await git(('push', '-u', '--porcelain', '--no-signed', 'origin',
-                           (await stdout.read()).decode().strip()),
-                          work_tree=out_dir)
+            await git(('add', '.'), out_dir)
+            try:
+                await git(('commit', '--no-gpg-sign', '--quiet', '--no-verify',
+                           '--author=macprefs <macprefs@tat.sh>', '-m',
+                           f'Automatic commit @ {datetime.now().strftime("%c")}'), out_dir)
+                if deploy_key:
+                    stdout = (await git(('branch', '--show-current'), out_dir)).stdout
+                    assert stdout is not None
+                    await git(('push', '-u', '--porcelain', '--no-signed', 'origin',
+                               (await stdout.read()).decode().strip()), out_dir)
+            except RuntimeError:
+                logger.info('Likely no changes to commit.')
+                return 0
     except Exception as e:
         if debug:
             logger.exception(e)
@@ -167,13 +168,13 @@ async def _main(out_dir: Path,
 @click.option('-d', '--debug', help='Enable debug logging.', is_flag=True)
 @click.option('-o',
               '--output-directory',
-              default='.',
+              default=str(Path.home() / '.local/share/prefs-export'),
               help='Where to store the exported data.',
               type=click.Path(file_okay=False, resolve_path=True))
-def main(commit: bool = False,
+def main(output_directory: str,
+         commit: bool = False,
          debug: bool = False,
-         deploy_key: str | None = None,
-         output_directory: str = '.') -> None:
+         deploy_key: str | None = None) -> None:
     """Export preferences."""
     setup_logging(debug)
     if (asyncio.run(_main(Path(output_directory), debug=debug, commit=commit,
