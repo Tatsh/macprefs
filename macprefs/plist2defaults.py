@@ -71,5 +71,5 @@ async def plist_to_defaults_commands(domain: str,
             full_date = quote(value.strftime('%Y-%m-%d %I:%M:%S +0000'))
             yield f'{prefix} {quote(key)} -date {full_date}'
         else:
-            log.debug('Skipped %s %s', domain, quote(key))
+            log.debug(f'Skipped {domain} {quote(key)}')
     yield ''

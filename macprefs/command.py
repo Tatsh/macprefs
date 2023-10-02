@@ -23,9 +23,8 @@ __all__ = ('main',)
 
 
 async def _has_git() -> bool:
-    p = await sp.create_subprocess_shell('bash -c "command -v git"', stdout=sp.PIPE)
-    await p.wait()
-    return p.returncode == 0
+    return (await (await sp.create_subprocess_exec('bash', '-c', 'command -v git',
+                                                   stdout=sp.PIPE)).wait() == 0)
 
 
 async def _generate_domains() -> AsyncIterator[str]:
@@ -39,9 +38,13 @@ async def _generate_domains() -> AsyncIterator[str]:
 async def _defaults_export(domain: str, repo_prefs_dir: Path) -> tuple[str, PlistRoot]:
     plist_out = (repo_prefs_dir /
                  f'{"globalDomain" if domain == GLOBAL_DOMAIN_ARG else domain}.plist')
-    shutil.copy(
-        Path.home() / 'Library/Preferences' /
-        f'{".GlobalPreferences" if domain == GLOBAL_DOMAIN_ARG else domain}.plist', plist_out)
+    try:
+        shutil.copy(
+            Path.home() / 'Library/Preferences' /
+            f'{".GlobalPreferences" if domain == GLOBAL_DOMAIN_ARG else domain}.plist', plist_out)
+    except PermissionError:
+        # Restrictive environment
+        return domain, {}
     with plist_out.open('rb') as f:
         try:
             plist_parsed = plistlib.load(f)
@@ -81,7 +84,6 @@ async def _main(out_dir: Path,
                 export_tasks = []
         all_data.extend(await asyncio.gather(*export_tasks))
         exec_defaults = Path(out_dir) / 'exec-defaults.sh'
-        is_new = not exec_defaults.exists()
         tasks = []
         known_domains = []
         with exec_defaults.open('w+') as f:
@@ -98,63 +100,57 @@ async def _main(out_dir: Path,
                 plist_path = repo_prefs_dir / f'{out_domain}.plist'
                 cmd = f'plutil -convert xml1 {quote(str(plist_path))}'
                 logger.debug(f'Executing: {cmd}')
-                p = await asyncio.create_subprocess_shell(cmd)
+                p = await asyncio.create_subprocess_exec('plutil', '-convert', 'xml1', plist_path)
                 tasks.append(asyncio.create_task(p.wait()))
         exec_defaults.chmod(0o755)
+        assert len(known_domains) > 0
         results = cast(set[asyncio.Future[int]], (await asyncio.wait(tasks))[0])
         if any(future.result() != 0 for future in results):
             raise RuntimeError('At least one plist conversion failed')
-        if has_git and not is_new:
+        if has_git:
             # Clean up very old plists
             delete_with_git = [
-                str(j[1]) for j in ((file, file_)
-                                    for file, file_ in ((x, repo_prefs_dir.joinpath(x))
-                                                        for x in repo_prefs_dir.iterdir()
-                                                        if x != '.gitignore')
-                                    if str(file)[:-6] not in known_domains and file_.exists()
-                                    if not file_.is_dir())
+                str(x) for x in repo_prefs_dir.iterdir()
+                if x.name != '.gitignore' and x.name[:-6] not in known_domains and x.exists()
+                if not x.is_dir()
             ]
             await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git),
-                      check=True,
                       work_tree=out_dir)
-            all_files = ' '.join(map(quote, delete_with_git))
-            cmd = f'rm -f -- {all_files}'
-            logger.debug('Executing: %s', cmd)
-            p = await asyncio.create_subprocess_shell(f'rm -f -- {all_files}')
+            logger.debug(f'Executing: rm -f -- {" ".join(map(quote, delete_with_git))}')
+            p = await asyncio.create_subprocess_exec('rm',
+                                                     '-f',
+                                                     '--',
+                                                     *delete_with_git,
+                                                     stderr=sp.PIPE)
             await p.wait()
         delete_with_git_ = []
         delete_with_rm = []
         for x in BAD_DOMAINS:
             if x == 'MobileMeAccounts':
                 continue
-            plist = repo_prefs_dir.joinpath(f'{x}.plist')
+            plist = repo_prefs_dir / f'{x}.plist'
             delete_with_git_.append(str(plist))
-            delete_with_rm.append(quote(str(plist)))
+            delete_with_rm.append(str(plist))
         if has_git:
             await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git_),
-                      check=True,
                       work_tree=out_dir)
-        deletions = ' '.join(delete_with_rm)
-        cmd = f'rm -f -- {deletions}'
-        logger.debug('Executing: %s', cmd)
-        p = await asyncio.create_subprocess_shell(cmd)
+        cmd = f'rm -f -- {" ".join(delete_with_rm)}'
+        logger.debug(f'Executing: {cmd}')
+        p = await asyncio.create_subprocess_exec('rm', '-f', '--', *delete_with_rm)
         await p.wait()
         if has_git and commit:
             logger.debug('Committing changes')
-            await git(('add', '.'), work_tree=out_dir, check=True)
+            await git(('add', '.'), work_tree=out_dir)
             await git(('commit', '--no-gpg-sign', '--quiet', '--no-verify',
                        '--author=macprefs <macprefs@tat.sh>', '-m',
                        f'Automatic commit @ {datetime.now().strftime("%c")}'),
-                      work_tree=out_dir,
-                      check=True)
+                      work_tree=out_dir)
             if deploy_key:
-                stdout = (await git(('branch', '--show-current'), check=True,
-                                    work_tree=out_dir)).stdout
+                stdout = (await git(('branch', '--show-current'), work_tree=out_dir)).stdout
                 assert stdout is not None
                 await git(('push', '-u', '--porcelain', '--no-signed', 'origin',
                            (await stdout.read()).decode().strip()),
-                          work_tree=out_dir,
-                          check=True)
+                          work_tree=out_dir)
     except Exception as e:
         if debug:
             logger.exception(e)
@@ -187,7 +183,7 @@ def main(commit: bool = False,
 
 
 async def _install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
-    p = await sp.create_subprocess_shell('bash -c "command -v prefs-export"', stdout=sp.PIPE)
+    p = await sp.create_subprocess_exec('bash', '-c', 'command -v prefs-export', stdout=sp.PIPE)
     assert p.stdout is not None
     prefs_export_path = (await p.stdout.read()).decode().strip()
     home = Path.home()
@@ -198,7 +194,7 @@ async def _install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
             Label='sh.tat.macprefs',
             ProgramArguments=[
                 prefs_export_path, '--output-directory',
-                output_dir.resolve(strict=True), '--commit'
+                str(output_dir.resolve(strict=True)), '--commit'
             ] + (['--deploy-key', deploy_key.resolve(strict=True)] if deploy_key else []),
             RunAtLoad=True,
             StandardErrorPath=log_path,

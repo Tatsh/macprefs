@@ -25,7 +25,7 @@ def create_entry(name: str) -> MagicMock:
 
 
 def test_export_no_args_no_git_no_plutil(runner: CliRunner, mocker: MockerFixture) -> None:
-    def sp_shell_mock(command: str, **kwargs: Any) -> MagicMock:
+    def sp_exec_mock(command: str, *args: Any, **kwargs: Any) -> MagicMock:
         p = MagicMock(spec=Process)
         p.returncode = 1
         return p
@@ -47,7 +47,7 @@ def test_export_no_args_no_git_no_plutil(runner: CliRunner, mocker: MockerFixtur
     # plist_out in _defaults_export()
     (path_mock.return_value.resolve.return_value.__truediv__.return_value.__truediv__.return_value.
      open.return_value.__enter__.return_value) = BytesIO(base64.b64decode(SAFARI_PLIST_BASE64))
-    shell = mocker.patch('macprefs.command.sp.create_subprocess_shell', side_effect=sp_shell_mock)
+    shell = mocker.patch('macprefs.command.sp.create_subprocess_exec', side_effect=sp_exec_mock)
     shutil_copy_mock = mocker.patch('macprefs.command.shutil.copy')
     run = runner.invoke(prefs_export, '--debug')
     assert shutil_copy_mock.call_count >= 1
