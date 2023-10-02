@@ -12,12 +12,10 @@ log = logging.getLogger(__name__)
 
 
 async def git(cmd: Iterable[str],
-              check: bool | None = False,
+              work_tree: Path,
               git_dir: Path | None = None,
-              work_tree: Path | None = None,
               ssh_key: str | None = None) -> sp.Process:
     """Run a Git command."""
-    work_tree = work_tree or Path('.')
     if not git_dir:
         git_dir = Path(work_tree).resolve(strict=True) / '.git'
         if not git_dir.exists():
@@ -31,7 +29,7 @@ async def git(cmd: Iterable[str],
     if ssh_key:
         await git(('config', 'core.sshCommand',
                    (f'ssh -i {ssh_key} -F /dev/null -o UserKnownHostsFile=/dev/null '
-                    '-o StrictHostKeyChecking=no')))
+                    '-o StrictHostKeyChecking=no')), work_tree)
     cmd_list = list(cmd)
     rest = ' '.join(map(quote, cmd_list))
     log.debug(f'Running: git "--git-dir={git_dir}" "--work-tree={work_tree}" {rest}')
