@@ -1,5 +1,3 @@
-from asyncio.subprocess import Process
-from unittest.mock import Mock
 import plistlib
 
 from click.testing import CliRunner

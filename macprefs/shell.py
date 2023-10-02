@@ -1,4 +1,3 @@
-from itertools import chain
 from os import chdir
 from pathlib import Path
 from shlex import quote
