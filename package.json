@@ -5,10 +5,10 @@
   "devDependencies": {
     "cspell": "^7.3.7",
     "markdownlint-cli2": "^0.10.0",
-    "prettier": "^2.8.7",
+    "prettier": "^3.0.3",
     "prettier-plugin-ini": "^1.1.0",
-    "prettier-plugin-sort-json": "^2.0.0",
-    "prettier-plugin-toml": "^0.4.0"
+    "prettier-plugin-sort-json": "^3.1.0",
+    "prettier-plugin-toml": "^1.0.0"
   },
   "license": "MIT",
   "name": "macprefs",
