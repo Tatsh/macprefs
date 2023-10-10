@@ -12,17 +12,6 @@ files = [
 ]
 
 [[package]]
-name = "appdirs"
-version = "1.4.4"
-description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
-optional = false
-python-versions = "*"
-files = [
-    {file = "appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"},
-    {file = "appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41"},
-]
-
-[[package]]
 name = "argcomplete"
 version = "3.1.2"
 description = "Bash tab completion for argparse"
@@ -403,25 +392,25 @@ files = [
 
 [[package]]
 name = "esbonio"
-version = "0.16.1"
+version = "0.16.2"
 description = "A Language Server for Sphinx projects."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "esbonio-0.16.1-py3-none-any.whl", hash = "sha256:cd5ed65666d7566a38b04cac01dd55b7d74147a016d1b2ac0a0f971a8cd510cc"},
-    {file = "esbonio-0.16.1.tar.gz", hash = "sha256:d5d57c29a793de9b9b1894f9bffdd3bd25a79d430459e3e597424f52e8d02320"},
+    {file = "esbonio-0.16.2-py3-none-any.whl", hash = "sha256:c5a220f0737670e600423ee27c7ae16f4712d7483e00adc7a5e3db59b64da3a6"},
+    {file = "esbonio-0.16.2.tar.gz", hash = "sha256:72824a3373f293f5f4e2ad2bbd6a242010344e27d5b1cdffb21fb6fa37dc5864"},
 ]
 
 [package.dependencies]
-appdirs = "*"
-pygls = ">=1.0.0"
+platformdirs = "*"
+pygls = ">=1.1.0"
 pyspellchecker = "*"
 sphinx = "*"
 
 [package.extras]
 dev = ["black", "flake8", "pre-commit", "tox"]
-test = ["mock", "pytest", "pytest-cov", "pytest-lsp", "pytest-timeout"]
-typecheck = ["mypy", "pytest-lsp", "types-appdirs", "types-docutils", "types-pygments"]
+test = ["mock", "pytest", "pytest-cov", "pytest-lsp (>=0.3.1)", "pytest-timeout"]
+typecheck = ["mypy", "pytest-lsp (>=0.3.1)", "types-appdirs", "types-docutils", "types-pygments"]
 
 [[package]]
 name = "exceptiongroup"
@@ -780,24 +769,21 @@ wcwidth = "*"
 
 [[package]]
 name = "pygls"
-version = "1.0.2"
-description = "a pythonic generic language server (pronounced like \"pie glass\")."
+version = "1.1.1"
+description = "A pythonic generic language server (pronounced like 'pie glass')"
 optional = false
-python-versions = "<4,>=3.7"
+python-versions = ">=3.7.9,<4"
 files = [
-    {file = "pygls-1.0.2-py3-none-any.whl", hash = "sha256:6d278d29fa6559b0f7a448263c85cb64ec6e9369548b02f1a7944060848b21f9"},
-    {file = "pygls-1.0.2.tar.gz", hash = "sha256:888ed63d1f650b4fc64d603d73d37545386ec533c0caac921aed80f80ea946a4"},
+    {file = "pygls-1.1.1-py3-none-any.whl", hash = "sha256:330704551a335b443bf1cdfb0507f121608591095898d451f0007eeb1510067c"},
+    {file = "pygls-1.1.1.tar.gz", hash = "sha256:b1b4ddd6f800a5573f61f0ec2cd3bc7a859d171f48142b46e1de35a1357c00fe"},
 ]
 
 [package.dependencies]
-lsprotocol = "*"
-typeguard = ">=3,<4"
+lsprotocol = "2023.0.0b1"
+typeguard = ">=3.0.0,<4.0.0"
 
 [package.extras]
-dev = ["bandit (==1.7.4)", "flake8 (==4.0.1)", "mypy (==0.961)"]
-docs = ["sphinx (==5.0.1)", "sphinx-rtd-theme (==1.0.0)"]
-test = ["pytest (==7.1.2)", "pytest-asyncio (==0.18.3)"]
-ws = ["websockets (==10.*)"]
+ws = ["websockets (>=11.0.3,<12.0.0)"]
 
 [[package]]
 name = "pygments"
