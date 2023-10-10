@@ -3,37 +3,38 @@ Configuration file for the Sphinx documentation builder.
 https://www.sphinx-doc.org/en/master/usage/configuration.html
 """
 from datetime import datetime
-from os.path import dirname
+from operator import itemgetter
 from typing import Final
-import os
+from pathlib import Path
 import sys
 
 import tomlkit
 
-with open(f'{dirname(__file__)}/../pyproject.toml') as f:
-    PROJECT = tomlkit.load(f).unwrap()
+PARENT_DIR = Path(__file__).parent.parent
+print(PARENT_DIR / 'pyproject.toml')
+
+with (PARENT_DIR / 'pyproject.toml').open() as f:
+    tool = tomlkit.load(f).unwrap()['tool']
+    authors, name, version = itemgetter('authors', 'name', 'version')(tool['poetry'])
 
 # region Path setup
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, str(PARENT_DIR))
 # endregion
 
-author: Final[str] = PROJECT['tool']['poetry']['authors'][0]
-copyright: Final[str] = str(datetime.now().year)
-project: Final[str] = PROJECT['tool']['poetry']['name']
-'''The short X.Y version.'''
-version: Final[str] = PROJECT['tool']['poetry']['version']
+author: Final[str] = authors[0]
+copyright: Final[str] = str(datetime.now().year)  # noqa: A001
+project: Final[str] = name
 '''The full version, including alpha/beta/rc tags.'''
 release: Final[str] = f'v{version}'
 '''
 Add any Sphinx extension module names here, as strings. They can be extensions
 coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 '''
-extensions: Final[list[str]] = (
-    ['sphinx.ext.autodoc', 'sphinx.ext.napoleon'] +
-    (['sphinx_click'] if PROJECT['tool']['poetry'].get('scripts') else []))
+extensions: Final[list[str]] = (['sphinx.ext.autodoc', 'sphinx.ext.napoleon'] +
+                                (['sphinx_click'] if tool.get('scripts') else []))
 '''Add any paths that contain templates here, relative to this directory.'''
 templates_path: Final[list[str]] = ['_templates']
 '''
