@@ -107,7 +107,7 @@ async def _do_main(out_dir: Path, commit: bool = False, deploy_key: str | None =
             for line in plist_to_defaults_commands(domain,
                                                    root,
                                                    domain_filter=None,
-                                                   reverse_filters=True):
+                                                   inverse_filters=True):
                 f.write(f'{line}\n')
     assert len(known_domains) > 0
     results = (await asyncio.wait(tasks))[0]

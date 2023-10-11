@@ -51,15 +51,15 @@ def plist_to_defaults_commands(domain: str,
                                root: PlistRoot,
                                domain_filter: Callable[[str], bool] | None = should_ignore_domain,
                                key_filter: Callable[[str, str], bool] | None = should_ignore_key,
-                               reverse_filters: bool = False) -> Iterator[str]:
+                               inverse_filters: bool = False) -> Iterator[str]:
     """Given a ``PlistRoot``, generate a series of ``defaults write`` commands."""
-    if domain_filter and (not domain_filter(domain) if reverse_filters else domain_filter(domain)):
+    if domain_filter and (not domain_filter(domain) if inverse_filters else domain_filter(domain)):
         return
     values: list[str] = []
     prefix = f'defaults write {quote(domain)}'
     for key, value in sorted(root.items()):
         if (key_filter
-                and (not key_filter(domain, key) if reverse_filters else key_filter(domain, key))):
+                and (not key_filter(domain, key) if inverse_filters else key_filter(domain, key))):
             continue
         values.extend(convert_value(key, value, prefix))
     if values:
