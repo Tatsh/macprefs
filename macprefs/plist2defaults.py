@@ -4,6 +4,7 @@ from typing import AsyncIterator
 import logging
 import re
 
+from .constants import OUTPUT_FILE_MAXIMUM_LINE_LENGTH
 from .filters import BAD_DOMAINS, BAD_DOMAIN_PREFIXES, BAD_KEYS, BAD_KEYS_RE
 from .mp_typing import PlistRoot
 from .utils import is_simple, to_str
@@ -13,9 +14,7 @@ __all__ = ('plist_to_defaults_commands',)
 log = logging.getLogger(__name__)
 
 
-async def plist_to_defaults_commands(domain: str,
-                                     root: PlistRoot,
-                                     debug: bool = False) -> AsyncIterator[str]:
+async def plist_to_defaults_commands(domain: str, root: PlistRoot) -> AsyncIterator[str]:
     """Given a ``PlistRoot``, generate a series of ``defaults write`` commands."""
     if domain in BAD_DOMAINS:
         return
@@ -26,8 +25,10 @@ async def plist_to_defaults_commands(domain: str,
     prefix = f'defaults write {quote(domain)}'
     for key, value in sorted(root.items()):
         if re.match(BAD_KEYS_RE, key):
+            log.debug('Skipping %s because it matched the bad keys RE.', key)
             continue
         if domain in BAD_KEYS and key in BAD_KEYS[domain]:
+            log.debug('Skipping %s because it matched the bad keys dict.', key)
             continue
         if domain in BAD_KEYS:
             found = False
@@ -36,6 +37,7 @@ async def plist_to_defaults_commands(domain: str,
                     found = True
                     break
             if found:
+                log.debug('Skipping %s because it matched a regexp in %s.', key, domain)
                 continue
         if isinstance(value, bool):
             yield f'{prefix} {quote(key)} -bool {"true" if value else "false"}'
@@ -44,32 +46,30 @@ async def plist_to_defaults_commands(domain: str,
         elif isinstance(value, float):
             yield f'{prefix} {quote(key)} -float {quote(str(value))}'
         elif isinstance(value, bytes):
-            if len(value) > 120:
+            if len(value) > OUTPUT_FILE_MAXIMUM_LINE_LENGTH:
                 continue
             printed_value = quote(''.join(hex(z)[2:] for z in value))
             yield f'{prefix} {quote(key)} -data {printed_value}'
         elif isinstance(value, str):
-            if len(value) > 120:
+            if len(value) > OUTPUT_FILE_MAXIMUM_LINE_LENGTH:
                 continue
             yield f'{prefix} {quote(key)} -string {quote(value)}'
         elif isinstance(value, list) and await is_simple(value):
             first = (quote(str(value[0])) + ' \\\n' if len(value) > 1 else quote(str(value[0])))
-            key = quote(key)
-            spaces = ' ' * (len(prefix) + 1 + len(key) + 1 + 7)
-            # [] required for this line, otherwise TypeError: can only join an
-            # iterable
-            rest = ' \\\n'.join([f'{spaces}{quote(to_str(x))}' for x in value[1:]])
-            yield f'{prefix} {key} -array {"".join(first + rest)}'
+            key_quoted = quote(key)
+            spaces = ' ' * (len(prefix) + 1 + len(key_quoted) + 1 + 7)
+            rest = ' \\\n'.join(f'{spaces}{quote(to_str(x))}' for x in value[1:])
+            yield f'{prefix} {key_quoted} -array {"".join(first + rest)}'
         elif isinstance(value, dict) and await is_simple(value):
             dict_values = [f'{quote(to_str(x))} {quote(to_str(y))}' for x, y in value.items()]
             f_dict_values = (f'{dict_values[0]}\\\n' if len(dict_values) > 1 else dict_values[0])
-            key = quote(key)
-            spaces = ' ' * (len(prefix) + 1 + len(key) + 1 + 10)
+            key_quoted = quote(key)
+            spaces = ' ' * (len(prefix) + 1 + len(key_quoted) + 1 + 10)
             dict_values_ = ' \\\n'.join(f'{spaces}{x}' for x in dict_values[1:])
-            yield f'{prefix} {key} -dict {f_dict_values}{dict_values_}'
+            yield f'{prefix} {key_quoted} -dict {f_dict_values}{dict_values_}'
         elif isinstance(value, datetime):
             full_date = quote(value.strftime('%Y-%m-%d %I:%M:%S +0000'))
             yield f'{prefix} {quote(key)} -date {full_date}'
         else:
-            log.debug(f'Skipped {domain} {quote(key)}')
+            log.debug('Skipped %s', quote(key))
     yield ''

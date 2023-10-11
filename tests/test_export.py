@@ -1,6 +1,5 @@
 from asyncio.subprocess import Process
 from io import BytesIO
-from os.path import splitext
 from pathlib import Path
 from typing import Any
 import base64
@@ -11,16 +10,16 @@ from pytest_mock.plugin import MockerFixture
 
 from macprefs import prefs_export
 
-# spell-checker: disable
+# spell-checker: disable  # noqa: ERA001
 SAFARI_PLIST_BASE64 = ('YnBsaXN0MDDRAQJfEBFSZXNldENsb3VkSGlzdG9yeQkICx8AAAAAAAABAQAAAAAAAAADAAAAAAA'
                        'AAAAAAAAAAAAAIA==')
-# spell-checker: enable
+# spell-checker: enable  # noqa: ERA001
 
 
 def create_entry(name: str) -> MagicMock:
     m = MagicMock(spec=Path)
     m.name = name
-    m.stem = splitext(name)[0]
+    m.stem = Path(name).stem
     return m
 
 
@@ -44,7 +43,7 @@ def test_export_no_args_no_git_no_plutil(runner: CliRunner, mocker: MockerFixtur
     path_mock.home.return_value.__truediv__.side_effect = path_truediv
     # _setup_out_dir
     path_mock.return_value.resolve.return_value.__truediv__.return_value = MagicMock(spec=Path)
-    # plist_out in _defaults_export()
+    # plist_out in _defaults_export()  # noqa: ERA001
     (path_mock.return_value.resolve.return_value.__truediv__.return_value.__truediv__.return_value.
      open.return_value.__enter__.return_value) = BytesIO(base64.b64decode(SAFARI_PLIST_BASE64))
     shell = mocker.patch('macprefs.command.sp.create_subprocess_exec', side_effect=sp_exec_mock)

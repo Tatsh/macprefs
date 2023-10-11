@@ -2,7 +2,8 @@ from datetime import datetime
 from itertools import chain
 from pathlib import Path
 from shlex import quote
-from typing import AsyncIterator, cast
+from subprocess import CalledProcessError
+from typing import AsyncIterator
 import asyncio
 import asyncio.subprocess as sp
 import plistlib
@@ -12,6 +13,7 @@ from loguru import logger
 import click
 
 from .constants import GLOBAL_DOMAIN_ARG, MAX_CONCURRENT_EXPORT_TASKS
+from .exceptions import PropertyListConversionError
 from .filters import BAD_DOMAINS
 from .mp_typing import PlistRoot
 from .plist2defaults import plist_to_defaults_commands
@@ -64,94 +66,96 @@ async def _setup_out_dir(out_dir: Path) -> tuple[Path, Path]:
     return out_dir, repo_prefs_dir
 
 
+async def _do_main(out_dir: Path,
+                   debug: bool = False,
+                   commit: bool = False,
+                   deploy_key: str | None = None) -> None:
+    has_git = await _has_git()
+    out_dir, repo_prefs_dir = await _setup_out_dir(out_dir)
+    export_tasks = []
+    all_data: list[tuple[str, PlistRoot]] = []
+    async for domain in _generate_domains():
+        # spell-checker: disable  # noqa: ERA001
+        if domain in ('com.apple.Music', 'com.apple.TV', 'com.apple.identityservices.idstatuscache',
+                      'com.apple.security.KCN'):
+            # spell-checker: enable  # noqa: ERA001
+            continue
+        export_tasks.append(_defaults_export(domain, repo_prefs_dir))
+        if len(export_tasks) == MAX_CONCURRENT_EXPORT_TASKS:
+            all_data.extend(await asyncio.gather(*export_tasks))
+            export_tasks = []
+    all_data.extend(await asyncio.gather(*export_tasks))
+    exec_defaults = Path(out_dir) / 'exec-defaults.sh'
+    tasks = []
+    known_domains = []
+    with exec_defaults.open('w+') as f:
+        f.write('#!/usr/bin/env bash\n')
+        f.write('# shellcheck disable=SC1003,SC1010,SC1112,SC2016,SC2088\n')
+        f.write('# This file is generated, but is versioned.\n\n')
+        for domain, root in sorted(all_data, key=lambda x: x[0]):
+            if not root:
+                continue
+            async for line in plist_to_defaults_commands(domain, root):
+                f.write(line + '\n')
+            out_domain = ('globalDomain' if domain == GLOBAL_DOMAIN_ARG else domain)
+            known_domains.append(out_domain)
+            plist_path = repo_prefs_dir / f'{out_domain}.plist'
+            cmd = f'plutil -convert xml1 {quote(str(plist_path))}'
+            logger.debug(f'Executing: {cmd}')
+            p = await asyncio.create_subprocess_exec('plutil', '-convert', 'xml1', plist_path)
+            tasks.append(asyncio.create_task(p.wait()))
+    exec_defaults.chmod(0o755)
+    assert len(known_domains) > 0
+    results = (await asyncio.wait(tasks))[0]
+    if any(future.result() != 0 for future in results):
+        raise PropertyListConversionError
+    if has_git:
+        # Clean up very old plists
+        delete_with_git = [
+            str(x) for x in repo_prefs_dir.iterdir()
+            if x.name != '.gitignore' and x.name[:-6] not in known_domains and x.exists()
+            if not x.is_dir()
+        ]
+        await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git), out_dir)
+        logger.debug(f'Executing: rm -f -- {" ".join(map(quote, delete_with_git))}')
+        p = await asyncio.create_subprocess_exec('rm', '-f', '--', *delete_with_git, stderr=sp.PIPE)
+        await p.wait()
+    delete_with_git_ = []
+    delete_with_rm = []
+    for x in BAD_DOMAINS:
+        if x == 'MobileMeAccounts':
+            continue
+        plist = repo_prefs_dir / f'{x}.plist'
+        delete_with_git_.append(str(plist))
+        delete_with_rm.append(str(plist))
+    if has_git:
+        await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git_), out_dir)
+    cmd = f'rm -f -- {" ".join(delete_with_rm)}'
+    logger.debug(f'Executing: {cmd}')
+    p = await asyncio.create_subprocess_exec('rm', '-f', '--', *delete_with_rm)
+    await p.wait()
+    if has_git and commit:
+        logger.debug('Committing changes')
+        await git(('add', '.'), out_dir)
+        try:
+            await git(('commit', '--no-gpg-sign', '--quiet', '--no-verify',
+                       '--author=macprefs <macprefs@tat.sh>', '-m',
+                       f'Automatic commit @ {datetime.now().strftime("%c")}'), out_dir)
+            if deploy_key:
+                stdout = (await git(('branch', '--show-current'), out_dir)).stdout
+                assert stdout is not None
+                await git(('push', '-u', '--porcelain', '--no-signed', 'origin',
+                           (await stdout.read()).decode().strip()), out_dir)
+        except CalledProcessError:
+            logger.info('Likely no changes to commit.')
+
+
 async def _main(out_dir: Path,
                 debug: bool = False,
                 commit: bool = False,
                 deploy_key: str | None = None) -> int:
     try:
-        has_git = await _has_git()
-        out_dir, repo_prefs_dir = await _setup_out_dir(out_dir)
-        export_tasks = []
-        all_data: list[tuple[str, PlistRoot]] = []
-        async for domain in _generate_domains():
-            # spell-checker: disable
-            if domain in ('com.apple.Music', 'com.apple.TV',
-                          'com.apple.identityservices.idstatuscache', 'com.apple.security.KCN'):
-                # spell-checker: enable
-                continue
-            export_tasks.append(_defaults_export(domain, repo_prefs_dir))
-            if len(export_tasks) == MAX_CONCURRENT_EXPORT_TASKS:
-                all_data.extend(await asyncio.gather(*export_tasks))
-                export_tasks = []
-        all_data.extend(await asyncio.gather(*export_tasks))
-        exec_defaults = Path(out_dir) / 'exec-defaults.sh'
-        tasks = []
-        known_domains = []
-        with exec_defaults.open('w+') as f:
-            f.write('#!/usr/bin/env bash\n')
-            f.write('# shellcheck disable=SC1003,SC1010,SC1112,SC2016,SC2088\n')
-            f.write('# This file is generated, but is versioned.\n\n')
-            for domain, root in sorted(all_data, key=lambda x: x[0]):
-                if not root:
-                    continue
-                async for line in plist_to_defaults_commands(domain, root, debug):
-                    f.write(line + '\n')
-                out_domain = ('globalDomain' if domain == GLOBAL_DOMAIN_ARG else domain)
-                known_domains.append(out_domain)
-                plist_path = repo_prefs_dir / f'{out_domain}.plist'
-                cmd = f'plutil -convert xml1 {quote(str(plist_path))}'
-                logger.debug(f'Executing: {cmd}')
-                p = await asyncio.create_subprocess_exec('plutil', '-convert', 'xml1', plist_path)
-                tasks.append(asyncio.create_task(p.wait()))
-        exec_defaults.chmod(0o755)
-        assert len(known_domains) > 0
-        results = cast(set[asyncio.Future[int]], (await asyncio.wait(tasks))[0])
-        if any(future.result() != 0 for future in results):
-            raise RuntimeError('At least one plist conversion failed')
-        if has_git:
-            # Clean up very old plists
-            delete_with_git = [
-                str(x) for x in repo_prefs_dir.iterdir()
-                if x.name != '.gitignore' and x.name[:-6] not in known_domains and x.exists()
-                if not x.is_dir()
-            ]
-            await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git), out_dir)
-            logger.debug(f'Executing: rm -f -- {" ".join(map(quote, delete_with_git))}')
-            p = await asyncio.create_subprocess_exec('rm',
-                                                     '-f',
-                                                     '--',
-                                                     *delete_with_git,
-                                                     stderr=sp.PIPE)
-            await p.wait()
-        delete_with_git_ = []
-        delete_with_rm = []
-        for x in BAD_DOMAINS:
-            if x == 'MobileMeAccounts':
-                continue
-            plist = repo_prefs_dir / f'{x}.plist'
-            delete_with_git_.append(str(plist))
-            delete_with_rm.append(str(plist))
-        if has_git:
-            await git(chain(('rm', '-f', '--ignore-unmatch', '--'), delete_with_git_), out_dir)
-        cmd = f'rm -f -- {" ".join(delete_with_rm)}'
-        logger.debug(f'Executing: {cmd}')
-        p = await asyncio.create_subprocess_exec('rm', '-f', '--', *delete_with_rm)
-        await p.wait()
-        if has_git and commit:
-            logger.debug('Committing changes')
-            await git(('add', '.'), out_dir)
-            try:
-                await git(('commit', '--no-gpg-sign', '--quiet', '--no-verify',
-                           '--author=macprefs <macprefs@tat.sh>', '-m',
-                           f'Automatic commit @ {datetime.now().strftime("%c")}'), out_dir)
-                if deploy_key:
-                    stdout = (await git(('branch', '--show-current'), out_dir)).stdout
-                    assert stdout is not None
-                    await git(('push', '-u', '--porcelain', '--no-signed', 'origin',
-                               (await stdout.read()).decode().strip()), out_dir)
-            except RuntimeError:
-                logger.info('Likely no changes to commit.')
-                return 0
+        await _do_main(out_dir, debug, commit, deploy_key)
     except Exception as e:
         if debug:
             logger.exception(e)
@@ -180,7 +184,7 @@ def main(output_directory: str,
     if (asyncio.run(_main(Path(output_directory), debug=debug, commit=commit,
                           deploy_key=deploy_key),
                     debug=debug) != 0):
-        raise click.Abort()
+        raise click.Abort
 
 
 async def _install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
@@ -191,18 +195,27 @@ async def _install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
     plist_path = home / 'Library/LaunchAgents/sh.tat.macprefs.plist'
     log_path = f'{home}/Library/Logs/macprefs.log'
     with plist_path.open('wb+') as f:
-        plistlib.dump(dict(
-            Label='sh.tat.macprefs',
-            ProgramArguments=[
-                prefs_export_path, '--output-directory',
-                str(output_dir.resolve(strict=True)), '--commit'
-            ] + (['--deploy-key', deploy_key.resolve(strict=True)] if deploy_key else []),
-            RunAtLoad=True,
-            StandardErrorPath=log_path,
-            StandardOutPath=log_path,
-            StartCalendarInterval=dict(Hour=0, Minute=0)),
-                      f,
-                      fmt=plistlib.PlistFormat.FMT_XML)
+        plistlib.dump(
+            {
+                'Label':
+                    'sh.tat.macprefs',
+                'ProgramArguments': [
+                    prefs_export_path, '--output-directory',
+                    str(output_dir.resolve(strict=True)), '--commit'
+                ] + (['--deploy-key', deploy_key.resolve(strict=True)] if deploy_key else []),
+                'RunAtLoad':
+                    True,
+                'StandardErrorPath':
+                    log_path,
+                'StandardOutPath':
+                    log_path,
+                'StartCalendarInterval': {
+                    'Hour': 0,
+                    'Minute': 0
+                }
+            },
+            f,
+            fmt=plistlib.PlistFormat.FMT_XML)
     await (await sp.create_subprocess_exec('launchctl',
                                            'stop',
                                            plist_path,
@@ -238,4 +251,4 @@ def install_job(output_directory: str, debug: bool = False, deploy_key: str | No
     if (asyncio.run(_install_job(Path(output_directory),
                                  Path(deploy_key) if deploy_key else None),
                     debug=debug) != 0):
-        raise click.Abort()
+        raise click.Abort

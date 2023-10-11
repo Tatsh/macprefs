@@ -1,6 +1,7 @@
 from os import chdir
 from pathlib import Path
 from shlex import quote
+from subprocess import CalledProcessError
 from typing import Iterable
 import asyncio
 import asyncio.subprocess as sp
@@ -32,14 +33,15 @@ async def git(cmd: Iterable[str],
                     '-o StrictHostKeyChecking=no')), work_tree)
     cmd_list = list(cmd)
     rest = ' '.join(map(quote, cmd_list))
-    log.debug(f'Running: git "--git-dir={git_dir}" "--work-tree={work_tree}" {rest}')
+    log.debug('Running: git "--git-dir=%s" "--work-tree=%s" %s', git_dir, work_tree, rest)
     p = await asyncio.create_subprocess_exec('git',
                                              f'--git-dir={git_dir}',
                                              f'--work-tree={work_tree}',
                                              *cmd_list,
                                              stderr=sp.PIPE)
     if (await p.wait()) != 0:
+        assert p.returncode is not None
         assert p.stderr is not None
         stderr = (await p.stderr.read()).decode()
-        raise RuntimeError(f'Non-zero return code: {p.returncode}, STDERR: {stderr}')
+        raise CalledProcessError(p.returncode, cmd_list, stderr=stderr)
     return p

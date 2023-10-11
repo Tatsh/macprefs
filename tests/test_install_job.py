@@ -16,6 +16,8 @@ EXPECTED_PLIST = {
     }
 }
 
+INSTALL_JOB_AWAIT_COUNT = 5
+
 
 def test_install_job_no_args(runner: CliRunner, mocker: MockerFixture) -> None:
     written = b''
@@ -37,7 +39,7 @@ def test_install_job_no_args(runner: CliRunner, mocker: MockerFixture) -> None:
     data = plistlib.loads(written)
     assert not DeepDiff(
         data, EXPECTED_PLIST, exclude_paths=['StandardErrorPath', 'StandardOutPath'])
-    assert sp_exec.await_count == 5
+    assert sp_exec.await_count == INSTALL_JOB_AWAIT_COUNT
     assert run.exit_code == 0
 
 
@@ -50,5 +52,5 @@ def test_install_exec_error(runner: CliRunner, mocker: MockerFixture) -> None:
     run = runner.invoke(install_job, '--debug')
     path_mock.home.return_value.__truediv__.return_value.open.return_value.__enter__.assert_called()
     path_mock.return_value.resolve.assert_called()
-    assert sp_exec.await_count == 5
+    assert sp_exec.await_count == INSTALL_JOB_AWAIT_COUNT
     assert run.exit_code != 0

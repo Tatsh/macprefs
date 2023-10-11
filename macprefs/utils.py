@@ -1,13 +1,15 @@
 from collections.abc import ValuesView
 from datetime import datetime
-from types import FrameType
-from typing import Any, AnyStr, Mapping, Sequence
+from typing import TYPE_CHECKING, Any, AnyStr, Mapping, Sequence
 import logging
 import sys
 
 from loguru import logger
 
 from .mp_typing import ComplexInnerTypes
+
+if TYPE_CHECKING:
+    from types import FrameType
 
 __all__ = ('is_simple', 'setup_logging', 'to_str')
 

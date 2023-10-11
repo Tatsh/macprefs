@@ -4,14 +4,13 @@ https://www.sphinx-doc.org/en/master/usage/configuration.html
 """
 from datetime import datetime
 from operator import itemgetter
-from typing import Final
 from pathlib import Path
+from typing import Final
 import sys
 
 import tomlkit
 
 PARENT_DIR = Path(__file__).parent.parent
-print(PARENT_DIR / 'pyproject.toml')
 
 with (PARENT_DIR / 'pyproject.toml').open() as f:
     tool = tomlkit.load(f).unwrap()['tool']
