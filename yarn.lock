@@ -413,6 +413,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@prettier/plugin-xml@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@prettier/plugin-xml/-/plugin-xml-3.2.1.tgz#d7392d02b255142d6b8aa2ffc43126214049a066"
+  integrity sha512-DvwnQPf8FsczapBVDm54IhR+Pryt3DbPZSNtUb9gOuFtgoUUPbPN69f3nQBMF5BEqh4ZjZjTaHBmsVno3UnAXQ==
+  dependencies:
+    "@xml-tools/parser" "^1.0.11"
+
 "@toml-tools/lexer@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@toml-tools/lexer/-/lexer-1.0.0.tgz#474420aac45b2d8350d8251946d3de766c2cfcf6"
@@ -427,6 +434,13 @@
   dependencies:
     "@toml-tools/lexer" "^1.0.0"
     chevrotain "^11.0.1"
+
+"@xml-tools/parser@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@xml-tools/parser/-/parser-1.0.11.tgz#a118a14099ea5c3c537e4781fad2fc195b57f8ff"
+  integrity sha512-aKqQ077XnR+oQtHJlrAflaZaL7qZsulWc/i/ZEooar5JiWj1eLt0+Wg28cpa+XLney107wXqneC+oG1IZvxkTA==
+  dependencies:
+    chevrotain "7.1.1"
 
 ansi-regex@^6.0.1:
   version "6.0.1"
@@ -495,6 +509,13 @@ chalk@^5.2.0, chalk@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-5.3.0.tgz#67c20a7ebef70e7f3970a01f90fa210cb6860385"
   integrity sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==
+
+chevrotain@7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/chevrotain/-/chevrotain-7.1.1.tgz#5122814eafd1585a9601f9180a7be9c42d5699c6"
+  integrity sha512-wy3mC1x4ye+O+QkEinVJkPf5u2vsrDIYW9G7ZuwFl6v/Yu0LwUuT2POsb+NUWApebyxfkQq6+yDfRExbnI5rcw==
+  dependencies:
+    regexp-to-ast "0.5.0"
 
 chevrotain@^11.0.1:
   version "11.0.3"
@@ -1191,6 +1212,11 @@ queue-microtask@^1.2.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
+
+regexp-to-ast@0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/regexp-to-ast/-/regexp-to-ast-0.5.0.tgz#56c73856bee5e1fef7f73a00f1473452ab712a24"
+  integrity sha512-tlbJqcMHnPKI9zSrystikWKwHkBqu2a/Sgw01h3zFjvYrMxEDYHzzoMZnUrbIfpTFEsoRnnviOXNCzFiSc54Qw==
 
 repeat-string@^1.6.1:
   version "1.6.1"

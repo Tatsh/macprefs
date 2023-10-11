@@ -3,6 +3,7 @@
     "Andrew Udvare <audvare@gmail.com>"
   ],
   "devDependencies": {
+    "@prettier/plugin-xml": "^3.2.1",
     "cspell": "^7.3.7",
     "markdownlint-cli2": "^0.10.0",
     "prettier": "^3.0.3",
@@ -15,6 +16,12 @@
   "prettier": {
     "endOfLine": "lf",
     "iniSpaceAroundEquals": true,
+    "plugins": [
+      "@prettier/plugin-xml",
+      "prettier-plugin-ini",
+      "prettier-plugin-sort-json",
+      "prettier-plugin-toml"
+    ],
     "printWidth": 100,
     "singleQuote": true
   },
