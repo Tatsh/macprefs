@@ -11,7 +11,6 @@ BAD_DOMAINS: Final[set[str]] = {
     'com.apple.ColorSyncCalibrator', 'com.apple.CommCenter.counts', 'com.apple.CoreDuet',
     'com.apple.Dictionary', 'com.apple.EmojiCache', 'com.apple.FileStatsAgent', 'com.apple.Music',
     'com.apple.NewDeviceOutreach', 'com.apple.SharedWebCredentials', 'com.apple.TV',
-    'com.apple.amsengagementd'
     'com.apple.amsengagementd', 'com.apple.appstore.commerce', 'com.apple.classroom',
     'com.apple.cloudphotod', 'com.apple.cloudphotosd', 'com.apple.commcenter',
     'com.apple.commcenter.callservices', 'com.apple.commerce.knownclients', 'com.apple.coreauthd',
