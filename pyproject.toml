@@ -114,8 +114,8 @@ recursive = true
 
 [tool.ruff]
 cache-dir = "~/.cache/ruff"
-extend-ignore = ["PTH123", "T201", "TD002", "TD003", "TD004"]
-namespace-packages = ["docs"]
+extend-ignore = ["C408", "PTH123", "T201", "TD002", "TD003", "TD004"]
+namespace-packages = ["docs", "tests"]
 extend-select = [
   "A",
   "ASYNC",
@@ -207,6 +207,7 @@ extend-select = [
 ]
 line-length = 100
 target-version = "py311"
+typing-modules = ["macprefs.mp_typing"]
 
 [tool.ruff.flake8-quotes]
 inline-quotes = "single"
