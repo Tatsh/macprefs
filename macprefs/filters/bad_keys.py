@@ -13,9 +13,7 @@ BAD_KEYS: Final[dict[str, set[str]]] = {
         r're:^AKLast'
     },
     'SSHKeychain': {'Authentication Socket Path'},
-    'ThnkDev.QuickRes': {
-        'DM_SID', 'DevMateLaunchCount', 're:^MSAppCenter310.*', 'matchedIds', 'version'
-    },
+    'ThnkDev.QuickRes': {'DM_SID', 'DevMateLaunchCount', 'matchedIds', 'version'},
     'ch.tripmode.TripMode': {'Networks', r're:^ActivationOverrides?'},
     'com.apple.ActivityMonitor': {'cacheTableSortDescriptors'},
     'com.apple.AdPlatforms': {
@@ -24,7 +22,7 @@ BAD_KEYS: Final[dict[str, set[str]]] = {
     },
     'com.apple.AddressBook': {
         'ABDefaultSourceID', 'ABMetaDataChangeCount', 'ABMetadataLastOilChange',
-        're:^ABCleanWindowController.*'
+        're:^ABCleanWindowController.*', 'ABVersion'
     },
     'com.apple.AppStore': {
         'ASAcknowledgedOnboardingVersion', 'JE.MediaAPIToken',
@@ -32,13 +30,15 @@ BAD_KEYS: Final[dict[str, set[str]]] = {
     },
     'com.apple.AppleMediaServices': {
         'AMSMetricsTimingWindowStartTime', 'AMSDidSetUpServerDataCache', 'AMSFPCertExpiration',
-        're:^AMSIncludeFull.*', 'AMSJSVersionMap'
+        're:^AMSIncludeFull.*', 'AMSJSVersionMap', 'AMSDeviceBiometricsState'
     },
+    'com.apple.AppleMultitouchMouse': {'version'},
     'com.apple.AppleMultitouchTrackpad': {'version'},
     'com.apple.CallHistorySyncHelper': {
         'CallHistoryDeviceCount', 'ChangeToken', r're:.*Date$', r're:^/Users/'
     },
     'com.apple.CharacterPicker': {'version'},
+    'com.apple.CloudKit': {'AccountInfoValidationCounter'},
     'com.apple.Console': {'ConsoleSearch'},
     'com.apple.DictionaryServices': {'DCSPreferenceVersion'},
     'com.apple.EmojiPreferences': {'EMFDefaultsKey'},
@@ -78,7 +78,7 @@ BAD_KEYS: Final[dict[str, set[str]]] = {
     },
     'com.apple.Terminal': {
         'CommandHistory', 'ProfileCurrentVersion', 're:^TTAppPreferences .*',
-        're:^NSWindowTabbingShoudShowTabBarKey.*'
+        're:^NSWindowTabbingShoudShowTabBarKey.*', 'DefaultProfilesVersion'
     },
     'com.apple.TextInputMenuAgent': {'re:^NSStatusItem .*'},
     'com.apple.WindowManager': {'LastDailyHeartbeatDateString'},
@@ -89,7 +89,7 @@ BAD_KEYS: Final[dict[str, set[str]]] = {
     'com.apple.appstored': {
         'ArcadeDeviceGUID', 'ArcadeDeviceID', 'ArcadePayoutDeviceID', 'ArcadeSubscriptionState',
         'CurrentUpdateSource', 'LastUpdatesCheck', 'LastWeeklyAnalyticsPostDate', 're:^LastOS.*',
-        'WelcomeNotificationLastAppStoreConnectionProductVersion', r're:^.*Date$'
+        'WelcomeNotificationLastAppStoreConnectionProductVersion', r're:^.*Date$', 're:^TargetDate'
     },
     'com.apple.assistant': {'re:^.* date$', 're:^.*_experiment$'},
     'com.apple.assistant.backedup': {'Cloud Sync Enabled Modification Date', 'Cloud Sync User ID'},
@@ -166,7 +166,7 @@ BAD_KEYS: Final[dict[str, set[str]]] = {
     },
     'com.apple.languageassetd': {'LastSystemVersion'},
     'com.apple.logic10': {'lastSelectedKeyCommandsPath', r're:^DefaultDir'},
-    'com.apple.loginwindow': {'oneTimeSSMigrationComplete'},
+    'com.apple.loginwindow': {'TALLogoutReason', 'oneTimeSSMigrationComplete'},
     'com.apple.mail': {
         'AccountInfoLastSelectedAccountId', 'AccountOrdering',
         'com.apple.mail.searchableIndex.lastProcessedAttachmentIDKey',
@@ -180,6 +180,10 @@ BAD_KEYS: Final[dict[str, set[str]]] = {
         'ReuploadLocalNicknamesVersion'
     },
     'com.apple.mobiletimer': {'LatestUpdateVersion', 'citiesLastModified'},
+    'com.apple.mobiletimerd': {
+        'MTAlarmModifiedDate', 'MTAlarmStorageVersion', 'MTTimerStorageVersion',
+        'MTTimerModifiedDate'
+    },
     'com.apple.networkserviceproxy': {'NSPLastGeohash'},
     'com.apple.newsd': {'FCAppConfigurationBundleShortVersionKey'},
     'com.apple.print.PrinterProxy': {'IK_Scanner_downloadURL', 'IK_Scanner_selectedTag'},
@@ -190,25 +194,62 @@ BAD_KEYS: Final[dict[str, set[str]]] = {
     'com.apple.seserviced': {'keysync.recovery.required'},
     'com.apple.siri.VoiceShortcuts': {'VCLSDataSequenceKey', 'VCLSDatabaseUUIDKey'},
     'com.apple.sms': {'hasBeenApprovedForSMSRelay'},
+    'com.apple.speech.recognition.AppleSpeechRecognition.prefs': {r're:^DictationIMUpgradedTo'},
     'com.apple.stocks': {'lastModified'},
     'com.apple.systempreferences': {
-        'ThirdPartyCount', 'com.apple.SecurityPref.Privacy.LastSourceSelected'
+        'ThirdPartyCount', 'com.apple.SecurityPref.Privacy.LastSourceSelected',
+        r're:^NSTableView Supports'
     },
+    'com.apple.systemuiserver': {'last-analytics-stamp'},
     'com.apple.talagent': {'LastKeyChange'},
+    'com.apple.tipsd': {
+        'DeliveryInfoVersion', 'TPSLastMajorVersion', 'TPSWelcomeNotificationViewedVersion',
+        'TPSWidgetUpdateDate', 'TPSOfflineLastProcessedRemoteContentIdentifier',
+        'TPSTipsAppInstalled', 'TPSWelcomeNotificationStartDate'
+    },
+    'com.apple.voicetrigger.notbackedup': {r're:^Power Logging Current'},
+    'com.citrix.receiver.helper': {'ldDeviceIdentifier'},
+    'com.citrix.receiver.nomas': {
+        'AutoUpdateLastCheckedDate', 'CEIPLastUploadedReceiverVersion', 'CEIPPreviousUploadDate'
+    },
+    'com.crowdcafe.windowmagnet': {'usageCount'},
     'com.etresoft.EtreCheck4': {'asset'},
     'com.etresoft.EtreCheckMAS': {'asset'},
     'com.googlecode.iterm2': {
-        'Default Bookmark Guid', 'NoSyncInstallationId', r're:^NeverWarnAboutShortLivedSessions'
+        'Default Bookmark Guid', 'NoSyncAllAppVersions', 'NoSyncInstallationId',
+        'UKCrashReporterLastCrashReportDate', r're:^NeverWarnAboutShortLivedSessions',
+        'iTerm Version', 'NoSyncLastOSVersion'
+    },
+    'com.jamfsoftware.selfservice.mac': {'com.jamfsoftware.selfservice.brandinginfo'},
+    'com.lujjjh.LinearMouse': {'LaunchAtLogin__hasMigrated'},
+    'com.manytricks.Moom': {'Automatic News Updates: Version'},
+    'com.microsoft.OneDrive': {
+        'EnableFileProvider_EnabledDate', 'SilentBusinessConfigCompleted',
+        'UpdateRingSettingsLastSuccess'
+    },
+    'com.microsoft.OneDriveStandaloneUpdater': {'SQMSharedMachineId'},
+    'com.microsoft.SharePoint-mac': {'UpdateRingSettingsLastSuccess'},
+    'com.microsoft.office': {
+        'CurrentUserConsentGroupKey', 'HaveMergedOldPrefs', r're:^MerpStateKey',
+        'OCPS-LastSuccessfulUserId', r're:^Tenant', 'UpgradedOffice2011',
+        'WLMKernel.Registry.UseRWDBSentinelFile', r're:^.*ADAL-',
+        r're:^kFRETermsOfUseUpdat(?:ed|ing)Shown'
     },
     'com.monosnap.monosnap': {'last online time', 'mono_pref_time', r're:^[0-9a-f]{24}\&0$'},
     'com.parallels.Parallels Desktop': {
         r're:[0-9a-f]{12}\}\.', r're:^Guest OS Sources',
         r're:{[0-9a-f]{8}\-[0-9a-f]{4}]\-[0-9a-f]{4}\-[0-9a-f]{4}\-'
     },
+    'com.qtproject': {'FileDialog.lastVisited', 'FileDialog.qtVersion'},
+    'com.surteesstudios.Bartender': {r're:^TerminationReasons?', 'trial4Start'},
     'com.vmware.fusion': {'DUISettingsItemCDROM_recentItems'},
     'cx.c3.theunarchiver': {'DM_SID', '_sid'},
+    'diagnostics_agent': {'lastSuccess'},
+    'familycircled': {'FamilyMarqueeHasEverBeenCalled'},
+    'loginwindow': {r're:^(?:Build|System)VersionStamp'},
     'org.quassel-irc.quasselclient': {
         r're:^CoreAccounts\.\d+\.General\.JumpKeyMap', r're:^CoreAccounts\.\d+\.Password'
     },
-    'org.videolan.vlc': {r're:^recentlyPlayed'},
+    'org.videolan.vlc': {r're:^recentlyPlayed', 'VLCPreferencesVersion'},
+    'us.zoom.xos': {r're:^ZoomAutoUpdate', r're:^Pres(?:Meeting)?AppKeyHash'},
 }
