@@ -50,7 +50,7 @@ def setup_logging(debug: bool | None = False) -> None:
         ),))
 
 
-async def _can_decode_unicode(x: bytes) -> bool:
+def _can_decode_unicode(x: bytes) -> bool:
     try:
         x.decode('utf-8')
     except UnicodeDecodeError:
@@ -61,13 +61,13 @@ async def _can_decode_unicode(x: bytes) -> bool:
 SimpleArg = Mapping[Any, ComplexInnerTypes] | Sequence[ComplexInnerTypes] | ValuesView[str]
 
 
-async def is_simple(x: SimpleArg) -> bool:
+def is_simple(x: SimpleArg) -> bool:
     """Check if a value is a simple type of value."""
     if isinstance(x, dict):
         x = x.values()
     for y in x:
         if (isinstance(y, (datetime, list, dict))
-                or (isinstance(y, bytes) and not await _can_decode_unicode(y))):
+                or (isinstance(y, bytes) and not _can_decode_unicode(y))):
             return False
     return True
 
