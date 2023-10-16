@@ -4,7 +4,7 @@
   ],
   "devDependencies": {
     "@prettier/plugin-xml": "^3.2.1",
-    "cspell": "^7.3.7",
+    "cspell": "^7.3.8",
     "markdownlint-cli2": "^0.10.0",
     "prettier": "^3.0.3",
     "prettier-plugin-ini": "^1.1.0",
