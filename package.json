@@ -3,7 +3,7 @@
     "Andrew Udvare <audvare@gmail.com>"
   ],
   "devDependencies": {
-    "@prettier/plugin-xml": "^3.2.1",
+    "@prettier/plugin-xml": "^3.2.2",
     "cspell": "^7.3.8",
     "markdownlint-cli2": "^0.10.0",
     "prettier": "^3.0.3",
