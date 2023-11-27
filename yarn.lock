@@ -24,38 +24,6 @@
     chalk "^2.4.2"
     js-tokens "^4.0.0"
 
-"@chevrotain/cst-dts-gen@11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@chevrotain/cst-dts-gen/-/cst-dts-gen-11.0.3.tgz#5e0863cc57dc45e204ccfee6303225d15d9d4783"
-  integrity sha512-BvIKpRLeS/8UbfxXxgC33xOumsacaeCKAjAeLyOn7Pcp95HiRbrpl14S+9vaZLolnbssPIUuiUd8IvgkRyt6NQ==
-  dependencies:
-    "@chevrotain/gast" "11.0.3"
-    "@chevrotain/types" "11.0.3"
-    lodash-es "4.17.21"
-
-"@chevrotain/gast@11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@chevrotain/gast/-/gast-11.0.3.tgz#e84d8880323fe8cbe792ef69ce3ffd43a936e818"
-  integrity sha512-+qNfcoNk70PyS/uxmj3li5NiECO+2YKZZQMbmjTqRI3Qchu8Hig/Q9vgkHpI3alNjr7M+a2St5pw5w5F6NL5/Q==
-  dependencies:
-    "@chevrotain/types" "11.0.3"
-    lodash-es "4.17.21"
-
-"@chevrotain/regexp-to-ast@11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@chevrotain/regexp-to-ast/-/regexp-to-ast-11.0.3.tgz#11429a81c74a8e6a829271ce02fc66166d56dcdb"
-  integrity sha512-1fMHaBZxLFvWI067AVbGJav1eRY7N8DDvYCTwGBiE/ytKBgP8azTdgyrKyWZ9Mfh09eHWb5PgTSO8wi7U824RA==
-
-"@chevrotain/types@11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@chevrotain/types/-/types-11.0.3.tgz#f8a03914f7b937f594f56eb89312b3b8f1c91848"
-  integrity sha512-gsiM3G8b58kZC2HaWR50gu6Y1440cHiJ+i3JUvcp/35JchYejb2+5MVeJK0iKThYpAa/P2PYFV4hoi44HD+aHQ==
-
-"@chevrotain/utils@11.0.3":
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/@chevrotain/utils/-/utils-11.0.3.tgz#e39999307b102cff3645ec4f5b3665f5297a2224"
-  integrity sha512-YslZMgtJUyuMbZ+aKvfF3x1f5liK4mWNxghFRv7jqRR9C3R3fAOGTTKvxXDa2Y1s9zSbcpuO0cAxDYsc9SrXoQ==
-
 "@cspell/cspell-bundled-dicts@8.0.0":
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/@cspell/cspell-bundled-dicts/-/cspell-bundled-dicts-8.0.0.tgz#39b57038fbbd8c01a0e714e83ddceecc4cc49734"
@@ -431,20 +399,17 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/merge-streams/-/merge-streams-1.0.0.tgz#9cd84cc15bc865a5ca35fcaae198eb899f7b5c90"
   integrity sha512-rUV5WyJrJLoloD4NDN1V1+LDMDWOa4OTsT4yYJwQNpTU6FWxkxHpL7eu4w+DmiH8x/EAM1otkPE1+LaspIbplw==
 
-"@toml-tools/lexer@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@toml-tools/lexer/-/lexer-1.0.0.tgz#474420aac45b2d8350d8251946d3de766c2cfcf6"
-  integrity sha512-rVoOC9FibF2CICwCBWQnYcjAEOmLCJExer178K2AsY0Nk9FjJNVoVJuR5UAtuq42BZOajvH+ainf6Gj2GpCnXQ==
-  dependencies:
-    chevrotain "^11.0.1"
+"@taplo/core@^0.1.0":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@taplo/core/-/core-0.1.1.tgz#28a301d6ea141249ff712f8a2b9fce6d4e813d41"
+  integrity sha512-BG/zLGf5wiNXGEVPvUAAX/4ilB3PwDUY2o0MV0y47mZbDZ9ad9UK/cIQsILat3bqbPJsALVbU6k3cskNZ3vAQg==
 
-"@toml-tools/parser@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@toml-tools/parser/-/parser-1.0.0.tgz#ff23319800f1db900ed107e04345716412188547"
-  integrity sha512-j8cd3A3ccLHppGoWI69urbiVJslrpwI6sZ61ySDUPxM/FTkQWRx/JkkF8aipnl0Ds0feWXyjyvmWzn70mIohYg==
+"@taplo/lib@^0.4.0-alpha.2":
+  version "0.4.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@taplo/lib/-/lib-0.4.0-alpha.2.tgz#6a2fcdeb947c34ada51a15797c69c673f8a62a2c"
+  integrity sha512-DV/Re3DPVY+BhBtLZ3dmP4mP6YMLSsgq9qGLXwOV38lvNF/fBlgvQswzlXmzCEefL/3q2eMoefZpOI/+GLuCNA==
   dependencies:
-    "@toml-tools/lexer" "^1.0.0"
-    chevrotain "^11.0.1"
+    "@taplo/core" "^0.1.0"
 
 "@xml-tools/parser@^1.0.11":
   version "1.0.11"
@@ -527,18 +492,6 @@ chevrotain@7.1.1:
   integrity sha512-wy3mC1x4ye+O+QkEinVJkPf5u2vsrDIYW9G7ZuwFl6v/Yu0LwUuT2POsb+NUWApebyxfkQq6+yDfRExbnI5rcw==
   dependencies:
     regexp-to-ast "0.5.0"
-
-chevrotain@^11.0.1:
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/chevrotain/-/chevrotain-11.0.3.tgz#88ffc1fb4b5739c715807eaeedbbf200e202fc1b"
-  integrity sha512-ci2iJH6LeIkvP9eJW6gpueU8cnZhv85ELY8w8WiFtNjMHA5ad6pQLaJo9mEly/9qUyCpvqX8/POVUTf18/HFdw==
-  dependencies:
-    "@chevrotain/cst-dts-gen" "11.0.3"
-    "@chevrotain/gast" "11.0.3"
-    "@chevrotain/regexp-to-ast" "11.0.3"
-    "@chevrotain/types" "11.0.3"
-    "@chevrotain/utils" "11.0.3"
-    lodash-es "4.17.21"
 
 clear-module@^4.1.2:
   version "4.1.2"
@@ -1018,11 +971,6 @@ locate-path@^7.1.0:
   dependencies:
     p-locate "^6.0.0"
 
-lodash-es@4.17.21:
-  version "4.17.21"
-  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
-  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
-
 lru-cache@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-6.0.0.tgz#6d6fe6570ebd96aaf90fcad1dafa3b2566db3a94"
@@ -1197,13 +1145,12 @@ prettier-plugin-sort-json@^3.1.0:
   resolved "https://registry.yarnpkg.com/prettier-plugin-sort-json/-/prettier-plugin-sort-json-3.1.0.tgz#a54b33a4ac36ac6f9bf31ad7b81106fad161e6ba"
   integrity sha512-eIDEUjwzekiVd+oKrpd0aoACBTp5zOW71wDTNy+qQ5C9Q8oqt9n9wCm4F+SeRZbXfgblh/WYIguJynImlBXrvQ==
 
-prettier-plugin-toml@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-toml/-/prettier-plugin-toml-1.0.0.tgz#7d68dc5989f5cd2f5f4205686fbf78a994518a6d"
-  integrity sha512-YMn4Fqy/ANHommZh61s5qqtpfcgPB00Ty890bFPr73B0HAy77zgyH89SvAK+NyPPx3AdM56a4Yo66LH9GPnuZw==
+prettier-plugin-toml@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-toml/-/prettier-plugin-toml-2.0.1.tgz#7ba89d6fec5cb7e861ace692bc502344a2812227"
+  integrity sha512-99z1YOkViECHtXQjGIigd3talI/ybUI1zB3yniAwUrlWBXupNXThB1hM6bwSMUEj2/+tomTlMtT98F5t4s8IWA==
   dependencies:
-    "@toml-tools/lexer" "^1.0.0"
-    "@toml-tools/parser" "^1.0.0"
+    "@taplo/lib" "^0.4.0-alpha.2"
 
 prettier@>=2.3, prettier@^3.1.0:
   version "3.1.0"
