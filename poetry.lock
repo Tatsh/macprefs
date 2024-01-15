@@ -392,13 +392,13 @@ files = [
 
 [[package]]
 name = "esbonio"
-version = "0.16.3"
+version = "0.16.4"
 description = "A Language Server for Sphinx projects."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "esbonio-0.16.3-py3-none-any.whl", hash = "sha256:c507763f493584f02b8c27a28c37251f00ff7f39a3caacf26f221aea63cf8d3e"},
-    {file = "esbonio-0.16.3.tar.gz", hash = "sha256:fd237016410c0a31d2d6c773323901a6071721f5ec86e66fffc0bb92e86ffdbd"},
+    {file = "esbonio-0.16.4-py3-none-any.whl", hash = "sha256:eee3b52d99ef88f1c254b1c52ff28e462856902ace7205e6c8f2e02546d020b9"},
+    {file = "esbonio-0.16.4.tar.gz", hash = "sha256:d4c04d04b084043e87b65c4401273889969763235d8a1d8c207a312bce2331d2"},
 ]
 
 [package.dependencies]
@@ -409,7 +409,7 @@ sphinx = "*"
 
 [package.extras]
 dev = ["black", "flake8", "pre-commit", "tox"]
-test = ["mock", "pytest", "pytest-cov", "pytest-lsp (>=0.3.1)", "pytest-timeout"]
+test = ["mock", "pytest", "pytest-asyncio (<0.23)", "pytest-cov", "pytest-lsp (>=0.3.1)", "pytest-timeout"]
 typecheck = ["mypy", "pytest-lsp (>=0.3.1)", "types-appdirs", "types-docutils", "types-pygments"]
 
 [[package]]
