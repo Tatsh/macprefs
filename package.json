@@ -6,7 +6,7 @@
     "@prettier/plugin-xml": "^3.2.2",
     "cspell": "^8.3.2",
     "markdownlint-cli2": "^0.12.1",
-    "prettier": "^3.2.4",
+    "prettier": "^3.2.5",
     "prettier-plugin-ini": "^1.1.0",
     "prettier-plugin-sort-json": "^3.1.0",
     "prettier-plugin-toml": "^2.0.1"
