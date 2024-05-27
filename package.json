@@ -7,7 +7,7 @@
     "cspell": "^8.8.1",
     "markdownlint-cli2": "^0.13.0",
     "prettier": "^3.2.5",
-    "prettier-plugin-ini": "^1.1.0",
+    "prettier-plugin-ini": "^1.2.0",
     "prettier-plugin-sort-json": "^4.0.0",
     "prettier-plugin-toml": "^2.0.1"
   },
