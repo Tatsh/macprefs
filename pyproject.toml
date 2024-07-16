@@ -53,7 +53,7 @@ esbonio = "^0.16.1"
 restructuredtext-lint = "^1.4.0"
 sphinx = "^7.2.6"
 sphinx-click = ">=5.0.1,<7.0.0"
-tomlkit = "^0.12.1"
+tomlkit = ">=0.12.1,<0.14.0"
 
 [tool.poetry.group.tests]
 optional = true
