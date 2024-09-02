@@ -48,7 +48,7 @@ optional = true
 
 [tool.poetry.group.docs.dependencies]
 doc8 = "^1.1.1"
-docutils = "^0.20.1"
+docutils = ">=0.20.1,<0.22.0"
 esbonio = "^0.16.1"
 restructuredtext-lint = "^1.4.0"
 sphinx = ">=7.2.6,<9.0.0"
