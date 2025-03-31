@@ -1306,10 +1306,10 @@ prettier-plugin-sort-json@^4.1.1:
   resolved "https://registry.yarnpkg.com/prettier-plugin-sort-json/-/prettier-plugin-sort-json-4.1.1.tgz#2cf2e71c5a2174440330b3c72e3bc69112df3ffb"
   integrity sha512-uJ49wCzwJ/foKKV4tIPxqi4jFFvwUzw4oACMRG2dcmDhBKrxBv0L2wSKkAqHCmxKCvj0xcCZS4jO2kSJO/tRJw==
 
-prettier-plugin-toml@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-toml/-/prettier-plugin-toml-2.0.2.tgz#2e6cb2717a5e508fd38668aa06c561f3f1ef74cb"
-  integrity sha512-tUIIhyfdVX5DMsLGKX/2qaEwi3W48OkUSR7XC91PRI5jFzhexmaYWkrSP1Xh/eWUcEc0TVMQenM3lB09xLQstQ==
+prettier-plugin-toml@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-toml/-/prettier-plugin-toml-2.0.3.tgz#808a1073a3160fbd770a75220b6f6cbca9391a8c"
+  integrity sha512-2KSzvgWiyF+uaGvX6wK+UENNjhvuSh+HlJym9tY+OyIk3L+yjlDUd0wHP1ZHNC+u8su4UZj2QVjJhq5sZ16zrQ==
   dependencies:
     "@taplo/lib" "^0.4.0-alpha.2"
 
