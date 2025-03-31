@@ -9,7 +9,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-ini": "^1.3.0",
     "prettier-plugin-sort-json": "^4.1.1",
-    "prettier-plugin-toml": "^2.0.2"
+    "prettier-plugin-toml": "^2.0.3"
   },
   "license": "MIT",
   "name": "macprefs",
