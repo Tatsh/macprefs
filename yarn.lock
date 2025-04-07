@@ -445,17 +445,17 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/merge-streams/-/merge-streams-2.3.0.tgz#719df7fb41766bc143369eaa0dd56d8dc87c9958"
   integrity sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==
 
-"@taplo/core@^0.1.0":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@taplo/core/-/core-0.1.1.tgz#28a301d6ea141249ff712f8a2b9fce6d4e813d41"
-  integrity sha512-BG/zLGf5wiNXGEVPvUAAX/4ilB3PwDUY2o0MV0y47mZbDZ9ad9UK/cIQsILat3bqbPJsALVbU6k3cskNZ3vAQg==
+"@taplo/core@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@taplo/core/-/core-0.2.0.tgz#a256aef743307c853de08e2199e295fa3266122f"
+  integrity sha512-r8bl54Zj1In3QLkiW/ex694bVzpPJ9EhwqT9xkcUVODnVUGirdB1JTsmiIv0o1uwqZiwhi8xNnTOQBRQCpizrQ==
 
-"@taplo/lib@^0.4.0-alpha.2":
-  version "0.4.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@taplo/lib/-/lib-0.4.0-alpha.2.tgz#6a2fcdeb947c34ada51a15797c69c673f8a62a2c"
-  integrity sha512-DV/Re3DPVY+BhBtLZ3dmP4mP6YMLSsgq9qGLXwOV38lvNF/fBlgvQswzlXmzCEefL/3q2eMoefZpOI/+GLuCNA==
+"@taplo/lib@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@taplo/lib/-/lib-0.5.0.tgz#0d98cf5c1fa676148fcb29846a84aaba76535e8a"
+  integrity sha512-+xIqpQXJco3T+VGaTTwmhxLa51qpkQxCjRwezjFZgr+l21ExlywJFcDfTrNmL6lG6tqb0h8GyJKO3UPGPtSCWg==
   dependencies:
-    "@taplo/core" "^0.1.0"
+    "@taplo/core" "^0.2.0"
 
 "@types/debug@^4.0.0":
   version "4.1.12"
@@ -1300,12 +1300,12 @@ prettier-plugin-sort-json@^4.1.1:
   resolved "https://registry.yarnpkg.com/prettier-plugin-sort-json/-/prettier-plugin-sort-json-4.1.1.tgz#2cf2e71c5a2174440330b3c72e3bc69112df3ffb"
   integrity sha512-uJ49wCzwJ/foKKV4tIPxqi4jFFvwUzw4oACMRG2dcmDhBKrxBv0L2wSKkAqHCmxKCvj0xcCZS4jO2kSJO/tRJw==
 
-prettier-plugin-toml@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-toml/-/prettier-plugin-toml-2.0.3.tgz#808a1073a3160fbd770a75220b6f6cbca9391a8c"
-  integrity sha512-2KSzvgWiyF+uaGvX6wK+UENNjhvuSh+HlJym9tY+OyIk3L+yjlDUd0wHP1ZHNC+u8su4UZj2QVjJhq5sZ16zrQ==
+prettier-plugin-toml@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-toml/-/prettier-plugin-toml-2.0.4.tgz#fb7fdc3b26e6186a9d62f75b27d08e41e8d8b89b"
+  integrity sha512-uOTNPClqnE3T9XJ8hCqAJek70Jnk3/ZuAG/aXRTmrWbVe8lJyuZ60KV7OtgWqF+iGZOPVpkh+giHhX9GZYRHGA==
   dependencies:
-    "@taplo/lib" "^0.4.0-alpha.2"
+    "@taplo/lib" "^0.5.0"
 
 prettier@>=3.0.0-alpha.3, prettier@^3.5.3:
   version "3.5.3"
