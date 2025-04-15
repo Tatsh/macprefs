@@ -28,7 +28,7 @@ Library
 
 Typing
 ------
-.. automodule:: macprefs.mp_typing
+.. automodule:: macprefs.typing
    :members:
 
 .. toctree::

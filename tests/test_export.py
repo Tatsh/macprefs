@@ -2,18 +2,17 @@ from asyncio.subprocess import Process
 from io import BytesIO
 from pathlib import Path
 from typing import Any
+from unittest.mock import MagicMock
 import base64
 
 from click.testing import CliRunner
-from mock import MagicMock
+from macprefs import prefs_export
 from pytest_mock.plugin import MockerFixture
 
-from macprefs import prefs_export
-
-# spell-checker: disable  # noqa: ERA001
+# spell-checker: disable
 SAFARI_PLIST_BASE64 = ('YnBsaXN0MDDRAQJfEBFSZXNldENsb3VkSGlzdG9yeQkICx8AAAAAAAABAQAAAAAAAAADAAAAAAA'
                        'AAAAAAAAAAAAAIA==')
-# spell-checker: enable  # noqa: ERA001
+# spell-checker: enable
 
 
 def create_entry(name: str) -> MagicMock:
@@ -39,15 +38,15 @@ def test_export_no_args_no_git_no_plutil(runner: CliRunner, mocker: MockerFixtur
                                    create_entry('com.apple.TV.plist'))
         return m
 
-    path_mock = mocker.patch('macprefs.command.Path')
+    path_mock = mocker.patch('macprefs.main.Path')
     path_mock.home.return_value.__truediv__.side_effect = path_truediv
     # _setup_out_dir
     path_mock.return_value.resolve.return_value.__truediv__.return_value = MagicMock(spec=Path)
     # plist_out in _defaults_export()  # noqa: ERA001
     (path_mock.return_value.resolve.return_value.__truediv__.return_value.__truediv__.return_value.
      open.return_value.__enter__.return_value) = BytesIO(base64.b64decode(SAFARI_PLIST_BASE64))
-    shell = mocker.patch('macprefs.command.sp.create_subprocess_exec', side_effect=sp_exec_mock)
-    shutil_copy_mock = mocker.patch('macprefs.command.shutil.copy')
+    shell = mocker.patch('macprefs.main.sp.create_subprocess_exec', side_effect=sp_exec_mock)
+    shutil_copy_mock = mocker.patch('macprefs.main.shutil.copy')
     run = runner.invoke(prefs_export, '--debug')
     assert shutil_copy_mock.call_count >= 1
     assert run.exit_code == 1

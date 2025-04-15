@@ -11,4 +11,4 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-Send me a direct message [here](https://noagendasocial.com/@Tatsh).
+Send me a direct message [here](https://bsky.app/profile/tatsh.bsky.social).

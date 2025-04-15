@@ -9,11 +9,13 @@
       "env": {
         "_PYTEST_RAISE": "1"
       },
+      "justMyCode": false,
       "module": "pytest",
       "name": "Run tests",
       "request": "launch",
-      "type": "python"
+      "type": "debugpy"
     }
   ],
+  "inputs": [],
   "version": "0.2.0"
 }

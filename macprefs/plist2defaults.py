@@ -1,11 +1,12 @@
+from collections.abc import Callable, Iterator
 from datetime import datetime
 from shlex import quote
-from typing import Any, Callable, Iterator
+from typing import Any
 import logging
 
 from .constants import OUTPUT_FILE_MAXIMUM_LINE_LENGTH
-from .mp_typing import PlistRoot
 from .processing import should_ignore_domain, should_ignore_key
+from .typing import PlistRoot
 from .utils import is_simple, to_str
 
 __all__ = ('plist_to_defaults_commands',)
@@ -23,7 +24,7 @@ def convert_value(key: str, value: Any, prefix: str) -> Iterator[str]:
     elif isinstance(value, bytes):
         if len(value) > OUTPUT_FILE_MAXIMUM_LINE_LENGTH:
             return
-        printed_value = quote(''.join(hex(z)[2:] for z in value))
+        printed_value = quote(''.join(f'{z:x}' for z in value))
         yield f'{prefix} {quote(key)} -data {printed_value}'
     elif isinstance(value, str):
         if len(value) > OUTPUT_FILE_MAXIMUM_LINE_LENGTH:
@@ -51,6 +52,7 @@ def plist_to_defaults_commands(domain: str,
                                root: PlistRoot,
                                domain_filter: Callable[[str], bool] | None = should_ignore_domain,
                                key_filter: Callable[[str, str], bool] | None = should_ignore_key,
+                               *,
                                inverse_filters: bool = False) -> Iterator[str]:
     """Given a ``PlistRoot``, generate a series of ``defaults write`` commands."""
     if domain_filter and (not domain_filter(domain) if inverse_filters else domain_filter(domain)):

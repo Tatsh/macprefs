@@ -17,6 +17,6 @@ if os.getenv('_PYTEST_RAISE', '0') != '0':  # pragma no cover
         raise excinfo.value
 
 
-@pytest.fixture()
+@pytest.fixture
 def runner() -> CliRunner:
     return CliRunner()

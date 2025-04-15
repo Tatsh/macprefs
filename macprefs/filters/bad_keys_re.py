@@ -3,7 +3,7 @@ import re
 
 __all__ = ('BAD_KEYS_RE',)
 
-# spell-checker: disable  # noqa: ERA001
+# spell-checker: disable
 BAD_KEYS_RE: Final[re.Pattern[str]] = re.compile('^(' + '|'.join({
     '(?:Favorites|Recents|SkinTones):com.apple.CharacterPicker.DefaultDataStorage',
     '(?:NSWindow|MASPreferences) Frame', 'CKPerBootTasks', 'CKStartupTime', 'DidShowFDEWarning',

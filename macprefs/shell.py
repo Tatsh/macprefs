@@ -1,8 +1,8 @@
+from collections.abc import Iterable
 from os import chdir
 from pathlib import Path
 from shlex import quote
 from subprocess import CalledProcessError
-from typing import Iterable
 import asyncio
 import asyncio.subprocess as sp
 import logging

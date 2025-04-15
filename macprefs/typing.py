@@ -1,5 +1,6 @@
+from collections.abc import Mapping, Sequence
 from datetime import datetime
-from typing import Any, Mapping, Sequence
+from typing import Any
 
 __all__ = ('ComplexInnerTypes', 'MutablePlistList', 'MutablePlistRoot', 'MutablePlistValue',
            'PlistList', 'PlistRoot', 'PlistValue')

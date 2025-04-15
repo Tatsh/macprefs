@@ -1,217 +1,304 @@
-[tool.poetry]
-name = "macprefs"
-version = "0.3.4"
-authors = ["Andrew Udvare <audvare@gmail.com>"]
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[project]
 classifiers = [
-  "Development Status :: 4 - Beta",
-  "Environment :: MacOS X",
+  "Development Status :: 2 - Pre-Alpha",
   "Intended Audience :: Developers",
-  "Intended Audience :: Information Technology",
-  "Intended Audience :: System Administrators",
   "License :: OSI Approved :: MIT License",
-  "Operating System :: MacOS :: MacOS X",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Typing :: Typed",
+  "Environment :: MacOS X",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: System Administrators",
+  "Operating System :: MacOS :: MacOS X",
   "Topic :: System :: Archiving :: Backup",
   "Topic :: System :: Systems Administration",
   "Topic :: Utilities",
-  "Typing :: Typed"
 ]
 description = "Command and library to export macOS preferences."
-documentation = "https://macprefs.readthedocs.io/en/latest/"
-include = ["man"]
+dynamic = ["dependencies", "requires-python"]
 keywords = ["command line", "macos", "preferences", "utilities"]
 license = "MIT"
-packages = [{ include = "macprefs" }]
+name = "macprefs"
 readme = "README.md"
+version = "0.3.4"
+
+[[project.authors]]
+email = "audvare@gmail.com"
+name = "Andrew Udvare"
+
+[[project.authors]]
+email = "web@inode64.com"
+name = "Francisco Javier"
+
+[project.optional-dependencies]
+erdantic = ["erdantic<2.0"]
+
+[project.scripts]
+macprefs-install-job = "macprefs:install_job"
+prefs-export = "macprefs:prefs_export"
+
+[project.urls]
+Issues = "https://github.com/Tatsh/macprefs/issues"
+documentation = "https://macprefs.readthedocs.org"
+homepage = "https://tatsh.github.io/macprefs/"
 repository = "https://github.com/Tatsh/macprefs"
 
+[tool]
+
+[tool.commitizen]
+tag_format = "v$version"
+version_files = [
+  ".wiswa.jsonnet",
+  "CHANGELOG.md",
+  "CITATION.cff",
+  "README.md",
+  "package.json",
+  "macprefs/__init__.py",
+]
+version_provider = "pep621"
+
+[tool.coverage]
+
+[tool.coverage.report]
+omit = ["conftest.py", "tests.py", "tests/test_*.py", "__main__.py"]
+show_missing = true
+
+[tool.coverage.run]
+branch = true
+omit = ["conftest.py", "tests.py", "tests/test_*.py", "__main__.py"]
+
+[tool.djlint]
+max_line_length = 100
+no_line_after_yaml = true
+preserve_blank_lines = true
+preserve_leading_space = true
+profile = "jinja"
+use_gitignore = true
+
+[tool.doc8]
+max-line-length = 100
+
+[tool.mypy]
+cache_dir = "~/.cache/mypy"
+explicit_package_bases = true
+mypy_path = "./.stubs"
+platform = "linux"
+python_version = "3.10"
+show_column_numbers = true
+strict = true
+strict_optional = true
+warn_unreachable = true
+
+[tool.poetry]
+include = ["man"]
+
 [tool.poetry.dependencies]
-python = ">=3.10,<4"
-click = "^8.1.7"
-loguru = "^0.7.2"
+click = "^8.1.8"
+deepdiff = "^8.4.2"
+python = ">=3.10,<3.14"
+typing-extensions = "^4.13.1"
+
+[tool.poetry.group]
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-commitizen = ">=3.10,<5.0"
-isort = ">=5.12,<7.0"
-mypy = "^1.5.1"
-rope = "^1.10.0"
-ruff = ">=0.5.1,<0.11.5"
-yapf = ">=0.40.2,<0.44.0"
+commitizen = "^4.5.0"
+djlint = "^1.36.4"
+mypy = ">=1.12,<1.16"
+ruff = "^0.11.2"
+yapf = "^0.43.0"
 
 [tool.poetry.group.docs]
 optional = true
 
 [tool.poetry.group.docs.dependencies]
-doc8 = "^1.1.1"
-docutils = ">=0.20.1,<0.22.0"
-esbonio = "^0.16.1"
+autodoc-pydantic = "^2.2.0"
+doc8 = "^1.1.2"
+docutils = "^0.21.2"
+esbonio = "^0.16.5"
+numpydoc = "^1.8.0"
 restructuredtext-lint = "^1.4.0"
-sphinx = ">=7.2.6,<9.0.0"
-sphinx-click = ">=5.0.1,<7.0.0"
-tomlkit = ">=0.12.1,<0.14.0"
+sphinx = "<8.2.0"
+sphinx-click = "^6.0.0"
+sphinx-datatables = "^0.2.1"
+sphinx-hoverxref = "^1.4.2"
+sphinx-immaterial = "^0.13.4"
+
+[tool.poetry.group.docs.dependencies.enum-tools]
+extras = ["sphinx"]
+version = "^0.12.0"
 
 [tool.poetry.group.tests]
 optional = true
 
 [tool.poetry.group.tests.dependencies]
-coveralls = "^3.3.1"
-deepdiff = ">=6.5,<9.0"
-mock = "^5.1.0"
-pytest = ">=7.4.2,<9.0.0"
-pytest-asyncio = ">=0.21.1,<0.27.0"
-pytest-cov = ">=4.1,<6.0"
-pytest-mock = "^3.11.1"
-types-mock = "^5.1.0.2"
+mock = "^5.2.0"
+pytest = "^8.3.5"
+pytest-cov = "^6.1.1"
+pytest-mock = "^3.14.0"
 
-[build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core"]
+[tool.poetry.group.tests.dependencies.coveralls]
+python = "<3.13"
+version = "^4.0.1"
 
-[tool.poetry.scripts]
-macprefs-install-job = "macprefs:install_job"
-prefs-export = "macprefs:prefs_export"
+[[tool.poetry.packages]]
+include = "macprefs"
 
-[tool.commitizen]
-tag_format = "v$version"
-version_files = ["README.md", "man/macprefs.1", "package.json"]
-version_provider = "poetry"
+[tool.pyright]
+deprecateTypingAliases = true
+enableExperimentalFeatures = true
+include = ["./macprefs", "./tests"]
+pythonPlatform = "Linux"
+pythonVersion = "3.10"
+reportCallInDefaultInitializer = "warning"
+reportImplicitOverride = "warning"
+reportImportCycles = "error"
+reportMissingModuleSource = "error"
+reportPropertyTypeMismatch = "error"
+reportShadowedImports = "error"
+reportUnnecessaryTypeIgnoreComment = "none"
+typeCheckingMode = "off"
+useLibraryCodeForTypes = false
 
-[tool.isort]
-case_sensitive = true
-combine_as_imports = true
-from_first = true
-line_length = 100
-order_by_type = true
-use_parentheses = true
-
-[tool.mypy]
-disallow_incomplete_defs = true
-disallow_untyped_calls = true
-disallow_untyped_defs = true
-disallow_untyped_decorators = true
-disallow_subclassing_any = true
-mypy_path = "./.stubs"
-show_column_numbers = true
-show_error_codes = true
-strict_equality = true
-strict_optional = true
-warn_redundant_casts = true
-warn_return_any = true
-warn_unreachable = true
-warn_unused_ignores = true
+[tool.pytest]
 
 [tool.pytest.ini_options]
 mock_use_standalone_module = true
-
-[tool.rstcheck]
-ignore_directives = ["automodule", "click", "include"]
-recursive = true
+norecursedirs = ["node_modules"]
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+testpaths = ["tests"]
 
 [tool.ruff]
 cache-dir = "~/.cache/ruff"
-extend-ignore = ["C408", "PTH123", "T201", "TD002", "TD003", "TD004"]
+force-exclude = true
+line-length = 100
 namespace-packages = ["docs", "tests"]
+target-version = "py310"
+unsafe-fixes = true
+
+[tool.ruff.lint]
 extend-select = [
   "A",
+  "AIR",
+  "ANN",
+  "ARG",
   "ASYNC",
   "B",
+  "BLE",
   "C4",
+  "C90",
+  "COM",
+  "CPY",
+  "D",
+  "DJ",
+  "DTZ",
+  "E",
+  "EM",
   "ERA",
   "EXE",
+  "F",
+  "FA",
+  "FBT",
+  "FIX",
+  "FLY",
+  "FURB",
   "G",
+  "I",
+  "ICN",
   "INP",
   "INT",
-  "ISC001",
-  "ISC003",
+  "ISC",
+  "LOG",
+  "N",
   "NPY",
   "PD",
   "PERF",
   "PGH",
   "PIE",
-  "PLC0105",
-  "PLC0131",
-  "PLC0132",
-  "PLC0205",
-  "PLC0208",
-  "PLC0414",
-  "PLC3002",
-  "PLE0100",
-  "PLE0101",
-  "PLE0116",
-  "PLE0117",
-  "PLE0118",
-  "PLE0241",
-  "PLE0302",
-  "PLE0307",
-  "PLE0604",
-  "PLE0605",
-  "PLE1142",
-  "PLE1205",
-  "PLE1206",
-  "PLE1300",
-  "PLE1307",
-  "PLE1310",
-  "PLE1507",
-  "PLE1700",
-  "PLE2502",
-  "PLE2510",
-  "PLE2512",
-  "PLE2513",
-  "PLE2514",
-  "PLE2515",
-  "PLR0124",
-  "PLR0133",
-  "PLR0206",
-  "PLR0402",
-  "PLR1701",
-  "PLR1711",
-  "PLR1714",
-  "PLR1722",
-  "PLR2004",
-  "PLR5501",
-  "PLW0120",
-  "PLW0127",
-  "PLW0129",
-  "PLW0131",
-  "PLW0406",
-  "PLW0602",
-  "PLW0603",
-  "PLW0711",
-  "PLW1508",
-  "PLW1509",
-  "PLW1510",
-  "PLW2901",
-  "PLW3301",
+  "PL",
   "PT",
   "PTH",
   "PYI",
   "Q",
   "RET",
   "RSE",
-  "S506",
-  "S602",
+  "RUF",
+  "S",
   "SIM",
   "SLF",
   "SLOT",
+  "T10",
   "T20",
   "TCH",
   "TD",
+  "TID",
   "TRY",
+  "UP",
   "YTT",
-  "RUF200"
 ]
-line-length = 100
-target-version = "py311"
-typing-modules = ["macprefs.mp_typing"]
+ignore = [
+  "A005",
+  "ANN401",
+  "ARG001",
+  "ARG002",
+  "ARG004",
+  "C901",
+  "COM812",
+  "CPY001",
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D105",
+  "D106",
+  "D107",
+  "D203",
+  "D204",
+  "D212",
+  "EM101",
+  "N818",
+  "PLR0912",
+  "PLR0913",
+  "PLR0914",
+  "PLR0915",
+  "PLR0917",
+  "PLR1702",
+  "PLR6301",
+  "S101",
+  "S404",
+  "S603",
+  "TD002",
+  "TD003",
+  "TD004",
+  "UP046",
+  "UP047",
+]
+preview = true
 
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"
-multiline-quotes = "single"
+multiline-quotes = "double"
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+combine-as-imports = true
+from-first = true
+
+[tool.ruff.lint.pep8-naming]
+extend-ignore-names = ["test_*"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 [tool.yapf]
 align_closing_bracket_with_visual_indent = true

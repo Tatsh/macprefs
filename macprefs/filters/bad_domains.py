@@ -2,7 +2,7 @@ from typing import Final
 
 __all__ = ('BAD_DOMAINS', 'BAD_DOMAIN_PREFIXES')
 
-# spell-checker: disable  # noqa: ERA001
+# spell-checker: disable
 BAD_DOMAINS: Final[set[str]] = {
     'Avatar Cache Index', 'ContextStoreAgent', 'G2MUpdate', 'MiniLauncher', 'Mixpanel',
     'MobileMeAccounts', 'NoMachine Monitor', 'com.apple.AMPLibraryAgent', 'com.apple.AdLib',

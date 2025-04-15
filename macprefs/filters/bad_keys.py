@@ -2,7 +2,7 @@ from typing import Final
 
 __all__ = ('BAD_KEYS',)
 
-# spell-checker: disable  # noqa: ERA001
+# spell-checker: disable
 BAD_KEYS: Final[dict[str, set[str]]] = {
 
     # Devices get added to global domain with -string 1
