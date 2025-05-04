@@ -9,7 +9,13 @@
     "editor.formatOnSaveMode": "file",
     "editor.tabSize": 3
   },
+  "[shellscript]": {
+    "editor.tabSize": 4
+  },
   "cSpell.enabled": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always"
+  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
@@ -39,5 +45,7 @@
   "python.languageServer": "Pylance",
   "python.testing.pytestArgs": ["tests"],
   "python.testing.pytestEnabled": true,
+  "restructuredtext.experimental": true,
+  "restructuredtext.linter.disabledLinters": ["rstcheck"],
   "yaml.format.printWidth": 100
 }

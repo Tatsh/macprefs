@@ -1,47 +1,28 @@
 {
-  "contributors": ["Andrew Udvare <audvare@gmail.com>", "Francisco Javier <web@inode64.com>"],
+  "contributors": ["Andrew Udvare <audvare@gmail.com>"],
   "cspell": {
+    "cache": {
+      "useCache": true
+    },
     "dictionaryDefinitions": [
       {
         "name": "main",
         "path": ".vscode/dictionary.txt"
       }
     ],
+    "enableFileTypes": {
+      "*": true
+    },
     "enableGlobDot": true,
-    "enabledLanguageIds": [
-      "git-commit",
-      "ignore",
-      "jinja",
-      "json",
-      "jsonc",
-      "markdown",
-      "plaintext",
-      "python",
-      "restructuredtext",
-      "text",
-      "toml",
-      "yaml",
-      "yml"
-    ],
+    "files": ["*"],
     "ignorePaths": [
       "*.1",
       "*.har",
-      "*.log",
-      ".*_cache/**",
-      ".coverage",
-      ".directory",
-      ".doctrees",
-      ".git",
-      ".vscode/extensions.json",
+      "*.lock",
+      ".git/**",
       ".yarn/**/*.cjs",
-      "__pycache__",
-      "_build/**",
-      "build/**",
-      "dist/**",
-      "docs/_build/**",
-      "htmlcov/**",
-      "man/**",
-      "node_modules/**"
+      ".vscode/extensions.json",
+      "man/**"
     ],
     "language": "en-GB",
     "languageSettings": [
@@ -49,7 +30,8 @@
         "dictionaries": ["main"],
         "languageId": "*"
       }
-    ]
+    ],
+    "useGitignore": true
   },
   "devDependencies": {
     "@prettier/plugin-xml": "^3.4.1",
@@ -60,7 +42,7 @@
     "prettier-plugin-sort-json": "^4.1.1",
     "prettier-plugin-toml": "^2.0.4",
     "pyright": "^1.1.400",
-    "yarn-audit-fix": "^10.1.0"
+    "yarn-audit-fix": "^10.1.1"
   },
   "homepage": "https://tatsh.github.io/macprefs/",
   "keywords": ["command line", "macos", "preferences", "utilities"],
@@ -78,7 +60,7 @@
     }
   },
   "name": "macprefs",
-  "packageManager": "yarn@4.9.0",
+  "packageManager": "yarn@4.9.1",
   "prettier": {
     "endOfLine": "lf",
     "iniSpaceAroundEquals": true,

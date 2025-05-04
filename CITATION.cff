@@ -1,10 +1,8 @@
 authors:
   - family-names: 'Udvare'
     given-names: 'Andrew'
-  - family-names: 'Javier'
-    given-names: 'Francisco'
 cff-version: '1.2.0'
-date-released: '2025-04-14'
+date-released: '2025-05-04'
 message: 'If you use this software, please cite it as below.'
 title: 'macprefs'
 version: '0.3.4'

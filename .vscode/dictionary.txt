@@ -1,8 +1,11 @@
 autodoc
 automodule
 codeowners
+colored
+colorlog
 commitizen
 conftest
+contextlib
 coveragerc
 datatable
 datatables
@@ -26,8 +29,10 @@ isort
 jinja
 jsonnet
 jsonschema
+levelname
 lextudio
 libjsonnet
+linters
 macprefs
 modindex
 mypy
@@ -35,6 +40,7 @@ norecursedirs
 numpy
 numpydoc
 pipx
+platformdirs
 plists
 plutil
 pycache
@@ -45,6 +51,7 @@ pyproject
 pyright
 pytest
 regen
+rstcheck
 schemafile
 shellcheck
 sphinxcontrib
