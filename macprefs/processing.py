@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 import logging
 import re
 
@@ -11,7 +11,7 @@ from .filters.bad_keys_re import BAD_KEYS_RE
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Mapping
 
-    from .typing import MutablePlistList, MutablePlistRoot, PlistList, PlistRoot
+    from .typing import PlistList, PlistRoot
 
 __all__ = ('make_key_filter', 'remove_data_fields', 'remove_data_fields_list')
 
@@ -49,34 +49,33 @@ def make_key_filter(bad_keys_re_addendum: Iterable[str] | None = None,
 
 def remove_data_fields_list(pl_list: PlistList) -> PlistList:
     """Clean up data fields from a :py:class:`macprefs.typing.PlistList`."""
-    ret = cast('MutablePlistList', deepcopy(pl_list))
-    index = 0
-    for value in pl_list:
-        if not isinstance(value, bytes):
-            if isinstance(value, dict):
-                ret[index] = cast('MutablePlistRoot', remove_data_fields(value))
-            elif isinstance(value, list):
-                ret[index] = cast('MutablePlistList', remove_data_fields_list(value))
-            if isinstance(value, (list, dict)) and not ret[index]:
-                del ret[index]
-            index = max(0, index - 1)
+    ret: list[Any] = []
+    for value in deepcopy(pl_list):
+        val = deepcopy(value)
+        if isinstance(value, bytes):
             continue
-        del ret[index]
-        index = max(0, index - 1)
-    return ret
+        if isinstance(value, list):
+            val = remove_data_fields_list(value)
+        elif isinstance(value, dict):
+            val = remove_data_fields(value)
+        if isinstance(value, list | dict) and not val:
+            continue
+        ret.append(val)
+    return cast('PlistList', ret)
 
 
 def remove_data_fields(root: PlistRoot) -> PlistRoot:
     """Clean up data fields from a :py:class:`macprefs.typing.PlistRoot`."""
-    ret = cast('MutablePlistRoot', deepcopy(root))
+    ret: dict[str, Any] = {}
     for key, value in root.items():
-        if not isinstance(value, bytes):
-            if isinstance(value, list):
-                ret[key] = cast('MutablePlistList', remove_data_fields_list(value))
-            elif isinstance(value, dict):
-                ret[key] = cast('MutablePlistRoot', remove_data_fields(value))
-            if isinstance(value, (list, dict, set)) and not ret[key]:
-                del ret[key]
+        val = deepcopy(value)
+        if isinstance(value, bytes):
             continue
-        del ret[key]
-    return ret
+        if isinstance(value, list):
+            val = remove_data_fields_list(val)
+        elif isinstance(value, dict):
+            val = remove_data_fields(val)
+        if isinstance(value, list | dict) and not val:
+            continue
+        ret[key] = val
+    return cast('PlistRoot', ret)
