@@ -35,7 +35,9 @@ libjsonnet
 linters
 macprefs
 modindex
+multiline
 mypy
+noninfringement
 norecursedirs
 numpy
 numpydoc
@@ -55,14 +57,15 @@ rstcheck
 schemafile
 shellcheck
 sphinxcontrib
+sublicense
 tatsh
 testpaths
 toctree
 tomlkit
 tryfirst
 udvare
+unmatch
 virtualenv
 wiswa
-xlarge
 yapf
 yapfignore
