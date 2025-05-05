@@ -4,11 +4,11 @@ macprefs
 Commands
 --------
 
-.. click:: macprefs:prefs_export
+.. click:: macprefs.main:main
   :prog: prefs-export
   :nested: full
 
-.. click:: macprefs:install_job
+.. click:: macprefs.main:install_job
   :prog: macprefs-install-job
   :nested: full
 
