@@ -6,12 +6,10 @@ colored
 colorlog
 commitizen
 conftest
-contextlib
 coveragerc
 datatable
 datatables
 debugpy
-deepdiff
 djlint
 doctrees
 eeyore

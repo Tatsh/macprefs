@@ -94,8 +94,6 @@ include = ["man"]
 [tool.poetry.dependencies]
 click = "^8.1.8"
 colorlog = "^6.9.0"
-contextlib2 = "^21.6.0"
-deepdiff = "^8.4.2"
 platformdirs = "^4.3.6"
 python = ">=3.10,<3.14"
 tomlkit = "^0.13.2"

@@ -27,7 +27,6 @@
     tool+: {
       poetry+: {
         dependencies+: {
-          deepdiff: '^8.4.2',
           platformdirs: '^4.3.6',
           tomlkit: '^0.13.2',
         },

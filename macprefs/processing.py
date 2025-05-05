@@ -32,15 +32,15 @@ def make_key_filter(bad_keys_re_addendum: Iterable[str] | None = None,
 
     def should_ignore_key(domain: str, key: str) -> bool:
         if bad_keys_re and re.match(bad_keys_re, key):
-            log.debug('Skipping %s-%s because it matched the bad keys RE.', domain, key)
+            log.debug('Skipping %s[%s] because it matched the bad keys RE.', domain, key)
             return True
         if domain in bad_keys and key in bad_keys[domain]:
-            log.debug('Skipping %s-%s because it matched the bad keys dict.', domain, key)
+            log.debug('Skipping %s[%s] because it matched the bad keys dict.', domain, key)
             return True
         if domain in bad_keys:
             for x in {y for y in bad_keys[domain] if y.startswith('re:')}:
                 if re.match(x[3:], key):
-                    log.debug('Skipping %s-%s because it matched regular expression.', key, domain)
+                    log.debug('Skipping %s[%s] because it matched regular expression.', key, domain)
                     return True
         return False
 
