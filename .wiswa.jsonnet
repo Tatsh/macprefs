@@ -25,6 +25,7 @@
       },
     },
     tool+: {
+      mypy+: { platform: 'darwin' },
       poetry+: {
         dependencies+: {
           anyio: '^4.9.0',
@@ -39,8 +40,12 @@
           },
         },
       },
+      pyright+: {
+        pythonPlatform: 'Darwin',
+      },
     },
   },
+  tests_run_on: 'macos-latest',
   // Common
   authors: [
     {
