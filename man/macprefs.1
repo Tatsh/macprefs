@@ -27,9 +27,26 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "MACPREFS" "1" "Apr 15, 2025" "0.3.4" "macprefs"
+.TH "MACPREFS" "1" "May 05, 2025" "0.3.4" "macprefs"
 .SH NAME
 macprefs \- macprefs v0.3.4
+.sp
+Command and library to export macOS preferences.
+.SH USAGE
+.sp
+\fBprefs\-export\fP is the main utility. You can export preferences, generate a
+\X'tty: link https://github.com/mathiasbynens/dotfiles/blob/main/.macos'\fI\%~/.macos\fP\X'tty: link'\-like script, and store the
+results in a Git repository.
+.sp
+My primary usage is like so:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.EX
+prefs\-export \-\-output\-directory ~/.config/defaults \-\-commit
+.EE
+.UNINDENT
+.UNINDENT
 .SH COMMANDS
 .SS prefs\-export
 .sp
@@ -44,6 +61,11 @@ prefs\-export [OPTIONS]
 .UNINDENT
 .sp
 Options
+.INDENT 0.0
+.TP
+.B \-C, \-\-config <config_file>
+Path to the configuration file.
+.UNINDENT
 .INDENT 0.0
 .TP
 .B \-K, \-\-deploy\-key <deploy_key>
@@ -79,6 +101,11 @@ macprefs\-install\-job [OPTIONS]
 Options
 .INDENT 0.0
 .TP
+.B \-C, \-\-config <config_file>
+Path to the configuration file.
+.UNINDENT
+.INDENT 0.0
+.TP
 .B \-K, \-\-deploy\-key <deploy_key>
 Key for pushing to Git repository.
 .UNINDENT
@@ -92,41 +119,47 @@ Enable debug logging.
 .B \-o, \-\-output\-directory <output_directory>
 Where to store the exported data.
 .UNINDENT
-.SH LIBRARY
+.SH ABOUT THE GENERATED SHELL SCRIPT
+.sp
+A shell script named \fBexec\-defaults.sh\fP will exist in the output directory. It may be executed,
+but is primarily for copying \fBdefaults\fP commands for use in your actual \fB~/.macos\fP file.
+.SH FILTERED DOMAINS AND KEYS
+.sp
+Certain domains are filtered because they generally do not have anything useful to preserve, such
+as \fBcom.apple.EmojiCache\fP which only has a cache of Emoji usage data.
+.sp
+Some keys are filtered, as they contain values that often change and are non\-useful, such as
+session IDs and UI state (e.g. \fBQtUi.MainWin(Geometry|State|Pos|Size)\(ga,
+\(gaNSStatusItem Preferred Position\fP).
+.SH AUTOMATED USAGE
+.sp
+A command \fBmacprefs\-install\-job\fP is included which will install a daily launchd job. The job name
+is \fBsh.tat.macprefs\fP\&.
 .INDENT 0.0
-.TP
-.B macprefs.plist2defaults.plist_to_defaults_commands(domain: str, root: ~collections.abc.Mapping[str, ~collections.abc.Mapping[str, ~typing.Any] | list[~typing.Any] | bool | int | float | str | ~datetime.datetime | bytes], domain_filter: ~collections.abc.Callable[[str], bool] | None = <function should_ignore_domain>, key_filter: ~collections.abc.Callable[[str, str], bool] | None = <function should_ignore_key>, *, inverse_filters: bool = False) -> \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator'\fI\%Iterator\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link']
-Given a \fBPlistRoot\fP, generate a series of \fBdefaults write\fP commands.
+.INDENT 3.5
+.sp
+.EX
+Usage: macprefs\-install\-job [OPTIONS]
+
+  Job installer.
+
+Options:
+  \-K, \-\-deploy\-key FILE           Key for pushing to Git repository.
+  \-o, \-\-output\-directory DIRECTORY
+                                  Where to store the exported data.
+  \-\-help                          Show this message and exit.
+.EE
 .UNINDENT
-.INDENT 0.0
-.TP
-.B macprefs.processing.remove_data_fields(\fI\%root\fP: \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping'\fI\%Mapping\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link', \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping'\fI\%Mapping\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link', \X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/stdtypes.html#list'\fI\%list\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/functions.html#bool'\fI\%bool\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/functions.html#int'\fI\%int\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/functions.html#float'\fI\%float\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/datetime.html#datetime.datetime'\fI\%datetime\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/stdtypes.html#bytes'\fI\%bytes\fP\X'tty: link']) -> \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping'\fI\%Mapping\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link', \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping'\fI\%Mapping\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link', \X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/stdtypes.html#list'\fI\%list\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/functions.html#bool'\fI\%bool\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/functions.html#int'\fI\%int\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/functions.html#float'\fI\%float\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/datetime.html#datetime.datetime'\fI\%datetime\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/stdtypes.html#bytes'\fI\%bytes\fP\X'tty: link']
-Clean up data fields from a \fBPlistRoot\fP\&.
 .UNINDENT
-.INDENT 0.0
-.TP
-.B macprefs.processing.remove_data_fields_list(\fI\%pl_list\fP: \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence'\fI\%Sequence\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping'\fI\%Mapping\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link', \X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/stdtypes.html#list'\fI\%list\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/functions.html#bool'\fI\%bool\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/functions.html#int'\fI\%int\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/functions.html#float'\fI\%float\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/datetime.html#datetime.datetime'\fI\%datetime\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/stdtypes.html#bytes'\fI\%bytes\fP\X'tty: link']) -> \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence'\fI\%Sequence\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping'\fI\%Mapping\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link', \X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/stdtypes.html#list'\fI\%list\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/functions.html#bool'\fI\%bool\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/functions.html#int'\fI\%int\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/functions.html#float'\fI\%float\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/datetime.html#datetime.datetime'\fI\%datetime\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/stdtypes.html#bytes'\fI\%bytes\fP\X'tty: link']
-Clean up data fields from a \fBPlistList\fP\&.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B macprefs.utils.is_simple(\fI\%x\fP: \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping'\fI\%Mapping\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link', \X'tty: link https://docs.python.org/3/library/stdtypes.html#list'\fI\%list\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping'\fI\%Mapping\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link', \X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/stdtypes.html#bytes'\fI\%bytes\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence'\fI\%Sequence\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/stdtypes.html#list'\fI\%list\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping'\fI\%Mapping\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link', \X'tty: link https://docs.python.org/3/library/typing.html#typing.Any'\fI\%Any\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/stdtypes.html#bytes'\fI\%bytes\fP\X'tty: link'] | \X'tty: link https://docs.python.org/3/library/collections.abc.html#collections.abc.ValuesView'\fI\%ValuesView\fP\X'tty: link'[\X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link']) -> \X'tty: link https://docs.python.org/3/library/functions.html#bool'\fI\%bool\fP\X'tty: link'
-Check if a value is a simple type of value.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B macprefs.utils.to_str(\fI\%x\fP: \X'tty: link https://docs.python.org/3/library/stdtypes.html#bytes'\fI\%bytes\fP\X'tty: link' | \X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link') -> \X'tty: link https://docs.python.org/3/library/stdtypes.html#str'\fI\%str\fP\X'tty: link'
-Convert a value to a string for shell.
-.UNINDENT
-.SH TYPING
-.INDENT 0.0
-.IP \(bu 2
-\fI\%Index\fP
-.IP \(bu 2
-\fI\%Module Index\fP
-.IP \(bu 2
-\fI\%Search Page\fP
-.UNINDENT
+.sp
+If the output directory has a \fB\&.git\fP directory, a commit will be automatically made. Be aware that
+files will be added and removed automatically.
+.sp
+To stop this job permanently, run
+\fBlaunchctl unload \-w ~/Library/LaunchAgents/sh.tat.macprefs.plist\fP\&.
+.sp
+To uninstall this job, after stopping permanently, delete
+\fB~/Library/LaunchAgents/sh.tat.macprefs.plist\fP\&.
 .SH AUTHOR
 Andrew Udvare <audvare@gmail.com>
 .SH COPYRIGHT
