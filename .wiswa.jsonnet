@@ -27,6 +27,7 @@
     tool+: {
       poetry+: {
         dependencies+: {
+          anyio: '^4.9.0',
           platformdirs: '^4.3.6',
           tomlkit: '^0.13.2',
         },

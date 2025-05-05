@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from contextlib import contextmanager
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
-from pathlib import Path
 from shlex import quote
 from subprocess import CalledProcessError
-from typing import TYPE_CHECKING, Any
+from typing import IO, TYPE_CHECKING, Any
 import asyncio
 import asyncio.subprocess as sp
 import logging
@@ -15,7 +14,10 @@ import os
 import plistlib
 import shutil
 
+from anyio import Path
 from platformdirs import user_log_path
+import anyio
+import anyio.to_thread
 
 from .constants import GLOBAL_DOMAIN_ARG, MAX_CONCURRENT_EXPORT_TASKS
 from .exceptions import PropertyListConversionError
@@ -25,7 +27,7 @@ from .processing import make_key_filter, remove_data_fields
 from .typing import PlistRoot
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Iterator
+    from collections.abc import AsyncIterator, Iterable
 
     from .typing import PlistRoot
 
@@ -79,9 +81,12 @@ async def is_git_installed() -> bool:
                                                    stdout=sp.PIPE)).wait() == 0)
 
 
-def generate_domains(bad_domains_addendum: Iterable[str], *, reset: bool = False) -> Iterator[str]:
+async def generate_domains(bad_domains_addendum: Iterable[str],
+                           *,
+                           reset: bool = False) -> AsyncIterator[str]:
     all_bad_domains = {*BAD_DOMAINS, *bad_domains_addendum}
-    for plist in (Path.home() / 'Library/Preferences').glob('*.plist'):
+    lib_prefs_path = (await Path.home()) / 'Library/Preferences'
+    async for plist in lib_prefs_path.glob('*.plist'):
         if plist.stem in all_bad_domains:
             log.debug('Skipping `%s` because it is in the ignored domains list.', plist.stem)
             continue
@@ -99,10 +104,10 @@ def generate_domains(bad_domains_addendum: Iterable[str], *, reset: bool = False
     yield GLOBAL_DOMAIN_ARG
 
 
-def try_parse_plist(domain: str, plist_out: Path) -> tuple[str, PlistRoot]:
-    with plist_out.open('rb') as f:
+async def try_parse_plist(domain: str, plist_out: Path) -> tuple[str, PlistRoot]:
+    async with await plist_out.open('rb') as f:
         try:
-            plist_parsed = plistlib.load(f)
+            plist_parsed = await anyio.to_thread.run_sync(plistlib.load, f.wrapped)
         except (plistlib.InvalidFileException, ValueError) as e:
             log.debug('%s: Invalid property list file: %s', f.name, e)
             # If this condition is reached, the domain is likely in the
@@ -111,13 +116,13 @@ def try_parse_plist(domain: str, plist_out: Path) -> tuple[str, PlistRoot]:
         return domain, remove_data_fields(plist_parsed)
 
 
-@contextmanager
-def chdir(path: os.PathLike[Any] | str) -> Iterator[None]:
+@asynccontextmanager
+async def chdir(path: os.PathLike[Any] | str) -> AsyncIterator[None]:
     """Change directory context manager."""
-    old_cwd = Path.cwd()
+    old_cwd = await Path.cwd()
     path = Path(path)
     try:
-        os.chdir(path.resolve(strict=True))
+        os.chdir(await path.resolve(strict=True))
         yield
     finally:
         os.chdir(old_cwd)
@@ -129,10 +134,10 @@ async def git(cmd: Iterable[str],
               ssh_key: str | None = None) -> sp.Process:
     """Run a Git command."""
     if not git_dir:
-        git_dir = work_tree.resolve(strict=True) / '.git'
+        git_dir = (await work_tree.resolve(strict=True)) / '.git'
         if not git_dir.exists():
-            work_tree.mkdir(parents=True, exist_ok=True)
-            with chdir(work_tree):
+            await work_tree.mkdir(parents=True, exist_ok=True)
+            async with chdir(work_tree):
                 log.debug('Running: git init')
                 p = await sp.create_subprocess_exec('git', 'init', stdout=sp.PIPE, stderr=sp.PIPE)
                 await p.wait()
@@ -156,37 +161,42 @@ async def git(cmd: Iterable[str],
     return p
 
 
-def setup_output_directory(out_dir: Path) -> tuple[Path, Path]:
+async def setup_output_directory(out_dir: Path) -> tuple[Path, Path]:
     repo_prefs_dir = out_dir / 'Preferences'
-    out_dir.mkdir(exist_ok=True, parents=True)
-    repo_prefs_dir.mkdir(exist_ok=True, parents=True)
+    await out_dir.mkdir(exist_ok=True, parents=True)
+    await repo_prefs_dir.mkdir(exist_ok=True, parents=True)
     return out_dir, repo_prefs_dir
 
 
 async def defaults_export(domain: str, repo_prefs_dir: Path) -> tuple[str, PlistRoot]:
-    loop = asyncio.get_running_loop()
     plist_out = (repo_prefs_dir /
                  f'{"globalDomain" if domain == GLOBAL_DOMAIN_ARG else domain}.plist')
-    plist_in = (Path.home() / 'Library/Preferences' /
+    plist_in = ((await Path.home()) / 'Library/Preferences' /
                 f'{".GlobalPreferences" if domain == GLOBAL_DOMAIN_ARG else domain}.plist')
     try:
-        await loop.run_in_executor(None, shutil.copy, plist_in, plist_out)
+        await plist_in.copy(plist_out)  # type: ignore[attr-defined]
+    except AttributeError:
+        await anyio.to_thread.run_sync(shutil.copy, plist_in, plist_out)
     except PermissionError:
         # Restrictive environment
         return domain, {}
     log.debug('Copied %s to %s.', plist_in, plist_out)
-    return await loop.run_in_executor(None, try_parse_plist, domain, plist_out)
+    return await try_parse_plist(domain, plist_out)
+
+
+def plistlib_dump_xml(plist: Any, fp: IO[bytes]) -> None:
+    plistlib.dump(plist, fp, fmt=plistlib.PlistFormat.FMT_XML)
 
 
 async def install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
     p = await sp.create_subprocess_exec('bash', '-c', 'command -v prefs-export', stdout=sp.PIPE)
     assert p.stdout is not None
     prefs_export_path = (await p.stdout.read()).decode().strip()
-    plist_path = Path.home() / 'Library/LaunchAgents/sh.tat.macprefs.plist'
+    plist_path = (await Path.home()) / 'Library/LaunchAgents/sh.tat.macprefs.plist'
     log_path = str(user_log_path('macprefs', ensure_exists=True) / 'macprefs.log')
-    with plist_path.open('wb+') as f:
-        plistlib.dump(
-            {
+    async with await plist_path.open('wb+') as f:
+        await anyio.to_thread.run_sync(
+            plistlib_dump_xml, {
                 'Label':
                     'sh.tat.macprefs',
                 'ProgramArguments': [
@@ -203,9 +213,7 @@ async def install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
                     'Hour': 0,
                     'Minute': 0
                 }
-            },
-            f,
-            fmt=plistlib.PlistFormat.FMT_XML)
+            }, f.wrapped)
     plist_path_s = str(plist_path)
     cmd: tuple[str, ...] = ('launchctl', 'stop', plist_path_s)
     log.debug('Running: %s', ' '.join(quote(x) for x in cmd))
@@ -230,12 +238,11 @@ async def prefs_export(out_dir: Path,
                        *,
                        commit: bool = False) -> None:
     config = config or {}
-    loop = asyncio.get_running_loop()
     has_git = await is_git_installed()
-    out_dir, repo_prefs_dir = await loop.run_in_executor(None, setup_output_directory, out_dir)
+    out_dir, repo_prefs_dir = await setup_output_directory(out_dir)
     export_tasks = []
     all_data: list[tuple[str, PlistRoot]] = []
-    for domain in generate_domains(
+    async for domain in generate_domains(
         {*config.get('extend-ignore-domains', {}), *config.get('ignore-domains', {})},
             reset='ignore-domains' in config):
         export_tasks.append(defaults_export(domain, repo_prefs_dir))
@@ -243,13 +250,13 @@ async def prefs_export(out_dir: Path,
             all_data.extend(await asyncio.gather(*export_tasks))
             export_tasks = []
     all_data.extend(await asyncio.gather(*export_tasks))
-    exec_defaults = Path(out_dir) / 'exec-defaults.sh'
+    exec_defaults = out_dir / 'exec-defaults.sh'
     tasks = []
     known_domains = []
-    with exec_defaults.open('w+') as f:
-        f.write('#!/usr/bin/env bash\n')
-        f.write('# shellcheck disable=SC1003,SC1010,SC1112,SC2016,SC2088\n')
-        f.write('# This file is generated, but is versioned.\n\n')
+    async with await exec_defaults.open('w+') as f:
+        await f.write('#!/usr/bin/env bash\n')
+        await f.write('# shellcheck disable=SC1003,SC1010,SC1112,SC2016,SC2088\n')
+        await f.write('# This file is generated, but is versioned.\n\n')
         bad_keys_re = {
             *config.get('extend-ignore-key-regexes', []), *config.get('ignore-key-regexes', [])
         }
@@ -263,30 +270,30 @@ async def prefs_export(out_dir: Path,
                                     bad_keys,
                                     reset_re='ignore-key-regexes' in config,
                                     reset_bad_keys='ignore-keys' in config)):
-                f.write(f'{line}\n')
+                await f.write(f'{line}\n')
             out_domain = ('globalDomain' if domain == GLOBAL_DOMAIN_ARG else domain)
             known_domains.append(out_domain)
             plist_path = repo_prefs_dir / f'{out_domain}.plist'
             log.debug('Executing: plutil -convert xml1 %s', quote(plist_path.name))
             p = await sp.create_subprocess_exec('plutil', '-convert', 'xml1', plist_path)
             tasks.append(asyncio.create_task(p.wait()))
-    exec_defaults.chmod(0o755)
-    rejected_defaults = Path(out_dir) / 'rejected-defaults.sh'
-    with rejected_defaults.open('w+') as f:
-        f.write('# Rejected defaults values.\n')
-        f.write('# shellcheck disable=SC1003,SC1010,SC1112,SC2016,SC2088\n')
-        f.write('# This file is generated, but is versioned.\n\n')
+    await exec_defaults.chmod(0o755)
+    rejected_defaults = out_dir / 'rejected-defaults.sh'
+    async with await rejected_defaults.open('w+') as f:
+        await f.write('# Rejected defaults values.\n')
+        await f.write('# shellcheck disable=SC1003,SC1010,SC1112,SC2016,SC2088\n')
+        await f.write('# This file is generated, but is versioned.\n\n')
         for domain, root in sorted(all_data, key=operator.itemgetter(0)):
             if not root:  # Skip empty dicts
                 continue
             for line in plist_to_defaults_commands(domain, root, invert_filters=True):
-                f.write(f'{line}\n')
+                await f.write(f'{line}\n')
     assert len(known_domains) > 0
     results = (await asyncio.wait(tasks))[0]
     if any(future.result() != 0 for future in results):
         raise PropertyListConversionError
     if has_git and (delete_with_git := [
-            str(x) for x in repo_prefs_dir.iterdir()
+            str(x) async for x in repo_prefs_dir.iterdir()
             if x.name != '.gitignore' and x.name[:-6] not in known_domains and x.exists()
             if not x.is_dir()
     ]):

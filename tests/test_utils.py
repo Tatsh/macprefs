@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import TYPE_CHECKING
-from unittest.mock import AsyncMock
 import plistlib
 
+from anyio import Path as AnyioPath
 from macprefs.exceptions import PropertyListConversionError
 from macprefs.utils import (
     chdir,
@@ -26,8 +26,8 @@ if TYPE_CHECKING:
 @pytest.mark.asyncio
 async def test_is_git_installed(mocker: MockerFixture) -> None:
     mock_subprocess = mocker.patch('macprefs.utils.sp.create_subprocess_exec',
-                                   new_callable=AsyncMock)
-    mock_process = AsyncMock()
+                                   new_callable=mocker.AsyncMock)
+    mock_process = mocker.AsyncMock()
     mock_process.wait.return_value = 0
     mock_subprocess.return_value = mock_process
     result = await is_git_installed()
@@ -35,28 +35,30 @@ async def test_is_git_installed(mocker: MockerFixture) -> None:
     mock_subprocess.assert_called_once_with('bash', '-c', 'command -v git', stdout=mocker.ANY)
 
 
-def test_generate_domains(mocker: MockerFixture) -> None:
-    mock_glob = mocker.patch('macprefs.utils.Path.glob',
-                             return_value=[
-                                 Path('bad_.plist'),
-                                 Path('test1.plist'),
-                                 Path('test2.plist'),
-                                 Path('.hidden.plist'),
-                             ])
+@pytest.mark.asyncio
+async def test_generate_domains(mocker: MockerFixture) -> None:
+    mock_glob = mocker.AsyncMock()
+    mock_glob.__aiter__.return_value = [
+        AnyioPath('bad_.plist'),
+        AnyioPath('test1.plist'),
+        AnyioPath('test2.plist'),
+        AnyioPath('.hidden.plist')
+    ]
+    mocker.patch('macprefs.utils.Path.glob', return_value=mock_glob)
     mocker.patch('macprefs.utils.BAD_DOMAINS', {'test2'})
     mocker.patch('macprefs.utils.BAD_DOMAIN_PREFIXES', {'bad'})
-    result = list(generate_domains(['additional_bad_domain']))
+    result = [x async for x in generate_domains(['additional_bad_domain'])]
     assert result == ['test1', '-globalDomain']
-    mock_glob.assert_called_once()
+    mock_glob.__aiter__.assert_called_once()
 
 
-def test_try_parse_plist_valid(mocker: MockerFixture) -> None:
-    mock_open = mocker.patch('macprefs.utils.Path.open',
-                             mocker.mock_open(read_data=b'<plist></plist>'))
+@pytest.mark.asyncio
+async def test_try_parse_plist_valid(mocker: MockerFixture) -> None:
+    mock_open = mocker.patch('macprefs.utils.Path.open')
     mock_load = mocker.patch('macprefs.utils.plistlib.load', return_value={'key': 'value'})
     mock_remove_data_fields = mocker.patch('macprefs.utils.remove_data_fields',
                                            return_value={'key': 'value'})
-    domain, result = try_parse_plist('test_domain', Path('test.plist'))
+    domain, result = await try_parse_plist('test_domain', AnyioPath('test.plist'))
     assert domain == 'test_domain'
     assert result == {'key': 'value'}
     mock_open.assert_called_once()
@@ -64,38 +66,42 @@ def test_try_parse_plist_valid(mocker: MockerFixture) -> None:
     mock_remove_data_fields.assert_called_once()
 
 
-def test_try_parse_plist_invalid(mocker: MockerFixture) -> None:
-    mock_open = mocker.patch('pathlib.Path.open', mocker.mock_open(read_data=b'invalid'))
+@pytest.mark.asyncio
+async def test_try_parse_plist_invalid(mocker: MockerFixture) -> None:
+    mock_open = mocker.patch('pathlib.Path.open')
     mock_load = mocker.patch('plistlib.load', side_effect=ValueError)
-    domain, result = try_parse_plist('test_domain', Path('test.plist'))
+    domain, result = await try_parse_plist('test_domain', AnyioPath('test.plist'))
     assert domain == 'test_domain'
     assert result == {}
     mock_open.assert_called_once()
     mock_load.assert_called_once()
 
 
-def test_chdir(mocker: MockerFixture) -> None:
+@pytest.mark.asyncio
+async def test_chdir(mocker: MockerFixture) -> None:
     mock_chdir = mocker.patch('os.chdir')
     mocker.patch('pathlib.Path.cwd', return_value=Path('/original'))
     mocker.patch('pathlib.Path.resolve', return_value=Path('/new'))
-    with chdir('/new'):
+    async with chdir('/new'):
         mock_chdir.assert_called_with(Path('/new').resolve(strict=True))
     mock_chdir.assert_called_with(Path('/original'))
 
 
 @pytest.mark.asyncio
 async def test_git(mocker: MockerFixture) -> None:
-    work_tree_path = mocker.MagicMock()
-    truediv_mock = mocker.MagicMock()
+    work_tree_path = mocker.AsyncMock()
+    truediv_mock = mocker.AsyncMock()
     truediv_mock.__str__.return_value = '/work_tree/.git'
     truediv_mock.exists.return_value = False
     work_tree_path.resolve.return_value.__truediv__.return_value = truediv_mock
     work_tree_path.__str__.return_value = '/work_tree'
     mocker.patch('macprefs.utils.os.chdir')
-    mocker.patch('macprefs.utils.Path')
+    mock_path = mocker.patch('macprefs.utils.Path')
+    mock_resolved = mocker.AsyncMock()
+    mock_path.return_value.resolve.return_value = mock_resolved
     mock_subprocess = mocker.patch('macprefs.utils.sp.create_subprocess_exec',
-                                   new_callable=AsyncMock)
-    mock_process = AsyncMock()
+                                   new_callable=mocker.AsyncMock)
+    mock_process = mocker.AsyncMock()
     mock_process.wait.return_value = 0
     mock_subprocess.return_value = mock_process
     result = await git(['status'], work_tree_path)
@@ -107,14 +113,15 @@ async def test_git(mocker: MockerFixture) -> None:
                                        stderr=mocker.ANY)
 
 
-def test_setup_output_directory(mocker: MockerFixture) -> None:
-    mock_mkdir = mocker.patch('pathlib.Path.mkdir')
-
-    out_dir, repo_prefs_dir = setup_output_directory(Path('/output'))
-
-    assert out_dir == Path('/output')
-    assert repo_prefs_dir == Path('/output/Preferences')
-    mock_mkdir.assert_any_call(exist_ok=True, parents=True)
+@pytest.mark.asyncio
+async def test_setup_output_directory(mocker: MockerFixture) -> None:
+    mock_repo_prefs_dir = mocker.AsyncMock()
+    output_dir_path = mocker.AsyncMock()
+    output_dir_path.__truediv__.return_value = mock_repo_prefs_dir
+    out_dir, repo_prefs_dir = await setup_output_directory(output_dir_path)
+    assert out_dir == output_dir_path
+    assert repo_prefs_dir == mock_repo_prefs_dir
+    output_dir_path.mkdir.assert_any_call(exist_ok=True, parents=True)
 
 
 @pytest.mark.asyncio
@@ -124,7 +131,7 @@ async def test_defaults_export(mocker: MockerFixture) -> None:
                                   return_value=('domain', {
                                       'key': 'value'
                                   }))
-    result = await defaults_export('domain', Path('/repo_prefs_dir'))
+    result = await defaults_export('domain', AnyioPath('/repo_prefs_dir'))
     assert result == ('domain', {'key': 'value'})
     mock_copy.assert_called_once()
     mock_try_parse.assert_called_once()
@@ -133,15 +140,15 @@ async def test_defaults_export(mocker: MockerFixture) -> None:
 @pytest.mark.asyncio
 async def test_install_job(mocker: MockerFixture) -> None:
     mock_plistlib_dump = mocker.patch('macprefs.utils.plistlib.dump')
-    mock_plist_path = mocker.MagicMock()
+    mock_plist_path = mocker.AsyncMock()
     mock_plist_path.__str__.return_value = '/a/path/to/com.sh.tat.macprefs.plist'
     mock_user_log_path = mocker.patch('macprefs.utils.user_log_path')
     mock_user_log_path.return_value.__truediv__.return_value.__str__.return_value = '/a/log-path/macprefs.log'  # noqa: E501
     mock_path_home = mocker.patch('macprefs.utils.Path.home')
     mock_path_home.return_value.__truediv__.return_value = mock_plist_path
     mock_subprocess = mocker.patch('macprefs.utils.sp.create_subprocess_exec',
-                                   new_callable=AsyncMock)
-    mock_process = AsyncMock()
+                                   new_callable=mocker.AsyncMock)
+    mock_process = mocker.AsyncMock()
     mock_process.returncode = 0
     mock_process.stdout.read.return_value = b'output'
     mock_process.wait.return_value = 0
@@ -161,7 +168,7 @@ async def test_install_job(mocker: MockerFixture) -> None:
                 'Minute': 0
             }
         },
-        mock_plist_path.open.return_value.__enter__.return_value,
+        mock_plist_path.open.return_value.__aenter__.return_value.wrapped,
         fmt=plistlib.PlistFormat.FMT_XML)
     assert result == 0
     assert mock_subprocess.call_count == 5
@@ -186,26 +193,31 @@ async def test_install_job(mocker: MockerFixture) -> None:
 
 @pytest.mark.asyncio
 async def test_prefs_export_error(mocker: MockerFixture) -> None:
-    mocker.patch('macprefs.utils.sp.create_subprocess_exec', new_callable=AsyncMock)
+    mocker.patch('macprefs.utils.sp.create_subprocess_exec', new_callable=mocker.AsyncMock)
     mocker.patch('macprefs.utils.Path')
     mock_is_git_installed = mocker.patch('macprefs.utils.is_git_installed', return_value=True)
-    mock_setup_output_directory = mocker.patch(
-        'macprefs.utils.setup_output_directory',
-        return_value=(Path('/out_dir'), Path('/repo_prefs_dir')))
-    mock_generate_domains = mocker.patch('macprefs.utils.generate_domains',
-                                         return_value=['domain1', 'domain2'])
+    mock_out_dir = mocker.AsyncMock()
+    mock_repo_prefs_dir = mocker.AsyncMock()
+    mock_setup_output_directory = mocker.patch('macprefs.utils.setup_output_directory',
+                                               return_value=(mock_out_dir, mock_repo_prefs_dir))
+    mock_generate_domains = mocker.AsyncMock()
+    mock_generate_domains.__aiter__.return_value = ['domain1', 'domain2']
+    mocker.patch('macprefs.utils.generate_domains', return_value=mock_generate_domains)
     mock_defaults_export = mocker.patch('macprefs.utils.defaults_export',
-                                        new_callable=AsyncMock,
+                                        new_callable=mocker.AsyncMock,
                                         side_effect=[('domain1', {
                                             'key': 'value'
                                         }), ('domain2', {
                                             'key': 'value'
                                         })])
-    mocker.patch('macprefs.utils.git', new_callable=AsyncMock)
-    mock_out_dir = mocker.MagicMock()
+    mocker.patch('macprefs.utils.git', new_callable=mocker.AsyncMock)
+    mock_out_dir.__truediv__.return_value = mocker.AsyncMock()
+    mock_out_dir.__truediv__.return_value.__aenter__.return_value.open.return_value = mocker.AsyncMock(  # noqa: E501
+    )
+    mock_repo_prefs_dir.__truediv__.return_value.name = 'out.plist'
     with pytest.raises(PropertyListConversionError):
         await prefs_export(mock_out_dir, commit=True)
     mock_is_git_installed.assert_called_once()
     mock_setup_output_directory.assert_called_once()
-    mock_generate_domains.assert_called_once()
+    mock_generate_domains.__aiter__.assert_called_once()
     mock_defaults_export.assert_called()
