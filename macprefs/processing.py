@@ -23,7 +23,7 @@ def make_key_filter(bad_keys_re_addendum: Iterable[str] | None = None,
                     *,
                     reset_re: bool = False,
                     reset_bad_keys: bool = False) -> Callable[[str, str], bool]:
-    bad_keys_re = ('|'.join(set(bad_keys_re_addendum or [])) if reset_re else BAD_KEYS_RE +
+    bad_keys_re = ('|'.join(set(bad_keys_re_addendum or [])) if reset_re else f'{BAD_KEYS_RE}|' +
                    '|'.join(set(bad_keys_re_addendum or [])))
     bad_keys = (bad_keys_addendum or {}) if reset_bad_keys else {
         **BAD_KEYS,
@@ -31,7 +31,7 @@ def make_key_filter(bad_keys_re_addendum: Iterable[str] | None = None,
     }
 
     def should_ignore_key(domain: str, key: str) -> bool:
-        if re.match(bad_keys_re, key):
+        if bad_keys_re and re.match(bad_keys_re, key):
             log.debug('Skipping %s-%s because it matched the bad keys RE.', domain, key)
             return True
         if domain in bad_keys and key in bad_keys[domain]:
@@ -48,7 +48,7 @@ def make_key_filter(bad_keys_re_addendum: Iterable[str] | None = None,
 
 
 def remove_data_fields_list(pl_list: PlistList) -> PlistList:
-    """Clean up data fields from a ``PlistList``."""
+    """Clean up data fields from a :py:class:`macprefs.typing.PlistList`."""
     ret = cast('MutablePlistList', deepcopy(pl_list))
     index = 0
     for value in pl_list:
@@ -67,7 +67,7 @@ def remove_data_fields_list(pl_list: PlistList) -> PlistList:
 
 
 def remove_data_fields(root: PlistRoot) -> PlistRoot:
-    """Clean up data fields from a ``PlistRoot``."""
+    """Clean up data fields from a :py:class:`macprefs.typing.PlistRoot`."""
     ret = cast('MutablePlistRoot', deepcopy(root))
     for key, value in root.items():
         if not isinstance(value, bytes):

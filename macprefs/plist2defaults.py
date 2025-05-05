@@ -86,7 +86,7 @@ def plist_to_defaults_commands(domain: str,
                                key_filter: Callable[[str, str], bool] | None = None,
                                *,
                                invert_filters: bool = False) -> Iterator[str]:
-    """Given a ``PlistRoot``, generate a series of ``defaults write`` commands."""
+    """Given a :py:class:`macprefs.typing.PlistRoot`, generate ``defaults write`` commands."""
     values: list[str] = []
     prefix = f'defaults write {quote(domain)}'
     if key_filter and invert_filters:
