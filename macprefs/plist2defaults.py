@@ -89,9 +89,15 @@ def plist_to_defaults_commands(domain: str,
     """Given a ``PlistRoot``, generate a series of ``defaults write`` commands."""
     values: list[str] = []
     prefix = f'defaults write {quote(domain)}'
+    if key_filter and invert_filters:
+        orig_key_filter = key_filter
+
+        def inverted(d: str, k: str) -> bool:
+            return not orig_key_filter(d, k)
+
+        key_filter = inverted
     for key, value in sorted(root.items()):
-        if (key_filter
-                and (not key_filter(domain, key) if invert_filters else key_filter(domain, key))):
+        if key_filter and not key_filter(domain, key):
             continue
         values.extend(convert_value(key, value, prefix))
     if values:
