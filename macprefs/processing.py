@@ -23,6 +23,7 @@ def make_key_filter(bad_keys_re_addendum: Iterable[str] | None = None,
                     *,
                     reset_re: bool = False,
                     reset_bad_keys: bool = False) -> Callable[[str, str], bool]:
+    """Create a function to filter out ignored keys."""
     bad_keys_re = ('|'.join(set(bad_keys_re_addendum or [])) if reset_re else f'{BAD_KEYS_RE}|' +
                    '|'.join(set(bad_keys_re_addendum or [])))
     bad_keys = (bad_keys_addendum or {}) if reset_bad_keys else {

@@ -7,6 +7,7 @@ from typing import Any, TypeAlias
 __all__ = ('ComplexInnerTypes', 'PlistList', 'PlistRoot', 'PlistValue', 'SimpleArg')
 
 ComplexInnerTypes: TypeAlias = list[Any] | Mapping[str, Any] | bytes
+"""Non-scalar inner types of a property list."""
 PlistValue: TypeAlias = Mapping[str, Any] | list[Any] | bool | int | float | str | datetime | bytes
 """Value inside a property list."""
 PlistList: TypeAlias = Sequence[PlistValue]

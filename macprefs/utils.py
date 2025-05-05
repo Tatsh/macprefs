@@ -190,6 +190,7 @@ def plistlib_dump_xml(plist: Any, fp: IO[bytes]) -> None:
 
 
 async def install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
+    """Install a launchd job to run macprefs."""
     p = await sp.create_subprocess_exec('bash', '-c', 'command -v prefs-export', stdout=sp.PIPE)
     assert p.stdout is not None
     prefs_export_path = (await p.stdout.read()).decode().strip()
@@ -238,6 +239,13 @@ async def prefs_export(out_dir: Path,
                        deploy_key: Path | None = None,
                        *,
                        commit: bool = False) -> None:
+    """
+    Export filtered preferences to a directory.
+
+    Also writes scripts `exec-defaults.sh` and `rejected-defaults.sh` to the output directory, both
+    of which contain ``defaults`` commands to set preferences equivalent to the exported property
+    list files.
+    """
     config = config or {}
     has_git = await is_git_installed()
     out_dir, repo_prefs_dir = await setup_output_directory(out_dir)

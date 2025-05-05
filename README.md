@@ -54,7 +54,7 @@ results in a Git repository.
 My primary usage is like so:
 
 ```shell
-prefs-export -o ~/.config/defaults -c
+prefs-export --output-directory ~/.config/defaults --commit
 ```
 
 ## Configuration
