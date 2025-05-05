@@ -1,33 +1,50 @@
+from __future__ import annotations
+
 from copy import deepcopy
-from typing import cast
+from typing import TYPE_CHECKING, cast
 import logging
 import re
 
-from .filters import BAD_DOMAINS, BAD_DOMAIN_PREFIXES, BAD_KEYS, BAD_KEYS_RE
-from .typing import MutablePlistList, MutablePlistRoot, PlistList, PlistRoot
+from .filters import BAD_KEYS
+from .filters.bad_keys_re import BAD_KEYS_RE
 
-__all__ = ('remove_data_fields', 'remove_data_fields_list')
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable, Mapping
 
-logger = logging.getLogger(__name__)
+    from .typing import MutablePlistList, MutablePlistRoot, PlistList, PlistRoot
+
+__all__ = ('make_key_filter', 'remove_data_fields', 'remove_data_fields_list')
+
+log = logging.getLogger(__name__)
 
 
-def should_ignore_domain(domain: str) -> bool:
-    return domain in BAD_DOMAINS or any(domain.startswith(prefix) for prefix in BAD_DOMAIN_PREFIXES)
+def make_key_filter(bad_keys_re_addendum: Iterable[str] | None = None,
+                    bad_keys_addendum: Mapping[str, set[str]] | None = None,
+                    *,
+                    reset_re: bool = False,
+                    reset_bad_keys: bool = False) -> Callable[[str, str], bool]:
+    bad_keys_re = ('|'.join(set(bad_keys_re_addendum or [])) if reset_re else BAD_KEYS_RE +
+                   '|'.join(set(bad_keys_re_addendum or [])))
+    bad_keys = (bad_keys_addendum or {}) if reset_bad_keys else {
+        **BAD_KEYS,
+        **(bad_keys_addendum or {})
+    }
 
+    def should_ignore_key(domain: str, key: str) -> bool:
+        if re.match(bad_keys_re, key):
+            log.debug('Skipping %s-%s because it matched the bad keys RE.', domain, key)
+            return True
+        if domain in bad_keys and key in bad_keys[domain]:
+            log.debug('Skipping %s-%s because it matched the bad keys dict.', domain, key)
+            return True
+        if domain in bad_keys:
+            for x in {y for y in bad_keys[domain] if y.startswith('re:')}:
+                if re.match(x[3:], key):
+                    log.debug('Skipping %s-%s because it matched regular expression.', key, domain)
+                    return True
+        return False
 
-def should_ignore_key(domain: str, key: str) -> bool:
-    if re.match(BAD_KEYS_RE, key):
-        logger.debug('Skipping %s because it matched the bad keys RE.', key)
-        return True
-    if domain in BAD_KEYS and key in BAD_KEYS[domain]:
-        logger.debug('Skipping %s because it matched the bad keys dict.', key)
-        return True
-    if domain in BAD_KEYS:
-        for x in filter(lambda y: y.startswith('re:'), list(BAD_KEYS[domain])):
-            if re.match(x[3:], key):
-                logger.debug('Skipping %s because it matched a regexp in %s.', key, domain)
-                return True
-    return False
+    return should_ignore_key
 
 
 def remove_data_fields_list(pl_list: PlistList) -> PlistList:

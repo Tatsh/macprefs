@@ -1,3 +1,4 @@
+asyncio
 autodoc
 automodule
 codeowners
@@ -58,6 +59,7 @@ sphinxcontrib
 tatsh
 testpaths
 toctree
+tomlkit
 tryfirst
 udvare
 virtualenv

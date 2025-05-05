@@ -1,10 +1,9 @@
-from typing import Final
-import re
+from __future__ import annotations
 
 __all__ = ('BAD_KEYS_RE',)
 
 # spell-checker: disable
-BAD_KEYS_RE: Final[re.Pattern[str]] = re.compile('^(' + '|'.join({
+BAD_KEYS_RE = '^(' + '|'.join({
     '(?:Favorites|Recents|SkinTones):com.apple.CharacterPicker.DefaultDataStorage',
     '(?:NSWindow|MASPreferences) Frame', 'CKPerBootTasks', 'CKStartupTime', 'DidShowFDEWarning',
     'GEOUsageSessionIDGenerationTime', 'last-messagetrace-stamp', 'LastRunAppBundlePath',
@@ -17,4 +16,4 @@ BAD_KEYS_RE: Final[re.Pattern[str]] = re.compile('^(' + '|'.join({
     'QtUi.MainWin(?:Geometry|State|Pos|Size)', 'recentFilesList', 'SPSelfBeaconUUIDKey',
     'SUEnableAutomaticChecks', 'SULastCheckTime', 'TSAICloudAuthorNameKey',
     'TSKRemote(?:Defaults|Strings)ETag', r'QuickLookPreview_[A-Z0-9-\.]+'
-}) + r')\b')
+}) + r')\b'

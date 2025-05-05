@@ -1,17 +1,50 @@
-from collections.abc import Callable, Iterator
+from __future__ import annotations
+
 from datetime import datetime
 from shlex import quote
-from typing import Any
+from typing import TYPE_CHECKING, Any
 import logging
 
 from .constants import OUTPUT_FILE_MAXIMUM_LINE_LENGTH
-from .processing import should_ignore_domain, should_ignore_key
-from .typing import PlistRoot
-from .utils import is_simple, to_str
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterator
+
+    from .typing import PlistRoot, SimpleArg
 
 __all__ = ('plist_to_defaults_commands',)
 
 log = logging.getLogger(__name__)
+
+
+def _can_decode_unicode(x: bytes) -> bool:
+    try:
+        x.decode()
+    except UnicodeDecodeError:
+        return False
+    return True
+
+
+def is_simple(x: SimpleArg) -> bool:
+    """Check if a value is a simple type of value."""
+    if isinstance(x, dict):
+        x = x.values()
+    for y in x:
+        if (isinstance(y, (datetime, list, dict))
+                or (isinstance(y, bytes) and not _can_decode_unicode(y))):
+            return False
+    return True
+
+
+def to_str(x: bytes | str) -> str:
+    """Convert a value to a string for shell."""
+    if isinstance(x, bytes):
+        try:
+            return x.decode('utf-8')
+        except UnicodeDecodeError:
+            return ''.join(f'{y:x}' for y in x)
+    ret = str(x)
+    return ret.lower() if ret in {'True', 'False'} else ret
 
 
 def convert_value(key: str, value: Any, prefix: str) -> Iterator[str]:
@@ -50,18 +83,15 @@ def convert_value(key: str, value: Any, prefix: str) -> Iterator[str]:
 
 def plist_to_defaults_commands(domain: str,
                                root: PlistRoot,
-                               domain_filter: Callable[[str], bool] | None = should_ignore_domain,
-                               key_filter: Callable[[str, str], bool] | None = should_ignore_key,
+                               key_filter: Callable[[str, str], bool] | None = None,
                                *,
-                               inverse_filters: bool = False) -> Iterator[str]:
+                               invert_filters: bool = False) -> Iterator[str]:
     """Given a ``PlistRoot``, generate a series of ``defaults write`` commands."""
-    if domain_filter and (not domain_filter(domain) if inverse_filters else domain_filter(domain)):
-        return
     values: list[str] = []
     prefix = f'defaults write {quote(domain)}'
     for key, value in sorted(root.items()):
         if (key_filter
-                and (not key_filter(domain, key) if inverse_filters else key_filter(domain, key))):
+                and (not key_filter(domain, key) if invert_filters else key_filter(domain, key))):
             continue
         values.extend(convert_value(key, value, prefix))
     if values:

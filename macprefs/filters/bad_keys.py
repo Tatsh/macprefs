@@ -1,10 +1,9 @@
-from typing import Final
+from __future__ import annotations
 
 __all__ = ('BAD_KEYS',)
 
 # spell-checker: disable
-BAD_KEYS: Final[dict[str, set[str]]] = {
-
+BAD_KEYS = {
     # Devices get added to global domain with -string 1
     '-globalDomain': {
         'AKLastEmailListRequestDateKey', 'AppleInterfaceStyle', 'AppleLanguagesDidMigrate',

@@ -1,9 +1,9 @@
-from typing import Final
+from __future__ import annotations
 
 __all__ = ('BAD_DOMAINS', 'BAD_DOMAIN_PREFIXES')
 
 # spell-checker: disable
-BAD_DOMAINS: Final[set[str]] = {
+BAD_DOMAINS = {
     'Avatar Cache Index', 'ContextStoreAgent', 'G2MUpdate', 'MiniLauncher', 'Mixpanel',
     'MobileMeAccounts', 'NoMachine Monitor', 'com.apple.AMPLibraryAgent', 'com.apple.AdLib',
     'com.apple.AppleMediaServices.notbackedup', 'com.apple.AvatarUI.Staryu', 'com.apple.BiomeAgent',
@@ -49,8 +49,9 @@ BAD_DOMAINS: Final[set[str]] = {
     'fr.madrau.switchresx.app', 'fr.madrau.switchresx.daemon', 'jp.naver.line.mac',
     'knowledge-agent', 'org.bitcoinfoundation.Bitcoin-Qt', 'org.kde.marble',
     'plugin.sketch.com.google.ux.material.spec_tools', 'sharedfilelistd',
-    'systemgroup.com.apple.icloud.searchpartyd.sharedsettings', 'systemsettings5', 'vlc.exe'
+    'systemgroup.com.apple.icloud.searchpartyd.sharedsettings', 'systemsettings5', 'vlc.exe',
+    '$(PRODUCT_BUNDLE_IDENTIFIER)'
 }
-BAD_DOMAIN_PREFIXES: Final[set[str]] = {
+BAD_DOMAIN_PREFIXES = {
     'com.parallels.toolbox.', 'org.gimp.gimp-', 'org.python.', 'workplace-desktop'
 }

@@ -1,5 +1,3 @@
-local utils = import 'utils.libjsonnet';
-
 (import 'defaults.libjsonnet') + {
   // Project-specific
   description: 'Command and library to export macOS preferences.',
@@ -8,7 +6,7 @@ local utils = import 'utils.libjsonnet';
   version: '0.3.4',
   want_main: true,
   citation+: {
-    'date-released': '2025-04-14',
+    'date-released': '2025-05-04',
   },
   pyproject+: {
     project+: {
@@ -22,35 +20,33 @@ local utils = import 'utils.libjsonnet';
         'Topic :: Utilities',
       ],
       scripts: {
-        'macprefs-install-job': 'macprefs:install_job',
-        'prefs-export': 'macprefs:prefs_export',
+        'macprefs-install-job': 'macprefs.main:install_job',
+        'prefs-export': 'macprefs.main:main',
       },
     },
     tool+: {
-      mypy+: {
-        mypy_path: './.stubs',
-      },
       poetry+: {
         dependencies+: {
-          click: '^8.1.8',
           deepdiff: '^8.4.2',
+          platformdirs: '^4.3.6',
+          tomlkit: '^0.13.2',
+        },
+        group+: {
+          tests+: {
+            dependencies+: {
+              'pytest-asyncio': '^0.26.0',
+            },
+          },
         },
       },
     },
   },
-  skip+: ['tests/test_main.py', 'tests/test_utils.py', 'macprefs/utils.py'],
   // Common
   authors: [
     {
       'family-names': 'Udvare',
       'given-names': 'Andrew',
       email: 'audvare@gmail.com',
-      name: '%s %s' % [self['given-names'], self['family-names']],
-    },
-    {
-      'family-names': 'Javier',
-      'given-names': 'Francisco',
-      email: 'web@inode64.com',
       name: '%s %s' % [self['given-names'], self['family-names']],
     },
   ],

@@ -98,6 +98,7 @@ contextlib2 = "^21.6.0"
 deepdiff = "^8.4.2"
 platformdirs = "^4.3.6"
 python = ">=3.10,<3.14"
+tomlkit = "^0.13.2"
 typing-extensions = "^4.13.1"
 
 [tool.poetry.group]
@@ -142,6 +143,7 @@ optional = true
 [tool.poetry.group.tests.dependencies]
 mock = "^5.2.0"
 pytest = "^8.3.5"
+pytest-asyncio = "^0.26.0"
 pytest-cov = "^6.1.1"
 pytest-mock = "^3.14.0"
 

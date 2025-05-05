@@ -1,4 +1,5 @@
-from .main import install_job, main as prefs_export
+from __future__ import annotations
+
 from .plist2defaults import plist_to_defaults_commands
 
-__all__ = ('install_job', 'plist_to_defaults_commands', 'prefs_export')
+__all__ = ('plist_to_defaults_commands',)

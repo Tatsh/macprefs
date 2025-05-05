@@ -1,4 +1,6 @@
 """Configuration for Pytest."""
+from __future__ import annotations
+
 from typing import NoReturn
 import os
 

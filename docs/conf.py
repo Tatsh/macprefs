@@ -1,4 +1,6 @@
 """See https://www.sphinx-doc.org/en/master/usage/configuration.html."""
+from __future__ import annotations
+
 from datetime import datetime, timezone
 from operator import itemgetter
 from pathlib import Path
@@ -52,16 +54,16 @@ html_theme_options = {
     }, {
         'accent': 'light-blue',
         'media': '(prefers-color-scheme: light)',
-        'primary': 'light-green',
+        'primary': 'teal',
         'scheme': 'default',
         'toggle': {
             'icon': 'material/lightbulb',
             'name': 'Switch to dark mode'
         }
     }, {
-        'accent': 'lime',
+        'accent': 'blue',
         'media': '(prefers-color-scheme: dark)',
-        'primary': 'deep-orange',
+        'primary': 'black',
         'scheme': 'slate',
         'toggle': {
             'icon': 'material/lightbulb-outline',
