@@ -42,6 +42,15 @@ def test_make_key_filter_with_regex_match(mock_bad_keys: None, mock_bad_keys_re:
     assert filter_func('test_domain', 'bad_key') is True
 
 
+def test_make_key_filter_with_regex_match_2() -> None:
+    filter_func = make_key_filter(bad_keys_addendum={'test_domain': {'re:^test_'}},
+                                  reset_bad_keys=True,
+                                  reset_re=True)
+    assert filter_func('test_domain', 'test_key') is True
+    assert filter_func('test_domain', 'test_regex') is True
+    assert filter_func('test_domain', 'bad_key') is False
+
+
 def test_remove_data_fields_list_with_bytes() -> None:
     input_data = [b'test', b'another']
     result = remove_data_fields_list(input_data)
@@ -49,13 +58,22 @@ def test_remove_data_fields_list_with_bytes() -> None:
 
 
 def test_remove_data_fields_list_with_nested_structures() -> None:
-    input_data = [{
-        'key': b'value'
-    }, [b'list_value', {
-        'nested_key': b'nested_value'
-    }], b'bytes_value']
+    input_data = [
+        {
+            'key': b'value'
+        },
+        [
+            b'list_value',
+            {
+                'nested_key': b'nested_value',
+                'k': 'a'
+            },
+        ],
+        b'bytes_value',
+        1,
+    ]
     result = remove_data_fields_list(cast('PlistList', input_data))
-    assert result == []
+    assert result == [[{'k': 'a'}], 1]
 
 
 def test_remove_data_fields_with_bytes() -> None:
@@ -69,9 +87,12 @@ def test_remove_data_fields_with_nested_structures() -> None:
         'key': {
             'nested_key': b'nested_value'
         },
-        'list_key': [b'list_value', {
-            'deep_key': b'deep_value'
-        }],
+        'list_key': [
+            b'list_value',
+            {
+                'deep_key': b'deep_value'
+            },
+        ],
         'bytes_key': b'bytes_value'
     }
     result = remove_data_fields(cast('PlistRoot', input_data))
