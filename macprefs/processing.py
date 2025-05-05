@@ -50,8 +50,8 @@ def make_key_filter(bad_keys_re_addendum: Iterable[str] | None = None,
 def remove_data_fields_list(pl_list: PlistList) -> PlistList:
     """Clean up data fields from a :py:class:`macprefs.typing.PlistList`."""
     ret: list[Any] = []
-    for value in deepcopy(pl_list):
-        val = deepcopy(value)
+    for value in pl_list:
+        val: Any = deepcopy(value)
         if isinstance(value, bytes):
             continue
         if isinstance(value, list):
@@ -68,7 +68,7 @@ def remove_data_fields(root: PlistRoot) -> PlistRoot:
     """Clean up data fields from a :py:class:`macprefs.typing.PlistRoot`."""
     ret: dict[str, Any] = {}
     for key, value in root.items():
-        val = deepcopy(value)
+        val: Any = deepcopy(value)
         if isinstance(value, bytes):
             continue
         if isinstance(value, list):
