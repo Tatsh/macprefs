@@ -52,7 +52,9 @@ version_files = [
   "CITATION.cff",
   "README.md",
   "package.json",
+  "docs/index.rst",
   "macprefs/__init__.py",
+  "man/macprefs.1",
 ]
 version_provider = "pep621"
 
