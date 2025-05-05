@@ -74,7 +74,7 @@ def test_convert_value(key: str, value: Any, prefix: str, expected: list[str]) -
 
 def test_plist_to_defaults_commands(mocker: Any) -> None:
     mock_root = {'key1': 'value1', 'key2': 123}
-    mock_key_filter = mocker.MagicMock(return_value=True)
+    mock_key_filter = mocker.MagicMock(return_value=False)
     result = list(
         plist_to_defaults_commands('domain',
                                    cast('PlistRoot', mock_root),
@@ -91,7 +91,7 @@ def test_plist_to_defaults_commands(mocker: Any) -> None:
 
 def test_plist_to_defaults_commands_invert_filter(mocker: Any) -> None:
     mock_root = {'key1': 'value1', 'key2': 123}
-    mock_key_filter = mocker.MagicMock(return_value=True)
+    mock_key_filter = mocker.MagicMock(return_value=False)
     result = list(
         plist_to_defaults_commands('domain',
                                    cast('PlistRoot', mock_root),

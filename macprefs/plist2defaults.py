@@ -86,7 +86,25 @@ def plist_to_defaults_commands(domain: str,
                                key_filter: Callable[[str, str], bool] | None = None,
                                *,
                                invert_filters: bool = False) -> Iterator[str]:
-    """Given a :py:class:`macprefs.typing.PlistRoot`, generate ``defaults write`` commands."""
+    """
+    Given a :py:class:`macprefs.typing.PlistRoot`, generate ``defaults write`` commands.
+
+    Parameters
+    ----------
+    domain : str
+        The preferences domain.
+    root : PlistRoot
+        The root of the preferences dictionary.
+    key_filter : Callable[[str, str], bool] | None
+        A function that takes a domain and key and returns ``True`` if the key should be ignored.
+    invert_filters : bool
+        If ``True``, invert the key filter.
+
+    Yields
+    ------
+    str
+        Lines for output into a shell script.
+    """
     values: list[str] = []
     prefix = f'defaults write {quote(domain)}'
     if key_filter and invert_filters:
@@ -97,7 +115,7 @@ def plist_to_defaults_commands(domain: str,
 
         key_filter = inverted
     for key, value in sorted(root.items()):
-        if key_filter and not key_filter(domain, key):
+        if key_filter and key_filter(domain, key):
             continue
         values.extend(convert_value(key, value, prefix))
     if values:

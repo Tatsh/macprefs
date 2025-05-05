@@ -144,7 +144,7 @@ async def git(cmd: Iterable[str],
     if ssh_key:
         await git(('config', 'core.sshCommand',
                    (f'ssh -i {ssh_key} -F /dev/null -o UserKnownHostsFile=/dev/null '
-                    '-o StrictHostKeyChecking=no')), work_tree)
+                    '-o StrictHostKeyChecking=no')), work_tree, git_dir)
     cmd_list = list(cmd)
     rest = ' '.join(map(quote, cmd_list))
     log.debug('Running: git "--git-dir=%s" "--work-tree=%s" %s', git_dir, work_tree, rest)
@@ -174,9 +174,10 @@ async def defaults_export(domain: str, repo_prefs_dir: Path) -> tuple[str, Plist
     plist_in = ((await Path.home()) / 'Library/Preferences' /
                 f'{".GlobalPreferences" if domain == GLOBAL_DOMAIN_ARG else domain}.plist')
     try:
-        await plist_in.copy(plist_out)  # type: ignore[attr-defined]
-    except AttributeError:
-        await anyio.to_thread.run_sync(shutil.copy, plist_in, plist_out)
+        try:
+            await plist_in.copy(plist_out)  # type: ignore[attr-defined]
+        except AttributeError:  # pragma: no cover
+            await anyio.to_thread.run_sync(shutil.copy, plist_in, plist_out)
     except PermissionError:
         # Restrictive environment
         return domain, {}
@@ -253,23 +254,21 @@ async def prefs_export(out_dir: Path,
     exec_defaults = out_dir / 'exec-defaults.sh'
     tasks = []
     known_domains = []
+    key_filter = make_key_filter(
+        {*config.get('extend-ignore-key-regexes', []), *config.get('ignore-key-regexes', [])}, {
+            **config.get('extend-ignore-keys', {}),
+            **config.get('ignore-keys', {})
+        },
+        reset_re='ignore-key-regexes' in config,
+        reset_bad_keys='ignore-keys' in config)
     async with await exec_defaults.open('w+') as f:
         await f.write('#!/usr/bin/env bash\n')
         await f.write('# shellcheck disable=SC1003,SC1010,SC1112,SC2016,SC2088\n')
         await f.write('# This file is generated, but is versioned.\n\n')
-        bad_keys_re = {
-            *config.get('extend-ignore-key-regexes', []), *config.get('ignore-key-regexes', [])
-        }
-        bad_keys = {**config.get('extend-ignore-keys', {}), **config.get('ignore-keys', {})}
         for domain, root in sorted(all_data, key=operator.itemgetter(0)):
             if not root:  # Skip empty dicts
                 continue
-            for line in plist_to_defaults_commands(
-                    domain, root,
-                    make_key_filter(bad_keys_re,
-                                    bad_keys,
-                                    reset_re='ignore-key-regexes' in config,
-                                    reset_bad_keys='ignore-keys' in config)):
+            for line in plist_to_defaults_commands(domain, root, key_filter):
                 await f.write(f'{line}\n')
             out_domain = ('globalDomain' if domain == GLOBAL_DOMAIN_ARG else domain)
             known_domains.append(out_domain)
@@ -286,7 +285,7 @@ async def prefs_export(out_dir: Path,
         for domain, root in sorted(all_data, key=operator.itemgetter(0)):
             if not root:  # Skip empty dicts
                 continue
-            for line in plist_to_defaults_commands(domain, root, invert_filters=True):
+            for line in plist_to_defaults_commands(domain, root, key_filter, invert_filters=True):
                 await f.write(f'{line}\n')
     assert len(known_domains) > 0
     results = (await asyncio.wait(tasks))[0]
@@ -294,8 +293,8 @@ async def prefs_export(out_dir: Path,
         raise PropertyListConversionError
     if has_git and (delete_with_git := [
             str(x) async for x in repo_prefs_dir.iterdir()
-            if x.name != '.gitignore' and x.name[:-6] not in known_domains and x.exists()
-            if not x.is_dir()
+            if x.name != '.gitignore' and x.name[:-6] not in known_domains and (await x.exists())
+            if not (await x.is_dir())
     ]):
         # Clean up very old plists
         await git(('rm', '-f', '--ignore-unmatch', '--', *delete_with_git), out_dir)
