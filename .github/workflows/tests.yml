@@ -2,7 +2,7 @@ jobs:
   test:
     env:
       GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-    runs-on: 'macos-latest'
+    runs-on: 'macos-${{ matrix.macos-version }}'
     steps:
       - uses: 'actions/checkout@v4'
       - name: 'Install Poetry'
@@ -23,6 +23,13 @@ jobs:
         run: 'poetry run coveralls --service=github'
     strategy:
       matrix:
+        macos-version:
+          - '13'
+          - '13-xlarge'
+          - '14'
+          - '14-large'
+          - '15'
+          - '15-large'
         python-version:
           - '3.10'
           - '3.11'
