@@ -49,7 +49,7 @@ async def test_generate_domains(mocker: MockerFixture) -> None:
     mocker.patch('macprefs.utils.Path.glob', return_value=mock_glob)
     mocker.patch('macprefs.utils.BAD_DOMAINS', {'test2'})
     mocker.patch('macprefs.utils.BAD_DOMAIN_PREFIXES', {'bad'})
-    result = [x async for x in generate_domains(['additional_bad_domain'])]
+    result = [x async for x in generate_domains(['additional_bad_domain'], [])]
     assert result == ['test1', '-globalDomain']
     mock_glob.__aiter__.assert_called_once()
 
@@ -91,10 +91,10 @@ async def test_chdir(mocker: MockerFixture) -> None:
 
 @pytest.mark.asyncio
 async def test_git(mocker: MockerFixture) -> None:
-    work_tree_path = mocker.AsyncMock()
+    work_tree_path = mocker.AsyncMock(spec=AnyioPath)
     truediv_mock = mocker.AsyncMock()
     truediv_mock.__str__.return_value = '/work_tree/.git'
-    truediv_mock.exists.return_value = False
+    truediv_mock.exists.return_value = mocker.AsyncMock(return_value=False)
     work_tree_path.resolve.return_value.__truediv__.return_value = truediv_mock
     work_tree_path.__str__.return_value = '/work_tree'
     mocker.patch('macprefs.utils.os.chdir')
@@ -148,9 +148,12 @@ async def test_git_with_git_dir_and_ssh_key(mocker: MockerFixture) -> None:
 
 @pytest.mark.asyncio
 async def test_git_no_git_dir(mocker: MockerFixture) -> None:
-    work_tree = mocker.AsyncMock()
+    work_tree = mocker.AsyncMock(spec=AnyioPath)
     work_tree.__str__.return_value = '/work_tree'
-    work_tree.resolve.return_value.__truediv__.return_value.exists.return_value = False
+    truediv_mock = mocker.AsyncMock()
+    truediv_mock.__str__.return_value = '/work_tree/.git'
+    truediv_mock.exists = mocker.AsyncMock(return_value=False)
+    work_tree.resolve.return_value.__truediv__.return_value = truediv_mock
     mock_chdir = mocker.MagicMock()
     mock_chdir.__aenter__.return_value = None
     mock_chdir.__aexit__.return_value = None
@@ -167,9 +170,9 @@ async def test_git_no_git_dir(mocker: MockerFixture) -> None:
 
 @pytest.mark.asyncio
 async def test_git_error(mocker: MockerFixture) -> None:
-    work_tree = mocker.AsyncMock()
+    work_tree = mocker.AsyncMock(spec=AnyioPath)
     work_tree.__str__.return_value = '/work_tree'
-    git_dir = mocker.AsyncMock()
+    git_dir = mocker.AsyncMock(spec=AnyioPath)
     git_dir.__str__.return_value = '/work_tree/.git'
     git_dir.resolve.return_value.__truediv__.return_value.__str__.return_value = '/work_tree/.git'
     mocker.patch('macprefs.utils.os.chdir')

@@ -43,15 +43,6 @@ def test_main_success(runner: CliRunner, mock_setup_logging: MagicMock, mock_con
     mock_prefs_export.assert_called_once()
 
 
-def test_main_failure(runner: CliRunner, mocker: MockerFixture,
-                      mock_setup_logging: MagicMock) -> None:
-    mock_prefs_export = mocker.patch('macprefs.main.prefs_export', return_value=1)
-    result = runner.invoke(main, ['--debug', '--commit'])
-    assert result.exit_code != 0
-    mock_setup_logging.assert_called_once_with(debug=True)
-    mock_prefs_export.assert_called_once()
-
-
 def test_main_with_config(runner: CliRunner, mocker: MockerFixture,
                           mock_setup_logging: MagicMock) -> None:
     mock_prefs_export = mocker.patch('macprefs.main.prefs_export', return_value=0)
@@ -86,6 +77,6 @@ def test_install_job_with_deploy_key(runner: CliRunner, mock_do_install_job: Mag
     result = runner.invoke(install_job, ['--deploy-key', deploy_key_path])
     assert result.exit_code == 0
     mock_config.assert_called_once()
-    mock_do_install_job.assert_called_once_with(Path.home() / '.local/share/prefs-export',
-                                                Path(deploy_key_path))
+    mock_do_install_job.assert_called_once_with(
+        Path.home() / 'Library/Application Support/macprefs', Path(deploy_key_path))
     mock_setup_logging.assert_called_once_with(debug=False)

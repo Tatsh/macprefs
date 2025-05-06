@@ -25,18 +25,19 @@ def make_key_filter(bad_keys_re_addendum: Iterable[str] | None = None,
                     reset_bad_keys: bool = False) -> Callable[[str, str], bool]:
     """Create a function to filter out ignored keys."""
     bad_keys_re = ('|'.join(set(bad_keys_re_addendum or [])) if reset_re else f'{BAD_KEYS_RE}|' +
-                   '|'.join(set(bad_keys_re_addendum or [])))
+                   '|'.join(set(bad_keys_re_addendum or []))).rstrip('|')
     bad_keys = (bad_keys_addendum or {}) if reset_bad_keys else {
         **BAD_KEYS,
         **(bad_keys_addendum or {})
     }
+    log.debug('Ignored keys RE: %s', bad_keys_re)
 
     def should_ignore_key(domain: str, key: str) -> bool:
         if bad_keys_re and re.match(bad_keys_re, key):
-            log.debug('Skipping %s[%s] because it matched the bad keys RE.', domain, key)
+            log.debug('Skipping %s[%s] because it matched the ignored keys RE.', domain, key)
             return True
         if domain in bad_keys and key in bad_keys[domain]:
-            log.debug('Skipping %s[%s] because it matched the bad keys dict.', domain, key)
+            log.debug('Skipping %s[%s] because it matched the ignored keys dict.', domain, key)
             return True
         if domain in bad_keys:
             for x in {y for y in bad_keys[domain] if y.startswith('re:')}:

@@ -5,7 +5,7 @@ import asyncio
 import logging
 
 from anyio import Path as AnyioPath
-from platformdirs import user_config_path
+from platformdirs import user_config_path, user_data_path
 import click
 
 from .config import read_config
@@ -31,7 +31,7 @@ log = logging.getLogger(__name__)
 @click.option('-d', '--debug', help='Enable debug logging.', is_flag=True)
 @click.option('-o',
               '--output-directory',
-              default=Path.home() / '.local/share/prefs-export',
+              default=user_data_path('macprefs'),
               help='Where to store the exported data.',
               type=click.Path(file_okay=False, path_type=AnyioPath, resolve_path=True))
 def main(output_directory: AnyioPath,
@@ -48,8 +48,7 @@ def main(output_directory: AnyioPath,
                       config,
                       deploy_key or (AnyioPath(config_deploy_key) if config_deploy_key else None),
                       commit=commit or config.get('commit', False))
-    if asyncio.run(co, debug=debug) != 0:
-        raise click.Abort
+    asyncio.run(co, debug=debug)
 
 
 @click.command('macprefs-install-job', context_settings={'help_option_names': ['-h', '--help']})
@@ -66,7 +65,7 @@ def main(output_directory: AnyioPath,
 @click.option('-d', '--debug', help='Enable debug logging.', is_flag=True)
 @click.option('-o',
               '--output-directory',
-              default=str(Path.home() / '.local/share/prefs-export'),
+              default=str(user_data_path('macprefs')),
               help='Where to store the exported data.',
               type=click.Path(file_okay=False, resolve_path=True, path_type=Path))
 def install_job(output_directory: AnyioPath,

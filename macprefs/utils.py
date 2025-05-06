@@ -82,9 +82,14 @@ async def is_git_installed() -> bool:
 
 
 async def generate_domains(bad_domains_addendum: Iterable[str],
+                           bad_domain_prefixes_addendum: Iterable[str],
                            *,
-                           reset: bool = False) -> AsyncIterator[str]:
-    all_bad_domains = {*BAD_DOMAINS, *bad_domains_addendum}
+                           reset_domains: bool = False,
+                           reset_prefixes: bool = False) -> AsyncIterator[str]:
+    all_bad_domains = (bad_domains_addendum
+                       if reset_domains else {*BAD_DOMAINS, *bad_domains_addendum})
+    all_bad_domain_prefixes = (bad_domain_prefixes_addendum if reset_prefixes else
+                               {*BAD_DOMAIN_PREFIXES, *bad_domain_prefixes_addendum})
     lib_prefs_path = (await Path.home()) / 'Library/Preferences'
     async for plist in lib_prefs_path.glob('*.plist'):
         if plist.stem in all_bad_domains:
@@ -94,7 +99,7 @@ async def generate_domains(bad_domains_addendum: Iterable[str],
             log.debug('Skipping `%s` because it begins with a `.`.', plist.stem)
             continue
         has_ignored_prefix = False
-        for prefix in BAD_DOMAIN_PREFIXES:
+        for prefix in all_bad_domain_prefixes:
             if plist.stem.startswith(prefix):
                 log.debug('Skipping `%s` because it begins with `%s`.', plist.stem, prefix)
                 has_ignored_prefix = True
@@ -135,7 +140,7 @@ async def git(cmd: Iterable[str],
     """Run a Git command."""
     if not git_dir:
         git_dir = (await work_tree.resolve(strict=True)) / '.git'
-        if not git_dir.exists():
+        if not (await git_dir.exists()):
             await work_tree.mkdir(parents=True, exist_ok=True)
             async with chdir(work_tree):
                 log.debug('Running: git init')
@@ -157,7 +162,9 @@ async def git(cmd: Iterable[str],
         assert p.returncode is not None
         assert p.stderr is not None
         stderr = (await p.stderr.read()).decode()
-        raise CalledProcessError(p.returncode, cmd_list, stderr=stderr)
+        quoted_args = ' '.join(
+            quote(x) for x in (f'--git-dir={git_dir}', f'--work-tree={work_tree}'))
+        raise CalledProcessError(p.returncode, f'git {quoted_args} {rest}', stderr=stderr)
     return p
 
 
@@ -252,8 +259,12 @@ async def prefs_export(out_dir: Path,
     export_tasks = []
     all_data: list[tuple[str, PlistRoot]] = []
     async for domain in generate_domains(
-        {*config.get('extend-ignore-domains', {}), *config.get('ignore-domains', {})},
-            reset='ignore-domains' in config):
+        {*config.get('extend-ignore-domains', []), *config.get('ignore-domains', [])}, {
+            *config.get('extend-ignore-domain-prefixes', []),
+            *config.get('ignore-domain-prefixes', [])
+        },
+            reset_domains='ignore-domains' in config,
+            reset_prefixes='ignore-domain-prefixes' in config):
         export_tasks.append(defaults_export(domain, repo_prefs_dir))
         if len(export_tasks) == MAX_CONCURRENT_EXPORT_TASKS:
             all_data.extend(await asyncio.gather(*export_tasks))

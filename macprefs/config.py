@@ -17,6 +17,7 @@ def read_config(config_file: Path | None = None) -> dict[str, Any]:
     if not config_file or not config_file.exists():
         log.debug('No configuration file found. Using defaults.')
         return {}
+    log.debug('Parsing configuration file `%s`.', config_file)
     config = tomlkit.loads(config_file.read_text()).get('tool', {}).get('macprefs', {})
     ret: dict[str, Any] = {
         'extend-ignore-keys': {},
