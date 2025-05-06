@@ -57,6 +57,8 @@ My primary usage is like so:
 prefs-export --output-directory ~/.config/defaults --commit
 ```
 
+The default output directory is `~/Library/Application Support/macprefs`.
+
 ## Configuration
 
 The configuration file is a TOML file. By default `prefs-export` checks for the path
