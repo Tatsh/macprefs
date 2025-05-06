@@ -271,6 +271,9 @@ async def test_install_job(mocker: MockerFixture) -> None:
     result = await install_job(mock_path)
     mock_plistlib_dump.assert_called_once_with(
         {
+            'EnvironmentVariables': {
+                'NO_COLOR': '1',
+            },
             'Label': 'sh.tat.macprefs',
             'ProgramArguments': ['output', '--output-directory', '/output_dir', '--commit'],
             'RunAtLoad': True,
