@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from click.testing import CliRunner
 from macprefs.main import install_job, main
+from platformdirs import user_data_path
 import pytest
 
 if TYPE_CHECKING:
@@ -77,6 +78,6 @@ def test_install_job_with_deploy_key(runner: CliRunner, mock_do_install_job: Mag
     result = runner.invoke(install_job, ['--deploy-key', deploy_key_path])
     assert result.exit_code == 0
     mock_config.assert_called_once()
-    mock_do_install_job.assert_called_once_with(
-        Path.home() / 'Library/Application Support/macprefs', Path(deploy_key_path))
+    prefs_dir = user_data_path('macprefs')
+    mock_do_install_job.assert_called_once_with(prefs_dir, Path(deploy_key_path))
     mock_setup_logging.assert_called_once_with(debug=False)
