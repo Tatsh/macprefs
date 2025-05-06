@@ -206,6 +206,9 @@ async def install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
     async with await plist_path.open('wb+') as f:
         await anyio.to_thread.run_sync(
             plistlib_dump_xml, {
+                'EnvironmentVariables': {
+                    'NO_COLOR': '1'
+                },
                 'Label':
                     'sh.tat.macprefs',
                 'ProgramArguments': [
