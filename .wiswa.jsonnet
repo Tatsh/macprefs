@@ -3,7 +3,7 @@
   description: 'Command and library to export macOS preferences.',
   keywords: ['command line', 'macos', 'preferences', 'utilities'],
   project_name: 'macprefs',
-  version: '0.4.0',
+  version: '0.4.1',
   want_main: true,
   citation+: {
     'date-released': '2025-05-04',
