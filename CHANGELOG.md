@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.4.1]
+
+### Fixed
+
+- Disabled colours in launchd job.
+
 ## [0.4.0]
 
 ### Added
@@ -18,4 +24,4 @@ and this project adheres to
 
 - Rewrote algorithm for filtering out domains and keys.
 
-[unreleased]: https://github.com/Tatsh/patreon-archiver/compare/v0.4.0...HEAD
+[unreleased]: https://github.com/Tatsh/patreon-archiver/compare/v0.4.1...HEAD

@@ -59,6 +59,8 @@ prefs-export --output-directory ~/.config/defaults --commit
 
 The default output directory is `~/Library/Application Support/macprefs`.
 
+Colours can be disabled by setting the environment variable `NO_COLOR` to a non-empty value.
+
 ## Configuration
 
 The configuration file is a TOML file. By default `prefs-export` checks for the path
