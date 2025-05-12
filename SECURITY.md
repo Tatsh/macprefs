@@ -11,4 +11,4 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-Send me a direct message [here](https://bsky.app/profile/tatsh.bsky.social).
+Send me a direct message [on Bsky](https://bsky.app/profile/tatsh.bsky.social).

@@ -2,6 +2,7 @@ anyio
 asyncio
 autodoc
 automodule
+bsky
 codeowners
 colored
 colorlog
