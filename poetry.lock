@@ -422,14 +422,14 @@ development = ["black", "flake8", "mypy", "pytest", "types-colorama"]
 
 [[package]]
 name = "commitizen"
-version = "4.6.2"
+version = "4.7.0"
 description = "Python commitizen client tool"
 optional = false
 python-versions = "<4.0,>=3.9"
 groups = ["dev"]
 files = [
-    {file = "commitizen-4.6.2-py3-none-any.whl", hash = "sha256:2c5bfa5d0350bd1d5c813de96ed318bc0dd7286fe2c43066b260b16cfc0df9b0"},
-    {file = "commitizen-4.6.2.tar.gz", hash = "sha256:82ed227ac3978338809b15dade8d58e88e3d0266f3aac5ac4e75f2a93ae7340e"},
+    {file = "commitizen-4.7.0-py3-none-any.whl", hash = "sha256:2d274e013a6e09bc69f97fe64d6a6389926e2a22f5a4a19b16571d5b4c31083c"},
+    {file = "commitizen-4.7.0.tar.gz", hash = "sha256:ef95f2ef354b438dce7c6164e5d47d10cc377df666ee65a116bcfcb146bb0c0a"},
 ]
 
 [package.dependencies]
@@ -2755,4 +2755,4 @@ tomli = {version = ">=2.0.1", markers = "python_version < \"3.11\""}
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14"
-content-hash = "c0542f95e4a104d046a14195d4894da64c23a576c708d52b922a2fd0931bb49c"
+content-hash = "e0ea208a1bcca9d67973aa66064cd7cdd7a4d575887bc1bd0923d582412f40ab"
