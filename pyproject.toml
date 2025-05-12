@@ -97,7 +97,7 @@ include = ["man"]
 anyio = "^4.9.0"
 click = "^8.1.8"
 colorlog = "^6.9.0"
-platformdirs = "^4.3.6"
+platformdirs = "^4.3.8"
 python = ">=3.10,<3.14"
 tomlkit = "^0.13.2"
 typing-extensions = "^4.13.1"
