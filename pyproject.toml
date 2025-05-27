@@ -108,7 +108,7 @@ typing-extensions = "^4.13.1"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-commitizen = "^4.7.2"
+commitizen = "^4.8.2"
 djlint = "^1.36.4"
 mypy = ">=1.12,<1.16"
 ruff = "^0.11.11"
