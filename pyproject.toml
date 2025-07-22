@@ -111,7 +111,7 @@ optional = true
 commitizen = "^4.8.3"
 djlint = "^1.36.4"
 mypy = "^1.17.0"
-ruff = "^0.12.3"
+ruff = "^0.12.4"
 yapf = "^0.43.0"
 
 [tool.poetry.group.docs]
@@ -144,7 +144,7 @@ optional = true
 [tool.poetry.group.tests.dependencies]
 mock = "^5.2.0"
 pytest = "^8.4.1"
-pytest-asyncio = "^1.0.0"
+pytest-asyncio = "^1.1.0"
 pytest-cov = "^6.2.1"
 pytest-mock = "^3.14.1"
 
