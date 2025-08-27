@@ -1,3 +1,4 @@
+"""Domains to ignore."""
 from __future__ import annotations
 
 __all__ = ('BAD_DOMAINS', 'BAD_DOMAIN_PREFIXES')

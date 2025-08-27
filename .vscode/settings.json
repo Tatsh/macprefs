@@ -1,4 +1,7 @@
 {
+  "[jsonnet]": {
+    "editor.defaultFormatter": "Grafana.vscode-jsonnet"
+  },
   "[python]": {
     "editor.defaultFormatter": "eeyore.yapf",
     "editor.formatOnSaveMode": "file",

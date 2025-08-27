@@ -1,3 +1,4 @@
+"""macprefs package."""
 from __future__ import annotations
 
 from .plist2defaults import plist_to_defaults_commands

@@ -22,6 +22,7 @@
       ".git/**",
       ".yarn/**/*.cjs",
       ".vscode/extensions.json",
+      "dist/**",
       "man/**"
     ],
     "language": "en-GB",
@@ -33,6 +34,7 @@
     ],
     "useGitignore": true
   },
+  "description": "Command and library to export macOS preferences.",
   "devDependencies": {
     "@prettier/plugin-xml": "^3.4.2",
     "cspell": "^9.2.0",
@@ -44,6 +46,7 @@
     "pyright": "^1.1.404",
     "yarn-audit-fix": "^10.1.1"
   },
+  "files": ["LICENSE.txt", "README.md", "man/macprefs.1"],
   "homepage": "https://tatsh.github.io/macprefs/",
   "keywords": ["command line", "macos", "preferences", "utilities"],
   "license": "MIT",
@@ -55,12 +58,13 @@
       "default": true,
       "line-length": {
         "code_blocks": false,
-        "line_length": 100
+        "line_length": 100,
+        "tables": false
       }
     }
   },
   "name": "macprefs",
-  "packageManager": "yarn@4.9.1",
+  "packageManager": "yarn@4.9.4",
   "prettier": {
     "endOfLine": "lf",
     "iniSpaceAroundEquals": true,

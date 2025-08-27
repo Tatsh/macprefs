@@ -1,3 +1,4 @@
+"""Convert a property list dictionary to ``defaults write`` commands."""
 from __future__ import annotations
 
 from datetime import datetime
