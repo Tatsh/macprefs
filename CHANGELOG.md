@@ -24,4 +24,4 @@ and this project adheres to
 
 - Rewrote algorithm for filtering out domains and keys.
 
-[unreleased]: https://github.com/Tatsh/patreon-archiver/compare/v0.4.1...HEAD
+[unreleased]: https://github.com/Tatsh/macprefs/compare/v0.4.1...HEAD

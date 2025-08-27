@@ -8,6 +8,7 @@
   citation+: {
     'date-released': '2025-05-04',
   },
+  security_policy_supported_versions: { '0.4.x': ':white_check_mark:' },
   pyproject+: {
     project+: {
       classifiers+: [

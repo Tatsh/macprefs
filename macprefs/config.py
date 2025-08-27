@@ -1,3 +1,4 @@
+"""Configuration file parsing and validation."""
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
@@ -13,7 +14,13 @@ log = logging.getLogger(__name__)
 
 
 def read_config(config_file: Path | None = None) -> dict[str, Any]:
-    """Read and validate the configuration file."""
+    """
+    Read and validate the configuration file.
+
+    Raises
+    ------
+    ConfigTypeError
+    """
     if not config_file or not config_file.exists():
         log.debug('No configuration file found. Using defaults.')
         return {}

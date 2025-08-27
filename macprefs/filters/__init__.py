@@ -1,3 +1,4 @@
+"""Filters."""
 from __future__ import annotations
 
 from .bad_domains import BAD_DOMAINS, BAD_DOMAIN_PREFIXES

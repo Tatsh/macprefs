@@ -1,3 +1,4 @@
+"""Keys to ignore based on a regular expression."""
 from __future__ import annotations
 
 __all__ = ('BAD_KEYS_RE',)

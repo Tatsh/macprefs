@@ -1,3 +1,4 @@
+"""Utility functions."""
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
@@ -32,51 +33,13 @@ if TYPE_CHECKING:
     from .typing import PlistRoot
 
 __all__ = ('defaults_export', 'generate_domains', 'git', 'install_job', 'is_git_installed',
-           'prefs_export', 'setup_logging', 'setup_output_directory')
+           'prefs_export', 'setup_output_directory')
 
 log = logging.getLogger(__name__)
 
 
-def setup_logging(*,
-                  debug: bool = False,
-                  force_color: bool = False,
-                  no_color: bool = False) -> None:  # pragma: no cover
-    """Set up logging configuration."""
-    logging.config.dictConfig({
-        'disable_existing_loggers': True,
-        'root': {
-            'level': 'DEBUG' if debug else 'INFO',
-            'handlers': ['console'],
-        },
-        'formatters': {
-            'default': {
-                '()': 'colorlog.ColoredFormatter',
-                'force_color': force_color,
-                'format': (
-                    '%(light_cyan)s%(asctime)s%(reset)s | %(log_color)s%(levelname)-8s%(reset)s | '
-                    '%(light_green)s%(name)s%(reset)s:%(light_red)s%(funcName)s%(reset)s:'
-                    '%(blue)s%(lineno)d%(reset)s - %(message)s'),
-                'no_color': no_color,
-            }
-        },
-        'handlers': {
-            'console': {
-                'class': 'colorlog.StreamHandler',
-                'formatter': 'default',
-            }
-        },
-        'loggers': {
-            'macprefs': {
-                'level': 'DEBUG' if debug else 'INFO',
-                'handlers': ['console'],
-                'propagate': False,
-            }
-        },
-        'version': 1
-    })
-
-
 async def is_git_installed() -> bool:
+    """Check if Git is installed."""
     return (await (await sp.create_subprocess_exec('bash', '-c', 'command -v git',
                                                    stdout=sp.PIPE)).wait() == 0)
 
@@ -86,6 +49,14 @@ async def generate_domains(bad_domains_addendum: Iterable[str],
                            *,
                            reset_domains: bool = False,
                            reset_prefixes: bool = False) -> AsyncIterator[str]:
+    """
+    Generate the list of domains to export.
+
+    Yields
+    ------
+    str
+        The domain name.
+    """
     all_bad_domains = (bad_domains_addendum
                        if reset_domains else {*BAD_DOMAINS, *bad_domains_addendum})
     all_bad_domain_prefixes = (bad_domain_prefixes_addendum if reset_prefixes else
@@ -137,7 +108,13 @@ async def git(cmd: Iterable[str],
               work_tree: Path,
               git_dir: Path | None = None,
               ssh_key: str | None = None) -> sp.Process:
-    """Run a Git command."""
+    """
+    Run a Git command.
+
+    Raises
+    ------
+    CalledProcessError
+    """
     if not git_dir:
         git_dir = (await work_tree.resolve(strict=True)) / '.git'
         if not (await git_dir.exists()):
@@ -169,6 +146,7 @@ async def git(cmd: Iterable[str],
 
 
 async def setup_output_directory(out_dir: Path) -> tuple[Path, Path]:
+    """Set up the output directory and the ``Preferences`` subdirectory."""
     repo_prefs_dir = out_dir / 'Preferences'
     await out_dir.mkdir(exist_ok=True, parents=True)
     await repo_prefs_dir.mkdir(exist_ok=True, parents=True)
@@ -176,6 +154,7 @@ async def setup_output_directory(out_dir: Path) -> tuple[Path, Path]:
 
 
 async def defaults_export(domain: str, repo_prefs_dir: Path) -> tuple[str, PlistRoot]:
+    """Export a domain using the ``defaults`` command."""
     plist_out = (repo_prefs_dir /
                  f'{"globalDomain" if domain == GLOBAL_DOMAIN_ARG else domain}.plist')
     plist_in = ((await Path.home()) / 'Library/Preferences' /
@@ -244,17 +223,23 @@ async def install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
     return 0 if process1.returncode == 0 and process2.returncode == 0 else 1
 
 
-async def prefs_export(out_dir: Path,
-                       config: dict[str, Any] | None = None,
-                       deploy_key: Path | None = None,
-                       *,
-                       commit: bool = False) -> None:
+async def prefs_export(  # noqa: PLR0914, PLR0915
+        out_dir: Path,
+        config: dict[str, Any] | None = None,
+        deploy_key: Path | None = None,
+        *,
+        commit: bool = False) -> None:
     """
     Export filtered preferences to a directory.
 
     Also writes scripts `exec-defaults.sh` and `rejected-defaults.sh` to the output directory, both
     of which contain ``defaults`` commands to set preferences equivalent to the exported property
     list files.
+
+    Raises
+    ------
+    PropertyListConversionError
+        If any ``plutil`` command fails.
     """
     config = config or {}
     has_git = await is_git_installed()

@@ -1,3 +1,4 @@
+"""Constants."""
 from __future__ import annotations
 
 __all__ = ('GLOBAL_DOMAIN_ARG', 'MAX_CONCURRENT_EXPORT_TASKS')

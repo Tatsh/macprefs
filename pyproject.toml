@@ -4,9 +4,8 @@ requires = ["poetry-core"]
 
 [project]
 classifiers = [
-  "Development Status :: 2 - Pre-Alpha",
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -43,22 +42,18 @@ documentation = "https://macprefs.readthedocs.org"
 homepage = "https://tatsh.github.io/macprefs/"
 repository = "https://github.com/Tatsh/macprefs"
 
-[tool]
-
 [tool.commitizen]
 tag_format = "v$version"
 version_files = [
   ".wiswa.jsonnet",
   "CITATION.cff",
   "README.md",
-  "package.json",
   "docs/index.rst",
   "macprefs/__init__.py",
   "man/macprefs.1",
+  "package.json",
 ]
 version_provider = "pep621"
-
-[tool.coverage]
 
 [tool.coverage.report]
 exclude_also = ["if TYPE_CHECKING:"]
@@ -91,24 +86,23 @@ strict_optional = true
 warn_unreachable = true
 
 [tool.poetry]
-include = ["man"]
+include = ["man", { format = "sdist", path = "tests" }]
 
 [tool.poetry.dependencies]
 anyio = "^4.10.0"
+bascom = "^0.0.1"
 click = "^8.2.1"
-colorlog = "^6.9.0"
-platformdirs = "^4.3.8"
+platformdirs = "^4.4.0"
 python = ">=3.10,<3.14"
 tomlkit = "^0.13.3"
 typing-extensions = "^4.15.0"
-
-[tool.poetry.group]
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
 commitizen = "^4.8.3"
+cz-path = "^0.0.1"
 djlint = "^1.36.4"
 mypy = "^1.17.1"
 ruff = "^0.12.10"
@@ -120,11 +114,10 @@ optional = true
 [tool.poetry.group.docs.dependencies]
 autodoc-pydantic = "^2.2.0"
 doc8 = "^2.0.0"
-docutils = "^0.21.2"
+docutils = "<0.22"
 esbonio = "^0.16.5"
 numpydoc = "^1.9.0"
 restructuredtext-lint = "^1.4.0"
-sphinx = "<8.2.0"
 sphinx-click = "^6.0.0"
 sphinx-datatables = "^0.3.0"
 sphinx-hoverxref = "^1.4.2"
@@ -134,9 +127,13 @@ sphinx-immaterial = "^0.13.6"
 extras = ["sphinx"]
 version = "^0.13.0"
 
-[tool.poetry.group.docs.dependencies.erdantic]
-optional = true
-version = "^1.1.0.post1"
+[[tool.poetry.group.docs.dependencies.sphinx]]
+python = ">=3.11"
+version = "^8.2.3"
+
+[[tool.poetry.group.docs.dependencies.sphinx]]
+python = "<3.11"
+version = "^7.2.5"
 
 [tool.poetry.group.tests]
 optional = true
@@ -171,8 +168,6 @@ reportUnnecessaryTypeIgnoreComment = "none"
 typeCheckingMode = "off"
 useLibraryCodeForTypes = false
 
-[tool.pytest]
-
 [tool.pytest.ini_options]
 mock_use_standalone_module = true
 norecursedirs = ["node_modules"]
@@ -202,6 +197,7 @@ extend-select = [
   "CPY",
   "D",
   "DJ",
+  "DOC",
   "DTZ",
   "E",
   "EM",
@@ -209,6 +205,7 @@ extend-select = [
   "EXE",
   "F",
   "FA",
+  "FAST",
   "FBT",
   "FIX",
   "FLY",
@@ -240,52 +237,35 @@ extend-select = [
   "SLOT",
   "T10",
   "T20",
-  "TCH",
+  "TC",
   "TD",
   "TID",
   "TRY",
   "UP",
+  "W",
   "YTT",
 ]
 ignore = [
-  "A005",
   "ANN401",
-  "ARG001",
-  "ARG002",
-  "ARG004",
-  "C901",
   "COM812",
   "CPY001",
-  "D100",
-  "D101",
-  "D102",
-  "D103",
-  "D104",
-  "D105",
-  "D106",
-  "D107",
+  "D201",
   "D203",
   "D204",
   "D212",
-  "EM101",
+  "DOC201",
   "N818",
-  "PLR0912",
-  "PLR0913",
-  "PLR0914",
-  "PLR0915",
-  "PLR0917",
-  "PLR1702",
-  "PLR6301",
   "S101",
   "S404",
   "S603",
   "TD002",
-  "TD003",
-  "TD004",
   "UP046",
   "UP047",
 ]
 preview = true
+
+[tool.ruff.lint.flake8-builtins]
+allowed-modules = ["typing", "types"]
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"
@@ -298,11 +278,20 @@ from-first = true
 required-imports = ["from __future__ import annotations"]
 section-order = ["future", "standard-library", "third-party", "local-folder"]
 
+[tool.ruff.lint.mccabe]
+max-complexity = 20
+
 [tool.ruff.lint.pep8-naming]
 extend-ignore-names = ["test_*"]
 
+[tool.ruff.lint.per-file-ignores]
+"main.py" = ["PLR0913"]
+
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
+
+[tool.ruff.lint.pylint]
+max-branches = 20
 
 [tool.yapf]
 align_closing_bracket_with_visual_indent = true

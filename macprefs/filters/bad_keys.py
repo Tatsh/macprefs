@@ -1,3 +1,4 @@
+"""Keys to ignore for specific domains."""
 from __future__ import annotations
 
 __all__ = ('BAD_KEYS',)

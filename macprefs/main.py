@@ -1,3 +1,4 @@
+"""Main entry points for macprefs CLI."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -5,11 +6,12 @@ import asyncio
 import logging
 
 from anyio import Path as AnyioPath
+from bascom import setup_logging
 from platformdirs import user_config_path, user_data_path
 import click
 
 from .config import read_config
-from .utils import install_job as do_install_job, prefs_export, setup_logging
+from .utils import install_job as do_install_job, prefs_export
 
 __all__ = ('main',)
 
@@ -41,7 +43,14 @@ def main(output_directory: AnyioPath,
          commit: bool = False,
          debug: bool = False) -> None:
     """Export preferences."""
-    setup_logging(debug=debug)
+    setup_logging(debug=debug,
+                  loggers={
+                      'macprefs': {
+                          'level': 'DEBUG' if debug else 'INFO',
+                          'handlers': ('console',),
+                          'propagate': False,
+                      }
+                  })
     config = read_config(config_file)
     config_deploy_key = config.get('deploy-key')
     co = prefs_export(AnyioPath(output_directory),
@@ -73,8 +82,15 @@ def install_job(output_directory: AnyioPath,
                 deploy_key: AnyioPath | None = None,
                 *,
                 debug: bool = False) -> None:
-    """Job installer."""
-    setup_logging(debug=debug)
+    """Job installer."""  # noqa: DOC501
+    setup_logging(debug=debug,
+                  loggers={
+                      'macprefs': {
+                          'level': 'DEBUG' if debug else 'INFO',
+                          'handlers': ('console',),
+                          'propagate': False,
+                      }
+                  })
     config = read_config(config_file)
     config_deploy_key = config.get('deploy-key')
     if asyncio.run(do_install_job(
