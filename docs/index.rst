@@ -1,5 +1,6 @@
 macprefs
 ========
+
 .. only:: html
 
    .. image:: https://img.shields.io/pypi/pyversions/macprefs.svg?color=blue&logo=python&logoColor=white

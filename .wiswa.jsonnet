@@ -46,6 +46,9 @@
       },
     },
   },
+  copilot: {
+    intro: 'macprefs is a command-line tool for managing macOS user defaults (preferences) in bulk.',
+  },
   tests_run_on: 'macos-latest',
   // Common
   authors: [

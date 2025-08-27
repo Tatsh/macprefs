@@ -1,6 +1,6 @@
 # Copilot Instructions
 
-(Not set.)
+macprefs is a command-line tool for managing macOS user defaults (preferences) in bulk.
 
 ## General
 
