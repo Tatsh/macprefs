@@ -9,7 +9,7 @@ macprefs
 
    .. image:: https://img.shields.io/pypi/v/macprefs
       :target: https://pypi.org/project/macprefs/
-      :alt: PyPI - Version
+      :alt: PyPI Version
 
    .. image:: https://img.shields.io/github/v/tag/Tatsh/macprefs
       :target: https://github.com/Tatsh/macprefs/tags
@@ -23,8 +23,8 @@ macprefs
       :target: https://github.com/Tatsh/macprefs/compare/v0.4.1...master
       :alt: GitHub commits since latest release (by SemVer including pre-releases)
 
-   .. image:: https://github.com/Tatsh/mactypes/actions/workflows/codeql.yml/badge.svg
-      :target: https://github.com/Tatsh/mactypes/actions/workflows/codeql.yml
+   .. image:: https://github.com/Tatsh/macprefs/actions/workflows/codeql.yml/badge.svg
+      :target: https://github.com/Tatsh/macprefs/actions/workflows/codeql.yml
       :alt: CodeQL
 
    .. image:: https://github.com/Tatsh/macprefs/actions/workflows/qa.yml/badge.svg
