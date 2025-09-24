@@ -223,12 +223,11 @@ async def install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
     return 0 if process1.returncode == 0 and process2.returncode == 0 else 1
 
 
-async def prefs_export(  # noqa: PLR0914, PLR0915
-        out_dir: Path,
-        config: dict[str, Any] | None = None,
-        deploy_key: Path | None = None,
-        *,
-        commit: bool = False) -> None:
+async def prefs_export(out_dir: Path,
+                       config: dict[str, Any] | None = None,
+                       deploy_key: Path | None = None,
+                       *,
+                       commit: bool = False) -> None:
     """
     Export filtered preferences to a directory.
 

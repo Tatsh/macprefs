@@ -43,6 +43,8 @@ homepage = "https://tatsh.github.io/macprefs/"
 repository = "https://github.com/Tatsh/macprefs"
 
 [tool.commitizen]
+name = "cz_path"
+remove_path_prefixes = ["include", "macprefs", "src"]
 tag_format = "v$version"
 version_files = [
   ".wiswa.jsonnet",
@@ -57,12 +59,12 @@ version_provider = "pep621"
 
 [tool.coverage.report]
 exclude_also = ["if TYPE_CHECKING:"]
-omit = ["conftest.py", "tests.py", "tests/test_*.py", "__main__.py"]
+omit = ["__main__.py", "conftest.py", "tests.py", "tests/test_*.py"]
 show_missing = true
 
 [tool.coverage.run]
 branch = true
-omit = ["conftest.py", "tests.py", "tests/test_*.py", "__main__.py"]
+omit = ["__main__.py", "conftest.py", "tests.py", "tests/test_*.py"]
 
 [tool.djlint]
 max_line_length = 100
@@ -91,7 +93,7 @@ include = ["man", { format = "sdist", path = "tests" }]
 [tool.poetry.dependencies]
 anyio = "^4.10.0"
 bascom = "^0.0.1"
-click = "^8.2.1"
+click = "^8.3.0"
 platformdirs = "^4.4.0"
 python = ">=3.10,<3.14"
 tomlkit = "^0.13.3"
@@ -101,11 +103,11 @@ typing-extensions = "^4.15.0"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-commitizen = "^4.8.3"
+commitizen = "^4.9.1"
 cz-path = "^0.0.1"
 djlint = "^1.36.4"
-mypy = "^1.17.1"
-ruff = "^0.12.10"
+mypy = "^1.18.2"
+ruff = "^0.13.1"
 yapf = "^0.43.0"
 
 [tool.poetry.group.docs]
@@ -118,7 +120,7 @@ docutils = "<0.22"
 esbonio = "^0.16.5"
 numpydoc = "^1.9.0"
 restructuredtext-lint = "^1.4.0"
-sphinx-click = "^6.0.0"
+sphinx-click = "^6.1.0"
 sphinx-datatables = "^0.3.0"
 sphinx-hoverxref = "^1.4.2"
 sphinx-immaterial = "^0.13.6"
@@ -140,10 +142,10 @@ optional = true
 
 [tool.poetry.group.tests.dependencies]
 mock = "^5.2.0"
-pytest = "^8.4.1"
-pytest-asyncio = "^1.1.0"
-pytest-cov = "^6.2.1"
-pytest-mock = "^3.14.1"
+pytest = "^8.4.2"
+pytest-asyncio = "^1.2.0"
+pytest-cov = "^7.0.0"
+pytest-mock = "^3.15.1"
 
 [tool.poetry.group.tests.dependencies.coveralls]
 python = "<3.13"
@@ -265,7 +267,7 @@ ignore = [
 preview = true
 
 [tool.ruff.lint.flake8-builtins]
-allowed-modules = ["typing", "types"]
+allowed-modules = ["types", "typing"]
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"
@@ -291,7 +293,13 @@ extend-ignore-names = ["test_*"]
 convention = "numpy"
 
 [tool.ruff.lint.pylint]
+max-args = 20
 max-branches = 20
+max-locals = 20
+max-positional-args = 15
+max-public-methods = 30
+max-returns = 10
+max-statements = 100
 
 [tool.yapf]
 align_closing_bracket_with_visual_indent = true
