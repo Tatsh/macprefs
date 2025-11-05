@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import TYPE_CHECKING
 import plistlib
 import subprocess as sp
@@ -82,11 +81,12 @@ async def test_try_parse_plist_invalid(mocker: MockerFixture) -> None:
 @pytest.mark.asyncio
 async def test_chdir(mocker: MockerFixture) -> None:
     mock_chdir = mocker.patch('os.chdir')
-    mocker.patch('pathlib.Path.cwd', return_value=Path('/original'))
-    mocker.patch('pathlib.Path.resolve', return_value=Path('/new'))
+    mocker.patch('anyio.Path.cwd', return_value=AnyioPath('/original'))
+    mocker.patch('anyio.Path.resolve', return_value=AnyioPath('/new'))
+    new_path = AnyioPath('/new')
     async with chdir('/new'):
-        mock_chdir.assert_called_with(Path('/new').resolve(strict=True))
-    mock_chdir.assert_called_with(Path('/original'))
+        mock_chdir.assert_called_with(await new_path.resolve(strict=True))
+    mock_chdir.assert_called_with(AnyioPath('/original'))
 
 
 @pytest.mark.asyncio
