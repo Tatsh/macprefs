@@ -9,7 +9,6 @@ from typing import IO, TYPE_CHECKING, Any
 import asyncio
 import asyncio.subprocess as sp
 import logging
-import logging.config
 import operator
 import os
 import plistlib
@@ -17,7 +16,6 @@ import shutil
 
 from anyio import Path
 from platformdirs import user_log_path
-import anyio
 import anyio.to_thread
 
 from .constants import GLOBAL_DOMAIN_ARG, MAX_CONCURRENT_EXPORT_TASKS
