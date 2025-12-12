@@ -53,7 +53,7 @@ repos:
         id: 'check-jsonschema'
         name: 'validate package.json'
     repo: 'https://github.com/python-jsonschema/check-jsonschema'
-    rev: '0.34.1'
+    rev: '0.35.0'
   - hooks:
       - id: 'validate-cff'
     repo: 'https://github.com/citation-file-format/cffconvert'
