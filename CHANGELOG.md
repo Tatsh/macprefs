@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.4.2]
+
+### Added
+
+- Attestation.
+
 ## [0.4.1]
 
 ### Fixed
@@ -24,6 +30,7 @@ and this project adheres to
 
 - Rewrote algorithm for filtering out domains and keys.
 
-[unreleased]: https://github.com/Tatsh/macprefs/compare/v0.4.1...HEAD
+[unreleased]: https://github.com/Tatsh/macprefs/compare/v0.4.2...HEAD
+[0.4.2]: https://github.com/Tatsh/macprefs/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/Tatsh/macprefs/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/Tatsh/macprefs/compare/v0.3.4...v0.4.0
