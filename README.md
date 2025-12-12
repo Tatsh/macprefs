@@ -4,7 +4,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/macprefs)](https://pypi.org/project/macprefs/)
 [![GitHub tag (with filter)](https://img.shields.io/github/v/tag/Tatsh/macprefs)](https://github.com/Tatsh/macprefs/tags)
 [![License](https://img.shields.io/github/license/Tatsh/macprefs)](https://github.com/Tatsh/macprefs/blob/master/LICENSE.txt)
-[![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/macprefs/v0.4.1/master)](https://github.com/Tatsh/macprefs/compare/v0.4.1...master)
+[![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/macprefs/v0.4.2/master)](https://github.com/Tatsh/macprefs/compare/v0.4.2...master)
 [![CodeQL](https://github.com/Tatsh/macprefs/actions/workflows/codeql.yml/badge.svg)](https://github.com/Tatsh/macprefs/actions/workflows/codeql.yml)
 [![QA](https://github.com/Tatsh/macprefs/actions/workflows/qa.yml/badge.svg)](https://github.com/Tatsh/macprefs/actions/workflows/qa.yml)
 [![Tests](https://github.com/Tatsh/macprefs/actions/workflows/tests.yml/badge.svg)](https://github.com/Tatsh/macprefs/actions/workflows/tests.yml)
