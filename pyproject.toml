@@ -107,7 +107,7 @@ optional = true
 commitizen = "^4.10.1"
 cz-path = "^0.0.4"
 djlint = "^1.36.4"
-mypy = "^1.19.0"
+mypy = "^1.19.1"
 ruff = "^0.14.9"
 yapf = "^0.43.0"
 
@@ -122,7 +122,7 @@ esbonio = "^1.0.0"
 numpydoc = "^1.10.0"
 restructuredtext-lint = "^2.0.2"
 sphinx-click = "^6.2.0"
-sphinx-datatables = "^0.3.1"
+sphinx-datatables = "^0.4.0"
 sphinx-immaterial = "^0.13.8"
 tomlkit = "^0.13.3"
 

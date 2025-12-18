@@ -29,7 +29,6 @@ fontawesome
 foxundermoon
 genindex
 globaltoc
-hoverxref
 htmlcov
 intersphinx
 isort
