@@ -123,11 +123,14 @@ jobs:
           - os: 'macos-latest'
             dist_path: 'dist/*'
             suffix: 'mac-arm64'
+          - os: 'windows-latest'
+            dist_path: 'dist/*.exe'
+            suffix: 'win-x86_64'
+          - os: 'windows-11-arm'
+            dist_path: 'dist/*.exe'
+            suffix: 'win-arm64'
 name: 'PyInstaller'
 'on':
-  pull_request:
-    branches:
-      - 'master'
   push:
     branches:
       - 'master'

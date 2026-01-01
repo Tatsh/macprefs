@@ -42,6 +42,7 @@ libera
 libjsonnet
 linters
 macprefs
+manylinux
 modindex
 mypy
 namedtuples
