@@ -93,7 +93,7 @@ include = ["man", { format = "sdist", path = "tests" }]
 
 [tool.poetry.dependencies]
 anyio = "^4.12.0"
-bascom = "^0.1.0"
+bascom = "^0.1.2"
 click = "^8.3.1"
 platformdirs = "^4.5.1"
 python = ">=3.10,<4.0"
@@ -104,11 +104,11 @@ typing-extensions = "^4.15.0"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-commitizen = "^4.10.1"
+commitizen = "^4.11.0"
 cz-path = "^0.0.4"
 djlint = "^1.36.4"
 mypy = "^1.19.1"
-ruff = "^0.14.9"
+ruff = "^0.14.10"
 yapf = "^0.43.0"
 
 [tool.poetry.group.docs]
@@ -122,7 +122,7 @@ esbonio = "^1.0.0"
 numpydoc = "^1.10.0"
 restructuredtext-lint = "^2.0.2"
 sphinx-click = "^6.2.0"
-sphinx-datatables = "^0.4.0"
+sphinx-datatables = "^0.5.0"
 sphinx-immaterial = "^0.13.8"
 tomlkit = "^0.13.3"
 

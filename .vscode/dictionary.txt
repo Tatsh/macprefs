@@ -1,7 +1,4 @@
 anyio
-appdir
-appimage
-appinfo
 asyncio
 autodoc
 automodule
@@ -36,7 +33,6 @@ itertools
 jinja
 jsonnet
 jsonschema
-launchable
 lextudio
 libera
 libjsonnet

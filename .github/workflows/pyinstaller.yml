@@ -125,9 +125,6 @@ jobs:
             suffix: 'mac-arm64'
 name: 'PyInstaller'
 'on':
-  pull_request:
-    branches:
-      - 'master'
   push:
     branches:
       - 'master'
