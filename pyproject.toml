@@ -92,23 +92,23 @@ warn_unreachable = true
 include = ["man", { format = "sdist", path = "tests" }]
 
 [tool.poetry.dependencies]
-anyio = "^4.12.0"
+anyio = "^4.12.1"
 bascom = "^0.1.2"
 click = "^8.3.1"
-platformdirs = "^4.5.1"
+platformdirs = "^4.9.2"
 python = ">=3.10,<4.0"
-tomlkit = "^0.13.3"
+tomlkit = "^0.14.0"
 typing-extensions = "^4.15.0"
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-commitizen = "^4.11.0"
+commitizen = "^4.13.8"
 cz-path = "^0.0.4"
 djlint = "^1.36.4"
 mypy = "^1.19.1"
-ruff = "^0.14.10"
+ruff = "^0.15.2"
 yapf = "^0.43.0"
 
 [tool.poetry.group.docs]
@@ -118,13 +118,13 @@ optional = true
 autodoc-pydantic = "^2.2.0"
 doc8 = "^2.0.0"
 docutils = "<0.22"
-esbonio = "^1.0.0"
+esbonio = "^1.1.0"
 numpydoc = "^1.10.0"
 restructuredtext-lint = "^2.0.2"
 sphinx-click = "^6.2.0"
-sphinx-datatables = "^0.5.0"
-sphinx-immaterial = "^0.13.8"
-tomlkit = "^0.13.3"
+sphinx-datatables = "^1.0.0"
+sphinx-immaterial = "^0.13.9"
+tomlkit = "^0.14.0"
 
 [tool.poetry.group.docs.dependencies.enum-tools]
 extras = ["sphinx"]
