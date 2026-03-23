@@ -6,6 +6,7 @@ local utils = import 'utils.libjsonnet';
   project_name: 'macprefs',
   version: '0.4.2',
   want_main: true,
+  want_snap: false,
   security_policy_supported_versions: { '0.4.x': ':white_check_mark:' },
   supported_platforms: 'macos',
   pyproject+: {
