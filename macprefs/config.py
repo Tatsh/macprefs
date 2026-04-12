@@ -17,9 +17,15 @@ def read_config(config_file: Path | None = None) -> dict[str, Any]:
     """
     Read and validate the configuration file.
 
+    Returns
+    -------
+    dict[str, Any]
+        Parsed configuration, or an empty dict if no file was found.
+
     Raises
     ------
     ConfigTypeError
+        If the configuration structure is invalid.
     """
     if not config_file or not config_file.exists():
         log.debug('No configuration file found. Using defaults.')

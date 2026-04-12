@@ -24,7 +24,14 @@ def make_key_filter(bad_keys_re_addendum: Iterable[str] | None = None,
                     *,
                     reset_re: bool = False,
                     reset_bad_keys: bool = False) -> Callable[[str, str], bool]:
-    """Create a function to filter out ignored keys."""
+    """
+    Create a function to filter out ignored keys.
+
+    Returns
+    -------
+    Callable[[str, str], bool]
+        Predicate that returns ``True`` when a key should be ignored.
+    """
     bad_keys_re = ('|'.join(set(bad_keys_re_addendum or [])) if reset_re else f'{BAD_KEYS_RE}|' +
                    '|'.join(set(bad_keys_re_addendum or []))).rstrip('|')
     bad_keys = (bad_keys_addendum or {}) if reset_bad_keys else {
@@ -51,7 +58,14 @@ def make_key_filter(bad_keys_re_addendum: Iterable[str] | None = None,
 
 
 def remove_data_fields_list(pl_list: PlistList) -> PlistList:
-    """Clean up data fields from a :py:class:`macprefs.typing.PlistList`."""
+    """
+    Clean up data fields from a :py:class:`macprefs.typing.PlistList`.
+
+    Returns
+    -------
+    PlistList
+        The list with data fields removed.
+    """
     ret: list[Any] = []
     for value in pl_list:
         val: Any = deepcopy(value)
@@ -68,7 +82,14 @@ def remove_data_fields_list(pl_list: PlistList) -> PlistList:
 
 
 def remove_data_fields(root: PlistRoot) -> PlistRoot:
-    """Clean up data fields from a :py:class:`macprefs.typing.PlistRoot`."""
+    """
+    Clean up data fields from a :py:class:`macprefs.typing.PlistRoot`.
+
+    Returns
+    -------
+    PlistRoot
+        The mapping with data fields removed.
+    """
     ret: dict[str, Any] = {}
     for key, value in root.items():
         val: Any = deepcopy(value)

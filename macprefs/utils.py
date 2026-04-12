@@ -37,7 +37,14 @@ log = logging.getLogger(__name__)
 
 
 async def is_git_installed() -> bool:
-    """Check if Git is installed."""
+    """
+    Check if Git is installed.
+
+    Returns
+    -------
+    bool
+        ``True`` if the ``git`` executable is on ``PATH``.
+    """
     return (await (await sp.create_subprocess_exec('bash', '-c', 'command -v git',
                                                    stdout=sp.PIPE)).wait() == 0)
 
@@ -109,9 +116,17 @@ async def git(cmd: Iterable[str],
     """
     Run a Git command.
 
+    Returns
+    -------
+    subprocess.Process
+        The subprocess handle after the command completes successfully.
+
     Raises
     ------
     CalledProcessError
+        If the command exits with a non-zero status.
+    RuntimeError
+        If the subprocess is missing expected pipes or state.
     """
     if not git_dir:
         git_dir = (await work_tree.resolve(strict=True)) / '.git'
@@ -134,17 +149,27 @@ async def git(cmd: Iterable[str],
                                         *cmd_list,
                                         stderr=sp.PIPE)
     if (await p.wait()) != 0:
-        assert p.returncode is not None
-        assert p.stderr is not None
-        stderr = (await p.stderr.read()).decode()
+        stderr_pipe = p.stderr
+        rc = p.returncode
+        if rc is None or stderr_pipe is None:
+            msg = 'git subprocess finished in an unexpected state'
+            raise RuntimeError(msg)
+        stderr = (await stderr_pipe.read()).decode()
         quoted_args = ' '.join(
             quote(x) for x in (f'--git-dir={git_dir}', f'--work-tree={work_tree}'))
-        raise CalledProcessError(p.returncode, f'git {quoted_args} {rest}', stderr=stderr)
+        raise CalledProcessError(rc, f'git {quoted_args} {rest}', stderr=stderr)
     return p
 
 
 async def setup_output_directory(out_dir: Path) -> tuple[Path, Path]:
-    """Set up the output directory and the ``Preferences`` subdirectory."""
+    """
+    Set up the output directory and the ``Preferences`` subdirectory.
+
+    Returns
+    -------
+    tuple[Path, Path]
+        The output directory and the ``Preferences`` subdirectory paths.
+    """
     repo_prefs_dir = out_dir / 'Preferences'
     await out_dir.mkdir(exist_ok=True, parents=True)
     await repo_prefs_dir.mkdir(exist_ok=True, parents=True)
@@ -152,7 +177,14 @@ async def setup_output_directory(out_dir: Path) -> tuple[Path, Path]:
 
 
 async def defaults_export(domain: str, repo_prefs_dir: Path) -> tuple[str, PlistRoot]:
-    """Export a domain using the ``defaults`` command."""
+    """
+    Export a domain using the ``defaults`` command.
+
+    Returns
+    -------
+    tuple[str, PlistRoot]
+        The domain name and parsed plist contents. Values may be empty if export failed.
+    """
     plist_out = (repo_prefs_dir /
                  f'{"globalDomain" if domain == GLOBAL_DOMAIN_ARG else domain}.plist')
     plist_in = ((await Path.home()) / 'Library/Preferences' /
@@ -174,9 +206,23 @@ def plistlib_dump_xml(plist: Any, fp: IO[bytes]) -> None:
 
 
 async def install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
-    """Install a launchd job to run macprefs."""
+    """
+    Install a launchd job to run macprefs.
+
+    Returns
+    -------
+    int
+        ``0`` if ``launchctl`` load and start succeeded, otherwise ``1``.
+
+    Raises
+    ------
+    RuntimeError
+        If the ``prefs-export`` subprocess has no stdout pipe.
+    """
     p = await sp.create_subprocess_exec('bash', '-c', 'command -v prefs-export', stdout=sp.PIPE)
-    assert p.stdout is not None
+    if p.stdout is None:
+        msg = 'prefs-export stdout pipe unavailable'
+        raise RuntimeError(msg)
     prefs_export_path = (await p.stdout.read()).decode().strip()
     plist_path = (await Path.home()) / 'Library/LaunchAgents/sh.tat.macprefs.plist'
     log_path = str(user_log_path('macprefs', ensure_exists=True) / 'macprefs.log')
@@ -237,6 +283,8 @@ async def prefs_export(out_dir: Path,
     ------
     PropertyListConversionError
         If any ``plutil`` command fails.
+    RuntimeError
+        If a Git subprocess is missing expected pipes or state.
     """
     config = config or {}
     has_git = await is_git_installed()
@@ -291,7 +339,6 @@ async def prefs_export(out_dir: Path,
                 continue
             for line in plist_to_defaults_commands(domain, root, key_filter, invert_filters=True):
                 await f.write(f'{line}\n')
-    assert len(known_domains) > 0
     results = (await asyncio.wait(tasks))[0]
     if any(future.result() != 0 for future in results):
         raise PropertyListConversionError
@@ -314,8 +361,11 @@ async def prefs_export(out_dir: Path,
                        f'Automatic commit @ {datetime.now(tz=timezone.utc).strftime("%c")}'),
                       out_dir)
             if deploy_key:
-                stdout = (await git(('branch', '--show-current'), out_dir)).stdout
-                assert stdout is not None
+                branch_process = await git(('branch', '--show-current'), out_dir)
+                stdout = branch_process.stdout
+                if stdout is None:
+                    msg = 'git branch stdout pipe unavailable'
+                    raise RuntimeError(msg)
                 await git(('push', '-u', '--porcelain', '--no-signed', 'origin',
                            (await stdout.read()).decode().strip()), out_dir)
         except CalledProcessError:

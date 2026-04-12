@@ -27,7 +27,14 @@ def _can_decode_unicode(x: bytes) -> bool:
 
 
 def is_simple(x: SimpleArg) -> bool:
-    """Check if a value is a simple type of value."""
+    """
+    Check if a value is a simple type of value.
+
+    Returns
+    -------
+    bool
+        ``True`` if the value contains only simple nested types.
+    """
     if isinstance(x, dict):
         x = x.values()
     for y in x:
@@ -38,7 +45,14 @@ def is_simple(x: SimpleArg) -> bool:
 
 
 def to_str(x: bytes | str) -> str:
-    """Convert a value to a string for shell."""
+    """
+    Convert a value to a string for shell.
+
+    Returns
+    -------
+    str
+        A shell-safe string representation.
+    """
     if isinstance(x, bytes):
         try:
             return x.decode('utf-8')
