@@ -1,6 +1,7 @@
 local utils = import 'utils.libjsonnet';
 
 {
+  uses_user_defaults: true,
   description: 'Command and library to export macOS preferences.',
   keywords: ['command line', 'macos', 'preferences', 'utilities'],
   project_name: 'macprefs',
@@ -45,9 +46,6 @@ local utils = import 'utils.libjsonnet';
         pythonPlatform: 'Darwin',
       },
     },
-  },
-  copilot+: {
-    intro: 'macprefs is a command-line tool for managing macOS user defaults (preferences) in bulk.',
   },
   tests_run_on: 'macos-latest',
 }
