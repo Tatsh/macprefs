@@ -5,8 +5,8 @@ from __future__ import annotations
 class PropertyListConversionError(Exception):
     """Exception raised when a property list conversion fails."""
     def __init__(self, filename: str | None = None) -> None:
-        super().__init__(f'Property list {filename} failed to convert'
-                         if filename else 'Property list conversion failed')
+        super().__init__(f'Property list {filename} failed to convert.'
+                         if filename else 'Property list conversion failed.')
 
 
 class ConfigTypeError(RuntimeError):

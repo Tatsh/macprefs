@@ -152,7 +152,7 @@ async def git(cmd: Iterable[str],
         stderr_pipe = p.stderr
         rc = p.returncode
         if rc is None or stderr_pipe is None:
-            msg = 'git subprocess finished in an unexpected state'
+            msg = 'Git subprocess finished in an unexpected state.'
             raise RuntimeError(msg)
         stderr = (await stderr_pipe.read()).decode()
         quoted_args = ' '.join(
@@ -221,7 +221,7 @@ async def install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
     """
     p = await sp.create_subprocess_exec('bash', '-c', 'command -v prefs-export', stdout=sp.PIPE)
     if p.stdout is None:
-        msg = 'prefs-export stdout pipe unavailable'
+        msg = 'The prefs-export stdout pipe is unavailable.'
         raise RuntimeError(msg)
     prefs_export_path = (await p.stdout.read()).decode().strip()
     plist_path = (await Path.home()) / 'Library/LaunchAgents/sh.tat.macprefs.plist'
@@ -364,7 +364,7 @@ async def prefs_export(out_dir: Path,
                 branch_process = await git(('branch', '--show-current'), out_dir)
                 stdout = branch_process.stdout
                 if stdout is None:
-                    msg = 'git branch stdout pipe unavailable'
+                    msg = 'The git branch stdout pipe is unavailable.'
                     raise RuntimeError(msg)
                 await git(('push', '-u', '--porcelain', '--no-signed', 'origin',
                            (await stdout.read()).decode().strip()), out_dir)
