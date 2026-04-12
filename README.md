@@ -105,14 +105,14 @@ is primarily for copying `defaults` commands for use in your actual `~/.macos` f
 Certain domains are filtered because they generally do not have anything useful to preserve, such
 as `com.apple.EmojiCache` which only has a cache of Emoji usage data.
 
-Some keys are filtered, as they contain values that often changing and non-useful values such as
+Some keys are filtered, as they contain values that change often and are not useful, such as
 session IDs and UI state (e.g. `QtUi.MainWin(Geometry|State|Pos|Size)`,
 `NSStatusItem Preferred Position`).
 
 ## Automated usage
 
 A command `macprefs-install-job` is included which will install a daily launchd job. The job name is
-`sh.tat.macprefs`
+`sh.tat.macprefs`.
 
 ```plain
 Usage: macprefs-install-job [OPTIONS]
