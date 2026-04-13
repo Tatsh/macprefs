@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from shlex import quote
 from subprocess import CalledProcessError
-from typing import IO, TYPE_CHECKING, Any
+from typing import IO, TYPE_CHECKING, Any, cast
 import asyncio
 import asyncio.subprocess as sp
 import logging
@@ -191,7 +191,7 @@ async def defaults_export(domain: str, repo_prefs_dir: Path) -> tuple[str, Plist
                 f'{".GlobalPreferences" if domain == GLOBAL_DOMAIN_ARG else domain}.plist')
     try:
         try:
-            await plist_in.copy(plist_out)  # type: ignore[attr-defined]
+            await cast('Any', plist_in).copy(plist_out)
         except AttributeError:  # pragma: no cover
             await anyio.to_thread.run_sync(shutil.copy, plist_in, plist_out)
     except PermissionError:

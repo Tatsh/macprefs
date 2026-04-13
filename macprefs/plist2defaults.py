@@ -9,7 +9,7 @@ import logging
 from .constants import OUTPUT_FILE_MAXIMUM_LINE_LENGTH
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator
+    from collections.abc import Callable, Iterable, Iterator
 
     from .typing import PlistRoot, SimpleArg
 
@@ -35,9 +35,8 @@ def is_simple(x: SimpleArg) -> bool:
     bool
         ``True`` if the value contains only simple nested types.
     """
-    if isinstance(x, dict):
-        x = x.values()
-    for y in x:
+    nested: Iterable[Any] = x.values() if isinstance(x, dict) else x
+    for y in nested:
         if (isinstance(y, (datetime, list, dict))
                 or (isinstance(y, bytes) and not _can_decode_unicode(y))):
             return False

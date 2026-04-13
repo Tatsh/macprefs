@@ -72,9 +72,9 @@ def remove_data_fields_list(pl_list: PlistList) -> PlistList:
         if isinstance(value, bytes):
             continue
         if isinstance(value, list):
-            val = remove_data_fields_list(value)
+            val = remove_data_fields_list(cast('PlistList', value))
         elif isinstance(value, dict):
-            val = remove_data_fields(value)
+            val = remove_data_fields(cast('PlistRoot', value))
         if isinstance(value, list | dict) and not val:
             continue
         ret.append(val)
@@ -96,9 +96,9 @@ def remove_data_fields(root: PlistRoot) -> PlistRoot:
         if isinstance(value, bytes):
             continue
         if isinstance(value, list):
-            val = remove_data_fields_list(val)
+            val = remove_data_fields_list(cast('PlistList', val))
         elif isinstance(value, dict):
-            val = remove_data_fields(val)
+            val = remove_data_fields(cast('PlistRoot', val))
         if isinstance(value, list | dict) and not val:
             continue
         ret[key] = val
