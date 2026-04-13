@@ -178,9 +178,14 @@ async def test_git_error(mocker: MockerFixture) -> None:
     mocker.patch('macprefs.utils.os.chdir')
     mock_subprocess = mocker.patch('macprefs.utils.sp.create_subprocess_exec',
                                    new_callable=mocker.AsyncMock)
-    mock_process = mocker.AsyncMock()
-    mock_process.wait.return_value = 1
-    mock_subprocess.return_value = mock_process
+    mock_config_ok = mocker.AsyncMock()
+    mock_config_ok.wait = mocker.AsyncMock(return_value=0)
+    mock_status_fail = mocker.AsyncMock()
+    mock_status_fail.wait = mocker.AsyncMock(return_value=1)
+    mock_status_fail.returncode = 1
+    mock_status_fail.stderr = mocker.AsyncMock()
+    mock_status_fail.stderr.read = mocker.AsyncMock(return_value=b'fatal: bad')
+    mock_subprocess.side_effect = [mock_config_ok, mock_status_fail]
     with pytest.raises(sp.CalledProcessError):
         await git(['status'], work_tree, git_dir, '/path/to/ssh_key')
 
