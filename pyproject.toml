@@ -8,7 +8,7 @@ dev = [
   "cz-path>=0.0.6",
   "mypy>=1.20.0",
   "ruff>=0.15.9",
-  "ty>=0.0.28",
+  "ty>=0.0.29",
   "yapf>=0.43.0",
 ]
 docs = [
@@ -96,7 +96,6 @@ version_files = [
   "macprefs/__init__.py",
   "man/macprefs.1",
   "package.json",
-  "sh.tat.macprefs.yml",
 ]
 version_provider = "pep621"
 
