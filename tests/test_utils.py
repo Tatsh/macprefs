@@ -186,6 +186,43 @@ async def test_git_error(mocker: MockerFixture) -> None:
 
 
 @pytest.mark.asyncio
+async def test_git_unexpected_subprocess_state_missing_stderr(mocker: MockerFixture) -> None:
+    work_tree = mocker.AsyncMock(spec=AnyioPath)
+    work_tree.__str__.return_value = '/work_tree'
+    git_dir = mocker.AsyncMock(spec=AnyioPath)
+    git_dir.__str__.return_value = '/work_tree/.git'
+    git_dir.resolve.return_value.__truediv__.return_value.__str__.return_value = '/work_tree/.git'
+    mocker.patch('macprefs.utils.os.chdir')
+    mock_subprocess = mocker.patch('macprefs.utils.sp.create_subprocess_exec',
+                                   new_callable=mocker.AsyncMock)
+    mock_process = mocker.AsyncMock()
+    mock_process.wait.return_value = 1
+    mock_process.stderr = None
+    mock_subprocess.return_value = mock_process
+    with pytest.raises(RuntimeError, match='unexpected state'):
+        await git(['status'], work_tree, git_dir, '/path/to/ssh_key')
+
+
+@pytest.mark.asyncio
+async def test_git_unexpected_subprocess_state_missing_returncode(mocker: MockerFixture) -> None:
+    work_tree = mocker.AsyncMock(spec=AnyioPath)
+    work_tree.__str__.return_value = '/work_tree'
+    git_dir = mocker.AsyncMock(spec=AnyioPath)
+    git_dir.__str__.return_value = '/work_tree/.git'
+    git_dir.resolve.return_value.__truediv__.return_value.__str__.return_value = '/work_tree/.git'
+    mocker.patch('macprefs.utils.os.chdir')
+    mock_subprocess = mocker.patch('macprefs.utils.sp.create_subprocess_exec',
+                                   new_callable=mocker.AsyncMock)
+    mock_process = mocker.AsyncMock()
+    mock_process.wait.return_value = 1
+    mock_process.returncode = None
+    mock_process.stderr = mocker.AsyncMock()
+    mock_subprocess.return_value = mock_process
+    with pytest.raises(RuntimeError, match='unexpected state'):
+        await git(['status'], work_tree, git_dir, '/path/to/ssh_key')
+
+
+@pytest.mark.asyncio
 async def test_setup_output_directory(mocker: MockerFixture) -> None:
     mock_repo_prefs_dir = mocker.AsyncMock()
     output_dir_path = mocker.AsyncMock()
@@ -305,6 +342,23 @@ async def test_install_job(mocker: MockerFixture) -> None:
         mocker.call('launchctl', 'load', '-w', '/a/path/to/com.sh.tat.macprefs.plist'),
         mocker.call('launchctl', 'start', '/a/path/to/com.sh.tat.macprefs.plist')
     ])
+
+
+@pytest.mark.asyncio
+async def test_install_job_prefs_export_stdout_missing(mocker: MockerFixture) -> None:
+    mock_subprocess = mocker.patch('macprefs.utils.sp.create_subprocess_exec',
+                                   new_callable=mocker.AsyncMock)
+    mock_probe = mocker.AsyncMock()
+    mock_probe.stdout = None
+    mock_subprocess.return_value = mock_probe
+    mock_path = mocker.MagicMock(name='/output_dir')
+    mock_path.resolve.return_value.__str__.return_value = '/output_dir'
+    with pytest.raises(RuntimeError, match='prefs-export stdout'):
+        await install_job(mock_path)
+    mock_subprocess.assert_awaited_once_with('bash',
+                                             '-c',
+                                             'command -v prefs-export',
+                                             stdout=sp.PIPE)
 
 
 @pytest.mark.asyncio
@@ -457,6 +511,61 @@ async def test_prefs_export_git_error(mocker: MockerFixture) -> None:
     mock_defaults_export.assert_called()
     assert mock_git.call_count == 5
     mock_logger.assert_called_once_with('Likely no changes to commit.')
+
+
+@pytest.mark.asyncio
+async def test_prefs_export_git_branch_stdout_missing(mocker: MockerFixture) -> None:
+    mock_subprocess = mocker.patch('macprefs.utils.sp.create_subprocess_exec',
+                                   new_callable=mocker.AsyncMock)
+    mock_process = mocker.AsyncMock()
+    mock_process.wait.return_value = 0
+    mock_subprocess.return_value = mock_process
+    mocker.patch('macprefs.utils.Path')
+    mock_out_dir = mocker.AsyncMock(spec=AnyioPath)
+    mock_repo_prefs_dir = mocker.AsyncMock(spec=AnyioPath)
+    mock_setup_output_directory = mocker.patch('macprefs.utils.setup_output_directory',
+                                               return_value=(mock_out_dir, mock_repo_prefs_dir))
+    mock_generate_domains = mocker.AsyncMock()
+    mock_generate_domains.__aiter__.return_value = ['domain1', 'domain2', 'domain3', 'rejected1']
+    mocker.patch('macprefs.utils.generate_domains', return_value=mock_generate_domains)
+    mock_defaults_export = mocker.patch('macprefs.utils.defaults_export',
+                                        new_callable=mocker.AsyncMock,
+                                        side_effect=[
+                                            ('domain1', {
+                                                'key': 'value'
+                                            }),
+                                            ('domain2', {
+                                                'key': 'value'
+                                            }),
+                                            ('domain3', {}),
+                                            ('rejected1', {
+                                                'key': 'value'
+                                            }),
+                                        ])
+    mock_git = mocker.patch('macprefs.utils.git', new_callable=mocker.AsyncMock)
+    mock_branch_process = mocker.AsyncMock()
+    mock_branch_process.stdout = None
+    mock_git.side_effect = [mock_process, mock_process, mock_process, mock_branch_process]
+    mock_is_git_installed = mocker.patch('macprefs.utils.is_git_installed', return_value=True)
+    mock_out_dir.__truediv__.return_value = mocker.AsyncMock()
+    mock_out_dir.__truediv__.return_value.open = mocker.AsyncMock()
+    mock_repo_prefs_dir.__truediv__.return_value.name = 'out.plist'
+    mocker.patch('macprefs.utils.make_key_filter', return_value=lambda d, _: d == 'rejected1')
+    test1_plist = mocker.AsyncMock(spec=AnyioPath)
+    test1_plist.name = 'test1.plist'
+    test1_plist.exists.return_value = True
+    test1_plist.is_dir.return_value = False
+    iterdir_iterator = mocker.AsyncMock()
+    mock_repo_prefs_dir.iterdir.return_value = iterdir_iterator
+    iterdir_iterator.__aiter__.return_value = [test1_plist]
+    mock_deploy_key = mocker.AsyncMock(spec=AnyioPath)
+    with pytest.raises(RuntimeError, match='git branch stdout'):
+        await prefs_export(mock_out_dir, deploy_key=mock_deploy_key, commit=True)
+    assert mock_git.call_count == 4
+    mock_is_git_installed.assert_called_once()
+    mock_setup_output_directory.assert_called_once()
+    mock_generate_domains.__aiter__.assert_called_once()
+    mock_defaults_export.assert_called()
 
 
 @pytest.mark.asyncio
