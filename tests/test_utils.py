@@ -314,7 +314,7 @@ async def test_install_job(mocker: MockerFixture) -> None:
     mock_plistlib_dump.assert_called_once_with(
         {
             'EnvironmentVariables': {
-                'NO_COLOR': '1',
+                'NO_COLOR': '1'
             },
             'Label': 'sh.tat.macprefs',
             'ProgramArguments': ['output', '--output-directory', '/output_dir', '--commit'],
@@ -416,18 +416,13 @@ async def test_prefs_export(mocker: MockerFixture) -> None:
     mocker.patch('macprefs.utils.generate_domains', return_value=mock_generate_domains)
     mock_defaults_export = mocker.patch('macprefs.utils.defaults_export',
                                         new_callable=mocker.AsyncMock,
-                                        side_effect=[
-                                            ('domain1', {
-                                                'key': 'value'
-                                            }),
-                                            ('domain2', {
-                                                'key': 'value'
-                                            }),
-                                            ('domain3', {}),
-                                            ('rejected1', {
-                                                'key': 'value'
-                                            }),
-                                        ])
+                                        side_effect=[('domain1', {
+                                            'key': 'value'
+                                        }), ('domain2', {
+                                            'key': 'value'
+                                        }), ('domain3', {}), ('rejected1', {
+                                            'key': 'value'
+                                        })])
     mocker.patch('macprefs.utils.git', new_callable=mocker.AsyncMock)
     mock_is_git_installed = mocker.patch('macprefs.utils.is_git_installed', return_value=False)
     mock_exec_defaults_io = mocker.AsyncMock()
@@ -451,7 +446,7 @@ async def test_prefs_export(mocker: MockerFixture) -> None:
         mocker.call('# This file is generated, but is versioned.\n\n'),
         mocker.call('# rejected1\n'),
         mocker.call('defaults write rejected1 key -string value\n'),
-        mocker.call('\n'),
+        mocker.call('\n')
     ])
     mock_is_git_installed.assert_called_once()
     mock_setup_output_directory.assert_called_once()
@@ -477,18 +472,13 @@ async def test_prefs_export_git_error(mocker: MockerFixture) -> None:
     mocker.patch('macprefs.utils.generate_domains', return_value=mock_generate_domains)
     mock_defaults_export = mocker.patch('macprefs.utils.defaults_export',
                                         new_callable=mocker.AsyncMock,
-                                        side_effect=[
-                                            ('domain1', {
-                                                'key': 'value'
-                                            }),
-                                            ('domain2', {
-                                                'key': 'value'
-                                            }),
-                                            ('domain3', {}),
-                                            ('rejected1', {
-                                                'key': 'value'
-                                            }),
-                                        ])
+                                        side_effect=[('domain1', {
+                                            'key': 'value'
+                                        }), ('domain2', {
+                                            'key': 'value'
+                                        }), ('domain3', {}), ('rejected1', {
+                                            'key': 'value'
+                                        })])
     mock_git = mocker.patch('macprefs.utils.git', new_callable=mocker.AsyncMock)
     mock_git_branch_process = mocker.AsyncMock()
     mock_git_branch_process.stdout.read = mocker.AsyncMock(return_value=b'branch')
@@ -535,18 +525,13 @@ async def test_prefs_export_git_branch_stdout_missing(mocker: MockerFixture) -> 
     mocker.patch('macprefs.utils.generate_domains', return_value=mock_generate_domains)
     mock_defaults_export = mocker.patch('macprefs.utils.defaults_export',
                                         new_callable=mocker.AsyncMock,
-                                        side_effect=[
-                                            ('domain1', {
-                                                'key': 'value'
-                                            }),
-                                            ('domain2', {
-                                                'key': 'value'
-                                            }),
-                                            ('domain3', {}),
-                                            ('rejected1', {
-                                                'key': 'value'
-                                            }),
-                                        ])
+                                        side_effect=[('domain1', {
+                                            'key': 'value'
+                                        }), ('domain2', {
+                                            'key': 'value'
+                                        }), ('domain3', {}), ('rejected1', {
+                                            'key': 'value'
+                                        })])
     mock_git = mocker.patch('macprefs.utils.git', new_callable=mocker.AsyncMock)
     mock_branch_process = mocker.AsyncMock()
     mock_branch_process.stdout = None
@@ -590,18 +575,13 @@ async def test_prefs_export_git_no_deploy_key(mocker: MockerFixture) -> None:
     mocker.patch('macprefs.utils.generate_domains', return_value=mock_generate_domains)
     mock_defaults_export = mocker.patch('macprefs.utils.defaults_export',
                                         new_callable=mocker.AsyncMock,
-                                        side_effect=[
-                                            ('domain1', {
-                                                'key': 'value'
-                                            }),
-                                            ('domain2', {
-                                                'key': 'value'
-                                            }),
-                                            ('domain3', {}),
-                                            ('rejected1', {
-                                                'key': 'value'
-                                            }),
-                                        ])
+                                        side_effect=[('domain1', {
+                                            'key': 'value'
+                                        }), ('domain2', {
+                                            'key': 'value'
+                                        }), ('domain3', {}), ('rejected1', {
+                                            'key': 'value'
+                                        })])
     mock_git = mocker.patch('macprefs.utils.git', new_callable=mocker.AsyncMock)
     mock_git.return_value = mock_process
     mock_is_git_installed = mocker.patch('macprefs.utils.is_git_installed', return_value=True)

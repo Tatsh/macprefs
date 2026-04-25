@@ -58,20 +58,12 @@ def test_remove_data_fields_list_with_bytes() -> None:
 
 
 def test_remove_data_fields_list_with_nested_structures() -> None:
-    input_data = [
-        {
-            'key': b'value'
-        },
-        [
-            b'list_value',
-            {
-                'nested_key': b'nested_value',
-                'k': 'a'
-            },
-        ],
-        b'bytes_value',
-        1,
-    ]
+    input_data = [{
+        'key': b'value'
+    }, [b'list_value', {
+        'nested_key': b'nested_value',
+        'k': 'a'
+    }], b'bytes_value', 1]
     result = remove_data_fields_list(cast('PlistList', input_data))
     assert result == [[{'k': 'a'}], 1]
 
@@ -87,12 +79,9 @@ def test_remove_data_fields_with_nested_structures() -> None:
         'key': {
             'nested_key': b'nested_value'
         },
-        'list_key': [
-            b'list_value',
-            {
-                'deep_key': b'deep_value'
-            },
-        ],
+        'list_key': [b'list_value', {
+            'deep_key': b'deep_value'
+        }],
         'bytes_key': b'bytes_value'
     }
     result = remove_data_fields(cast('PlistRoot', input_data))

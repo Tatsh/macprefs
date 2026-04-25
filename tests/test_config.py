@@ -33,7 +33,7 @@ def test_read_config_file_exists(mocker: MockerFixture) -> None:
         'extend-ignore-keys': {},
         'extend-ignore-key-regexes': [],
         'extend-ignore-domain-prefixes': [],
-        'extend-ignore-domains': [],
+        'extend-ignore-domains': []
     }
     mock_tomlkit_loads.assert_called_once()
 
@@ -104,7 +104,7 @@ def test_read_config_dict_to_invalid_type(mocker: MockerFixture) -> None:
                      'macprefs': {
                          'extend-ignore-keys': {
                              'key1': 11
-                         },
+                         }
                      }
                  }})
     with pytest.raises(ConfigTypeError, match='must be of type dict of keys to lists of strings'):
@@ -119,7 +119,7 @@ def test_read_config_dict_to_invalid_type_inner(mocker: MockerFixture) -> None:
                      'macprefs': {
                          'extend-ignore-keys': {
                              'key1': [11]
-                         },
+                         }
                      }
                  }})
     with pytest.raises(ConfigTypeError, match='must be of type dict of keys to lists of strings'):
@@ -134,14 +134,14 @@ def test_read_config_dict(mocker: MockerFixture) -> None:
         return_value={'tool': {
             'macprefs': {
                 'extend-ignore-keys': {
-                    'key1': ['a', 'b', 'c'],
-                },
+                    'key1': ['a', 'b', 'c']
+                }
             }
         }})
     result = read_config(Path('/fake/path'))
     assert result == {
         'extend-ignore-keys': {
-            'key1': ['a', 'b', 'c'],
+            'key1': ['a', 'b', 'c']
         },
         'extend-ignore-key-regexes': [],
         'extend-ignore-domain-prefixes': [],

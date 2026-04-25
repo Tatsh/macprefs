@@ -48,7 +48,7 @@ def main(output_directory: AnyioPath,
                       'macprefs': {
                           'level': 'DEBUG' if debug else 'INFO',
                           'handlers': ('console',),
-                          'propagate': False,
+                          'propagate': False
                       }
                   })
     config = read_config(config_file)
@@ -88,7 +88,7 @@ def install_job(output_directory: AnyioPath,
                       'macprefs': {
                           'level': 'DEBUG' if debug else 'INFO',
                           'handlers': ('console',),
-                          'propagate': False,
+                          'propagate': False
                       }
                   })
     config = read_config(config_file)

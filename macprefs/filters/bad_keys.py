@@ -251,5 +251,5 @@ BAD_KEYS = {
         r're:^CoreAccounts\.\d+\.General\.JumpKeyMap', r're:^CoreAccounts\.\d+\.Password'
     },
     'org.videolan.vlc': {r're:^recentlyPlayed', 'VLCPreferencesVersion'},
-    'us.zoom.xos': {r're:^ZoomAutoUpdate', r're:^Pres(?:Meeting)?AppKeyHash'},
+    'us.zoom.xos': {r're:^ZoomAutoUpdate', r're:^Pres(?:Meeting)?AppKeyHash'}
 }

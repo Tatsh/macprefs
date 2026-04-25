@@ -36,7 +36,7 @@ def read_config(config_file: Path | None = None) -> dict[str, Any]:
         'extend-ignore-keys': {},
         'extend-ignore-key-regexes': [],
         'extend-ignore-domain-prefixes': [],
-        'extend-ignore-domains': [],
+        'extend-ignore-domains': []
     }
     for key in ('extend-ignore-keys', 'ignore-keys'):
         if key in config:
