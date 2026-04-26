@@ -6,24 +6,21 @@ requires = ["hatchling"]
 dev = [
   "commitizen>=4.13.10",
   "cz-path>=0.0.6",
-  "mypy>=1.20.0",
-  "ruff>=0.15.10",
-  "ty>=0.0.29",
+  "mypy>=1.20.1",
+  "ruff==0.15.11",
+  "ty>=0.0.31",
   "yapf>=0.43.0",
 ]
 docs = [
   "autodoc-pydantic>=2.2.0",
   "doc8>=2.0.0",
-  "docutils<0.22",
   "enum-tools[sphinx]>=0.13.0",
   "esbonio>=2.0.0",
-  "numpydoc>=1.10.0",
   "restructuredtext-lint>=2.0.2",
   "sphinx-click>=6.2.0",
   "sphinx-datatables>=1.0.0",
   "sphinx-immaterial>=0.13.9",
   "sphinx>=9.1.0; python_version >= \"3.13\"",
-  "tomlkit>=0.14.0",
 ]
 tests = [
   "coveralls>=4.1.0",
@@ -112,7 +109,7 @@ omit = ["conftest.py", "macprefs/__main__.py", "tests.py", "tests/*/test_*.py", 
 max-line-length = 100
 
 [tool.hatch.build.targets.sdist]
-include = ["macprefs", "tests"]
+include = ["macprefs", "man", "tests"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["macprefs"]
@@ -255,4 +252,4 @@ split_penalty_logical_operator = 300
 use_tabs = false
 
 [tool.yapfignore]
-ignore_patterns = [".venv/**", "node_modules/**"]
+ignore_patterns = [".venv", ".wiswa-ci", "node_modules"]
