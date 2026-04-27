@@ -64,7 +64,7 @@ license = "MIT"
 name = "macprefs"
 readme = "README.md"
 requires-python = ">=3.10,<4.0"
-version = "0.4.2"
+version = "0.4.3"
 
 [[project.authors]]
 email = "audvare@gmail.com"

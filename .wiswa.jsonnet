@@ -5,7 +5,7 @@ local utils = import 'utils.libjsonnet';
   description: 'Command and library to export macOS preferences.',
   keywords: ['command line', 'macos', 'preferences', 'utilities'],
   project_name: 'macprefs',
-  version: '0.4.2',
+  version: '0.4.3',
   want_main: true,
   want_flatpak: false,
   want_snap: false,
