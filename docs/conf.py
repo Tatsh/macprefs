@@ -42,7 +42,7 @@ html_theme_options = {
     'globaltoc_collapse': True,
     'icon': {
         'edit': 'material/file-edit-outline',
-        'repo': 'fontawesome/brands/gitlab'
+        'repo': 'fontawesome/brands/github'
     },
     'palette': [{
         'media': '(prefers-color-scheme)',
@@ -74,4 +74,11 @@ html_theme_options = {
     'site_url': 'https://macprefs.readthedocs.org',
     'toc_title_is_page_title': True
 }
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
+intersphinx_mapping = {
+    'bascom': ('https://bascom.readthedocs.io/en/latest/', None),
+    'click': ('https://click.palletsprojects.com/en/latest/', None),
+    'platformdirs': ('https://platformdirs.readthedocs.io/en/latest/', None),
+    'python': ('https://docs.python.org/3', None),
+    'tomlkit': ('https://tomlkit.readthedocs.io/en/latest/', None),
+    'typing-extensions': ('https://typing-extensions.readthedocs.io/en/latest/', None)
+}
