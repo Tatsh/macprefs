@@ -1,3 +1,8 @@
+---
+name: python-expert
+description: Expert-level Python author for non-trivial implementation work in the macprefs project. Use when the task needs idiomatic, production-quality Python beyond a simple edit.
+---
+
 # Python Expert Agent
 
 General-purpose expert-level Python coding agent for the macprefs project.

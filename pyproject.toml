@@ -4,11 +4,11 @@ requires = ["hatchling"]
 
 [dependency-groups]
 dev = [
-  "commitizen>=4.13.10",
-  "cz-path>=0.0.6",
-  "mypy>=1.20.1",
+  "commitizen>=4.16.2",
+  "cz-path>=0.0.7",
+  "mypy>=2.1.0",
   "ruff==0.15.14",
-  "ty>=0.0.31",
+  "ty>=0.0.39",
   "yapf>=0.43.0",
 ]
 docs = [
@@ -52,10 +52,10 @@ classifiers = [
 ]
 dependencies = [
   "anyio>=4.13.0",
-  "bascom>=0.1.2",
-  "click>=8.3.2",
+  "bascom>=0.1.3",
+  "click>=8.4.1",
   "platformdirs>=4.9.6",
-  "tomlkit>=0.14.0",
+  "tomlkit>=0.15.0",
   "typing-extensions>=4.15.0",
 ]
 description = "Command and library to export macOS preferences."

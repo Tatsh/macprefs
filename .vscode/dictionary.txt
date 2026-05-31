@@ -59,7 +59,6 @@ mypy
 namedtuples
 norecursedirs
 notarytool
-npmjs
 numpy
 onefile
 oneline
@@ -70,6 +69,7 @@ platformdirs
 plistlib
 plists
 plutil
+preapproved
 prodvers
 pycache
 pydantic
@@ -106,12 +106,15 @@ tostring
 tryfirst
 ubyte
 udvare
+undraft
+undrafted
 vendored
 venv
 vers
 virtualenv
 wiswa
 wiswa's
+worktree
 xcrun
 yapf
 yapfignore

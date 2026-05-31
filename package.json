@@ -1,4 +1,9 @@
 {
+  "_wiswa": {
+    "commandLine": "wiswa",
+    "lastRun": "2026-05-31T20:35:02Z",
+    "version": "93847c8-dirty"
+  },
   "contributors": ["Andrew Udvare <audvare@gmail.com>"],
   "cspell": {
     "cache": {
@@ -70,7 +75,7 @@
     "showFound": true
   },
   "name": "macprefs",
-  "packageManager": "yarn@4.14.1",
+  "packageManager": "yarn@4.15.0",
   "prettier": {
     "endOfLine": "lf",
     "iniSpaceAroundEquals": true,
@@ -95,7 +100,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:Tatsh/macprefs.git"
+    "url": "git+https://github.com/Tatsh/macprefs.git"
   },
   "scripts": {
     "check-formatting": "prettier --check . && uv run yapf --diff --parallel --recursive . && markdownlint-cli2 --config package.json --configPointer /markdownlint-cli2",
