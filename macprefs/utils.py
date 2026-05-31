@@ -23,7 +23,6 @@ from .exceptions import PropertyListConversionError
 from .filters.bad_domains import BAD_DOMAINS, BAD_DOMAIN_PREFIXES
 from .plist2defaults import plist_to_defaults_commands
 from .processing import make_key_filter, remove_data_fields
-from .typing import PlistRoot
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator, Iterable
@@ -161,6 +160,29 @@ async def git(cmd: Iterable[str],
     return p
 
 
+async def _push_current_branch(work_tree: Path) -> None:
+    """
+    Push the current branch to ``origin``.
+
+    Parameters
+    ----------
+    work_tree : Path
+        The Git work tree directory.
+
+    Raises
+    ------
+    RuntimeError
+        If the branch name cannot be read from the subprocess.
+    """
+    branch_process = await git(('branch', '--show-current'), work_tree)
+    stdout = branch_process.stdout
+    if stdout is None:
+        msg = 'The git branch stdout pipe is unavailable.'
+        raise RuntimeError(msg)
+    branch = (await stdout.read()).decode().strip()
+    await git(('push', '-u', '--porcelain', '--no-signed', 'origin', branch), work_tree)
+
+
 async def setup_output_directory(out_dir: Path) -> tuple[Path, Path]:
     """
     Set up the output directory and the ``Preferences`` subdirectory.
@@ -283,8 +305,6 @@ async def prefs_export(out_dir: Path,
     ------
     PropertyListConversionError
         If any ``plutil`` command fails.
-    RuntimeError
-        If a Git subprocess is missing expected pipes or state.
     """
     config = config or {}
     has_git = await is_git_installed()
@@ -361,12 +381,6 @@ async def prefs_export(out_dir: Path,
                        f'Automatic commit @ {datetime.now(tz=timezone.utc).strftime("%c")}'),
                       out_dir)
             if deploy_key:
-                branch_process = await git(('branch', '--show-current'), out_dir)
-                stdout = branch_process.stdout
-                if stdout is None:
-                    msg = 'The git branch stdout pipe is unavailable.'
-                    raise RuntimeError(msg)
-                await git(('push', '-u', '--porcelain', '--no-signed', 'origin',
-                           (await stdout.read()).decode().strip()), out_dir)
+                await _push_current_branch(out_dir)
         except CalledProcessError:
             log.info('Likely no changes to commit.')
