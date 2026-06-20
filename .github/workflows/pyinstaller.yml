@@ -4,7 +4,7 @@ jobs:
       APPLE_SIGNING_CERT: ${{ secrets.APPLE_SIGNING_CERTIFICATE }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: 'actions/checkout@v6.0.3'
+      - uses: 'actions/checkout@v7.0.0'
       - name: 'Install yq'
         run: 'pipx install yq'
       - name: 'Install uv'
@@ -176,7 +176,7 @@ jobs:
           sbom-path: 'sbom.spdx.json'
       - if: github.ref_type == 'tag'
         name: Upload package
-        uses: softprops/action-gh-release@v3.0.0
+        uses: softprops/action-gh-release@v3.0.1
         with:
           draft: true
           fail_on_unmatched_files: true
