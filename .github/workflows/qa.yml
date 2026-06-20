@@ -2,7 +2,7 @@ jobs:
   format:
     runs-on: 'macos-latest'
     steps:
-      - uses: 'actions/checkout@v6.0.3'
+      - uses: 'actions/checkout@v7.0.0'
       - name: 'Install uv'
         uses: 'astral-sh/setup-uv@v8.2.0'
       - name: 'Set up Python'
@@ -16,7 +16,7 @@ jobs:
   mypy:
     runs-on: 'macos-latest'
     steps:
-      - uses: 'actions/checkout@v6.0.3'
+      - uses: 'actions/checkout@v7.0.0'
       - name: 'Install uv'
         uses: 'astral-sh/setup-uv@v8.2.0'
       - name: 'Set up Python'
@@ -30,7 +30,7 @@ jobs:
   pyright:
     runs-on: 'macos-latest'
     steps:
-      - uses: 'actions/checkout@v6.0.3'
+      - uses: 'actions/checkout@v7.0.0'
       - name: 'Install uv'
         uses: 'astral-sh/setup-uv@v8.2.0'
       - name: 'Set up Python'
@@ -52,13 +52,13 @@ jobs:
   ruff:
     runs-on: 'macos-latest'
     steps:
-      - uses: 'actions/checkout@v6.0.3'
+      - uses: 'actions/checkout@v7.0.0'
       - name: 'Lint with Ruff'
         uses: 'astral-sh/ruff-action@v4.0.0'
   ty:
     runs-on: 'macos-latest'
     steps:
-      - uses: 'actions/checkout@v6.0.3'
+      - uses: 'actions/checkout@v7.0.0'
       - name: 'Install uv'
         uses: 'astral-sh/setup-uv@v8.2.0'
       - name: 'Set up Python'
