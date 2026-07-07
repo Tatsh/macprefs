@@ -28,6 +28,10 @@ local utils = import 'utils.libjsonnet';
       },
     },
     tool+: {
+      coverage+: {
+        report+: { omit+: ['macprefs/typing.py'] },
+        run+: { omit+: ['macprefs/typing.py'] },
+      },
       mypy+: { platform: 'darwin' },
       poetry+: {
         dependencies+: {
