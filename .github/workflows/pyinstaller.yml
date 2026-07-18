@@ -140,7 +140,7 @@ jobs:
           path: |
             ${{ matrix.dist_path }}
       - name: 'Attest'
-        uses: 'actions/attest@v4.1.1'
+        uses: 'actions/attest@v4.2.0'
         with:
           subject-path: '${{ matrix.dist_path }}'
       - name: 'Generate SBOM'
@@ -153,7 +153,7 @@ jobs:
           output-file: 'sbom.spdx.json'
           upload-artifact: false
       - name: 'Attest SBOM'
-        uses: 'actions/attest@v4.1.1'
+        uses: 'actions/attest@v4.2.0'
         with:
           subject-path: '${{ matrix.dist_path }}'
           sbom-path: 'sbom.spdx.json'
@@ -165,18 +165,18 @@ jobs:
           zip -j _out/macprefs-${{ github.ref_name }}-${{ matrix.suffix }}.zip ${{ matrix.dist_path }}
       - if: github.ref_type == 'tag'
         name: 'Attest'
-        uses: 'actions/attest@v4.1.1'
+        uses: 'actions/attest@v4.2.0'
         with:
           subject-path: '_out/*.zip'
       - if: github.ref_type == 'tag'
         name: 'Attest SBOM'
-        uses: 'actions/attest@v4.1.1'
+        uses: 'actions/attest@v4.2.0'
         with:
           subject-path: '_out/*.zip'
           sbom-path: 'sbom.spdx.json'
       - if: github.ref_type == 'tag'
         name: Upload package
-        uses: softprops/action-gh-release@v3.0.1
+        uses: softprops/action-gh-release@v3.0.2
         with:
           draft: true
           fail_on_unmatched_files: true
