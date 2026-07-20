@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from macprefs.constants import OUTPUT_FILE_MAXIMUM_LINE_LENGTH
 from macprefs.plist2defaults import (
-    _can_decode_unicode,  # noqa: PLC2701
+    _can_decode_unicode,  # ruff:ignore[import-private-name]
     convert_value,
     is_simple,
     plist_to_defaults_commands,
@@ -18,7 +18,9 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.parametrize(('input_bytes', 'expected'), [(b'valid', True), (b'\xff\xfe', False)])
-def test_can_decode_unicode(input_bytes: bytes, expected: bool) -> None:  # noqa: FBT001
+def test_can_decode_unicode(
+        input_bytes: bytes,
+        expected: bool) -> None:  # ruff:ignore[boolean-type-hint-positional-argument]
     assert _can_decode_unicode(input_bytes) == expected
 
 
@@ -27,7 +29,8 @@ def test_can_decode_unicode(input_bytes: bytes, expected: bool) -> None:  # noqa
 }, True), ({
     'key': b'\xff\xfe'
 }, False), ([1, 2, 3], True), ([b'\xff\xfe'], False), ([datetime.now(tz=timezone.utc)], False)])
-def test_is_simple(input_value: Any, expected: bool) -> None:  # noqa: FBT001
+def test_is_simple(input_value: Any,
+                   expected: bool) -> None:  # ruff:ignore[boolean-type-hint-positional-argument]
     assert is_simple(input_value) == expected
 
 

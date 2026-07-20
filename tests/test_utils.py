@@ -136,7 +136,7 @@ async def test_git_with_git_dir_and_ssh_key(mocker: MockerFixture) -> None:
         '--work-tree=/work_tree',
         'config',
         'core.sshCommand',
-        'ssh -i /path/to/ssh_key -F /dev/null -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no',  # noqa: E501
+        'ssh -i /path/to/ssh_key -F /dev/null -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no',  # ruff:ignore[line-too-long]
         stderr=mocker.ANY)
     mock_subprocess.assert_any_call('git',
                                     '--git-dir=/work_tree/.git',
@@ -298,7 +298,7 @@ async def test_install_job(mocker: MockerFixture) -> None:
     mock_plist_path = mocker.AsyncMock()
     mock_plist_path.__str__.return_value = '/a/path/to/com.sh.tat.macprefs.plist'
     mock_user_log_path = mocker.patch('macprefs.utils.user_log_path')
-    mock_user_log_path.return_value.__truediv__.return_value.__str__.return_value = '/a/log-path/macprefs.log'  # noqa: E501
+    mock_user_log_path.return_value.__truediv__.return_value.__str__.return_value = '/a/log-path/macprefs.log'  # ruff:ignore[line-too-long]
     mock_path_home = mocker.patch('macprefs.utils.Path.home')
     mock_path_home.return_value.__truediv__.return_value = mock_plist_path
     mock_subprocess = mocker.patch('macprefs.utils.sp.create_subprocess_exec',
@@ -388,7 +388,7 @@ async def test_prefs_export_error(mocker: MockerFixture) -> None:
                                         }), ('domain3', {})])
     mocker.patch('macprefs.utils.git', new_callable=mocker.AsyncMock)
     mock_out_dir.__truediv__.return_value = mocker.AsyncMock()
-    mock_out_dir.__truediv__.return_value.__aenter__.return_value.open.return_value = mocker.AsyncMock(  # noqa: E501
+    mock_out_dir.__truediv__.return_value.__aenter__.return_value.open.return_value = mocker.AsyncMock(  # ruff:ignore[line-too-long]
     )
     mock_repo_prefs_dir.__truediv__.return_value.name = 'out.plist'
     with pytest.raises(PropertyListConversionError):
@@ -427,7 +427,7 @@ async def test_prefs_export(mocker: MockerFixture) -> None:
     mock_is_git_installed = mocker.patch('macprefs.utils.is_git_installed', return_value=False)
     mock_exec_defaults_io = mocker.AsyncMock()
     mock_out_dir.__truediv__.return_value = mocker.AsyncMock()
-    mock_out_dir.__truediv__.return_value.open.return_value.__aenter__.return_value = mock_exec_defaults_io  # noqa: E501
+    mock_out_dir.__truediv__.return_value.open.return_value.__aenter__.return_value = mock_exec_defaults_io  # ruff:ignore[line-too-long]
     mock_repo_prefs_dir.__truediv__.return_value.name = 'out.plist'
     mocker.patch('macprefs.utils.make_key_filter', return_value=lambda d, _: d == 'rejected1')
     await prefs_export(mock_out_dir, commit=True)
