@@ -82,7 +82,7 @@ def install_job(output_directory: AnyioPath,
                 deploy_key: AnyioPath | None = None,
                 *,
                 debug: bool = False) -> None:
-    """Job installer."""  # noqa: DOC501
+    """Job installer."""  # ruff:ignore[docstring-missing-exception]
     setup_logging(debug=debug,
                   loggers={
                       'macprefs': {
