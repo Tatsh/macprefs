@@ -177,7 +177,7 @@ quote-style = "single"
 
 [tool.ruff.lint]
 extend-select = ["ALL"]
-ignore = ["ANN401", "COM812", "CPY001", "D203", "D204", "D212", "N818", "S404", "S603", "TD002"]
+ignore = ["any-type", "missing-trailing-comma", "missing-copyright-notice", "incorrect-blank-line-before-class", "incorrect-blank-line-after-class", "multi-line-summary-first-line", "error-suffix-on-exception-name", "suspicious-subprocess-import", "subprocess-without-shell-equals-true", "missing-todo-author"]
 preview = true
 
 [tool.ruff.lint.flake8-builtins]
@@ -201,7 +201,7 @@ max-complexity = 20
 extend-ignore-names = ["test_*"]
 
 [tool.ruff.lint.per-file-ignores]
-"macprefs/main.py" = ["PLR0913"]
+"macprefs/main.py" = ["too-many-arguments"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"

@@ -20,14 +20,16 @@ def mock_bad_keys_re(mocker: MockerFixture) -> None:
     mocker.patch('macprefs.processing.BAD_KEYS_RE', r'^bad_.*')
 
 
-def test_make_key_filter_with_reset(mock_bad_keys: None, mock_bad_keys_re: None) -> None:
+@pytest.mark.usefixtures('mock_bad_keys', 'mock_bad_keys_re')
+def test_make_key_filter_with_reset() -> None:
     filter_func = make_key_filter(reset_re=True, reset_bad_keys=True)
     assert filter_func('test_domain', 'test_key') is False
     assert filter_func('test_domain', 'bad_key') is False
     assert filter_func('test_domain', 'random_key') is False
 
 
-def test_make_key_filter_with_addendum(mock_bad_keys: None, mock_bad_keys_re: None) -> None:
+@pytest.mark.usefixtures('mock_bad_keys', 'mock_bad_keys_re')
+def test_make_key_filter_with_addendum() -> None:
     filter_func = make_key_filter([r'^custom_.*'], {'custom_domain': {'custom_key'}})
     assert filter_func('custom_domain', 'custom_key') is True
     assert filter_func('test_domain', 'test_key') is True
@@ -35,7 +37,8 @@ def test_make_key_filter_with_addendum(mock_bad_keys: None, mock_bad_keys_re: No
     assert filter_func('test_domain', 'custom_key') is True
 
 
-def test_make_key_filter_with_regex_match(mock_bad_keys: None, mock_bad_keys_re: None) -> None:
+@pytest.mark.usefixtures('mock_bad_keys', 'mock_bad_keys_re')
+def test_make_key_filter_with_regex_match() -> None:
     filter_func = make_key_filter()
     assert filter_func('test_domain', 'test_key') is True
     assert filter_func('test_domain', 'test_regex') is True

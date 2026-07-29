@@ -5,22 +5,22 @@ extend = "../pyproject.toml"
 
 [tool.ruff.lint]
 extend-ignore = [
-  "ARG001",
-  "ARG002",
-  "D100",
-  "D101",
-  "D102",
-  "D103",
-  "D104",
-  "D105",
-  "D106",
-  "DOC201",
-  "INP001",
-  "PLC0415",
-  "PLR2004",
-  "S101",
-  "S105",
-  "S106",
+  "unused-function-argument",
+  "unused-method-argument",
+  "undocumented-public-module",
+  "undocumented-public-class",
+  "undocumented-public-method",
+  "undocumented-public-function",
+  "undocumented-public-package",
+  "undocumented-magic-method",
+  "undocumented-public-nested-class",
+  "docstring-missing-returns",
+  "implicit-namespace-package",
+  "import-outside-top-level",
+  "magic-value-comparison",
+  "assert",
+  "hardcoded-password-string",
+  "hardcoded-password-func-arg",
 ]
 
 [tool.ruff.lint.pep8-naming]

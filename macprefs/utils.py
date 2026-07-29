@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from shlex import quote
 from subprocess import CalledProcessError
 from typing import IO, TYPE_CHECKING, Any, cast
@@ -33,6 +33,8 @@ __all__ = ('defaults_export', 'generate_domains', 'git', 'install_job', 'is_git_
            'prefs_export', 'setup_output_directory')
 
 log = logging.getLogger(__name__)
+
+_RUNNING_LOG_FMT = 'Running: %s'
 
 
 async def is_git_installed() -> bool:
@@ -273,17 +275,17 @@ async def install_job(output_dir: Path, deploy_key: Path | None = None) -> int:
             }, f.wrapped)
     plist_path_s = str(plist_path)
     cmd: tuple[str, ...] = ('launchctl', 'stop', plist_path_s)
-    log.debug('Running: %s', ' '.join(quote(x) for x in cmd))
+    log.debug(_RUNNING_LOG_FMT, ' '.join(quote(x) for x in cmd))
     await (await sp.create_subprocess_exec(*cmd, stderr=sp.PIPE, stdout=sp.PIPE)).wait()
     cmd = ('launchctl', 'unload', '-w', plist_path_s)
-    log.debug('Running: %s', ' '.join(quote(x) for x in cmd))
+    log.debug(_RUNNING_LOG_FMT, ' '.join(quote(x) for x in cmd))
     await (await sp.create_subprocess_exec(*cmd, stderr=sp.PIPE, stdout=sp.PIPE)).wait()
     cmd = ('launchctl', 'load', '-w', plist_path_s)
-    log.debug('Running: %s', ' '.join(quote(x) for x in cmd))
+    log.debug(_RUNNING_LOG_FMT, ' '.join(quote(x) for x in cmd))
     process1 = await sp.create_subprocess_exec(*cmd)
     await process1.wait()
     cmd = ('launchctl', 'start', plist_path_s)
-    log.debug('Running: %s', ' '.join(quote(x) for x in cmd))
+    log.debug(_RUNNING_LOG_FMT, ' '.join(quote(x) for x in cmd))
     process2 = await sp.create_subprocess_exec(*cmd)
     await process2.wait()
     return 0 if process1.returncode == 0 and process2.returncode == 0 else 1
@@ -378,8 +380,7 @@ async def prefs_export(out_dir: Path,
         try:
             await git(('commit', '--no-gpg-sign', '--quiet', '--no-verify',
                        '--author=macprefs <macprefs@tat.sh>', '-m',
-                       f'Automatic commit @ {datetime.now(tz=timezone.utc).strftime("%c")}'),
-                      out_dir)
+                       f'Automatic commit @ {datetime.now(tz=UTC).strftime("%c")}'), out_dir)
             if deploy_key:
                 await _push_current_branch(out_dir)
         except CalledProcessError:

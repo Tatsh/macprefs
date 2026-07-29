@@ -3,6 +3,8 @@ from __future__ import annotations
 
 __all__ = ('BAD_KEYS',)
 
+_LAST_ANALYTICS_STAMP = 'last-analytics-stamp'
+
 # spell-checker: disable
 BAD_KEYS = {
     # Devices get added to global domain with -string 1
@@ -115,7 +117,7 @@ BAD_KEYS = {
     'com.apple.dataaccess.babysitter': {'LastSystemVersion'},
     'com.apple.dataaccess.dataaccessd': {'kDAMigrationBuildVersionKey'},
     'com.apple.diagnosticextensionsd': {'directoriesCleanupDone'},
-    'com.apple.dock': {'mod-count', 'last-analytics-stamp', 'lastShowIndicatorTime'},
+    'com.apple.dock': {'mod-count', _LAST_ANALYTICS_STAMP, 'lastShowIndicatorTime'},
     'com.apple.driver.AppleBluetoothMultitouch.trackpad': {'version'},
     'com.apple.dt.Instruments': {
         'DTDKLastLSRegisterHashes', 'DTWirelessUniqueShortTypeLocationID', 'RecentTemplates.array'
@@ -188,7 +190,7 @@ BAD_KEYS = {
     'com.apple.newsd': {'FCAppConfigurationBundleShortVersionKey'},
     'com.apple.print.PrinterProxy': {'IK_Scanner_downloadURL', 'IK_Scanner_selectedTag'},
     'com.apple.quicklook.ThumbnailsAgent': {'QLMTCacheSizeLastCheckAbsoluteTime'},
-    'com.apple.screencapture': {'last-analytics-stamp'},
+    'com.apple.screencapture': {_LAST_ANALYTICS_STAMP},
     'com.apple.searchd': {r're:^engagementCount'},
     'com.apple.seeding': {'HasRunMigration'},
     'com.apple.seserviced': {'keysync.recovery.required'},
@@ -200,7 +202,7 @@ BAD_KEYS = {
         'ThirdPartyCount', 'com.apple.SecurityPref.Privacy.LastSourceSelected',
         r're:^NSTableView Supports'
     },
-    'com.apple.systemuiserver': {'last-analytics-stamp'},
+    'com.apple.systemuiserver': {_LAST_ANALYTICS_STAMP},
     'com.apple.talagent': {'LastKeyChange'},
     'com.apple.tipsd': {
         'DeliveryInfoVersion', 'TPSLastMajorVersion', 'TPSWelcomeNotificationViewedVersion',
