@@ -92,7 +92,6 @@ setattr
 shellcheck
 shellformat
 snapcraft
-softprops
 soupsieve
 sphinxcontrib
 statusline
@@ -114,6 +113,7 @@ vendored
 venv
 vers
 virtualenv
+winget
 wiswa
 wiswa's
 worktree
@@ -121,3 +121,4 @@ xcrun
 yapf
 yapfignore
 yarnrc
+zizmor
