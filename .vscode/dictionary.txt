@@ -1,10 +1,10 @@
 anchore
-Ångström
 anyio
 appimage
 asyncio
 autodoc
 automodule
+autouse
 bascom
 bsky
 cdrommsf
@@ -12,7 +12,6 @@ codesign
 colorlog
 commitizen
 conftest
-cooldown
 coveragerc
 coverallsapp
 ctypes
@@ -39,7 +38,6 @@ globaltoc
 handoff
 hoverxref
 htmlcov
-intersphinx
 isort
 itertools
 jinja
@@ -58,9 +56,13 @@ monkeypatch
 myproject
 mypy
 namedtuples
+noone
+noqa
 norecursedirs
 notarytool
+nullglob
 numpy
+numpydoc
 onefile
 oneline
 pathlib
@@ -70,6 +72,7 @@ platformdirs
 plistlib
 plists
 plutil
+popen
 preapproved
 prodvers
 pycache
@@ -86,11 +89,13 @@ pythonhosted
 regen
 ripgreprc
 rstcheck
+sbclaude
 schemafile
 sdist
 setattr
 shellcheck
 shellformat
+shopt
 snapcraft
 soupsieve
 sphinxcontrib
@@ -116,9 +121,9 @@ virtualenv
 winget
 wiswa
 wiswa's
-worktree
 xcrun
 yapf
 yapfignore
 yarnrc
 zizmor
+Ångström
