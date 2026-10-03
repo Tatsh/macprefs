@@ -6,6 +6,8 @@ import subprocess as sp
 import sys
 
 from anyio import Path as AnyioPath
+import pytest
+
 from macprefs.exceptions import PropertyListConversionError
 from macprefs.utils import (
     chdir,
@@ -18,7 +20,6 @@ from macprefs.utils import (
     setup_output_directory,
     try_parse_plist,
 )
-import pytest
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture

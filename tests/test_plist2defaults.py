@@ -3,6 +3,8 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, cast
 
+import pytest
+
 from macprefs.constants import OUTPUT_FILE_MAXIMUM_LINE_LENGTH
 from macprefs.plist2defaults import (
     _can_decode_unicode,  # ruff:ignore[import-private-name]
@@ -11,7 +13,6 @@ from macprefs.plist2defaults import (
     plist_to_defaults_commands,
     to_str,
 )
-import pytest
 
 if TYPE_CHECKING:
     from macprefs.typing import PlistRoot

@@ -4,9 +4,10 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from click.testing import CliRunner
-from macprefs.main import install_job, main
 from platformdirs import user_data_path
 import pytest
+
+from macprefs.main import install_job, main
 
 if TYPE_CHECKING:
     from unittest.mock import MagicMock

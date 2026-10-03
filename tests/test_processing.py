@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
 
-from macprefs.processing import make_key_filter, remove_data_fields, remove_data_fields_list
 import pytest
 
+from macprefs.processing import make_key_filter, remove_data_fields, remove_data_fields_list
+
 if TYPE_CHECKING:
-    from macprefs.typing import PlistList, PlistRoot
     from pytest_mock import MockerFixture
+
+    from macprefs.typing import PlistList, PlistRoot
 
 
 @pytest.fixture
