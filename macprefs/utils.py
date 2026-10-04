@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from shlex import quote
 from subprocess import CalledProcessError
 from typing import IO, TYPE_CHECKING, Any, cast
@@ -378,8 +378,7 @@ async def prefs_export(out_dir: Path,
         try:
             await git(('commit', '--no-gpg-sign', '--quiet', '--no-verify',
                        '--author=macprefs <macprefs@tat.sh>', '-m',
-                       f'Automatic commit @ {datetime.now(tz=timezone.utc).strftime("%c")}'),
-                      out_dir)
+                       f'Automatic commit @ {datetime.now(tz=UTC).strftime("%c")}'), out_dir)
             if deploy_key:
                 await _push_current_branch(out_dir)
         except CalledProcessError:
