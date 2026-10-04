@@ -36,7 +36,6 @@ classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -54,7 +53,7 @@ dependencies = [
   "anyio>=4.15.1",
   "bascom>=0.2.0",
   "click>=8.5.0",
-  "platformdirs>=4.11.14",
+  "platformdirs>=4.12.0",
   "tomlkit>=0.15.1",
   "typing-extensions>=4.16.0"
 ]
@@ -63,7 +62,7 @@ keywords = ["command line", "macos", "preferences", "utilities"]
 license = "MIT"
 name = "macprefs"
 readme = "README.md"
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.11,<4.0"
 version = "0.4.3"
 
 [[project.authors]]
@@ -132,7 +131,7 @@ packages = ["macprefs"]
 cache_dir = "~/.cache/mypy"
 explicit_package_bases = true
 platform = "darwin"
-python_version = "3.10"
+python_version = "3.11"
 show_column_numbers = true
 strict = true
 strict_optional = true
@@ -144,7 +143,7 @@ enableExperimentalFeatures = true
 exclude = [".sbclaude-venv", ".venv", "**/node_modules", "**/__pycache__", "**/.*"]
 include = ["./macprefs", "./tests"]
 pythonPlatform = "Darwin"
-pythonVersion = "3.10"
+pythonVersion = "3.11"
 reportCallInDefaultInitializer = "warning"
 reportImplicitOverride = "warning"
 reportImportCycles = "error"
@@ -166,7 +165,7 @@ cache-dir = "~/.cache/ruff"
 force-exclude = true
 line-length = 100
 namespace-packages = ["docs", "tests"]
-target-version = "py310"
+target-version = "py311"
 unsafe-fixes = true
 
 [tool.ruff.format]
