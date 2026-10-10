@@ -25,7 +25,7 @@ from .plist2defaults import plist_to_defaults_commands
 from .processing import make_key_filter, remove_data_fields
 
 if TYPE_CHECKING:
-    from collections.abc import AsyncIterator, Iterable
+    from collections.abc import AsyncGenerator, AsyncIterator, Iterable
 
     from .typing import PlistRoot
 
@@ -97,7 +97,7 @@ async def try_parse_plist(domain: str, plist_out: Path) -> tuple[str, PlistRoot]
 
 
 @asynccontextmanager
-async def chdir(path: os.PathLike[Any] | str) -> AsyncIterator[None]:
+async def chdir(path: os.PathLike[Any] | str) -> AsyncGenerator[None, None]:
     """Change directory context manager."""
     old_cwd = await Path.cwd()
     path = Path(path)
