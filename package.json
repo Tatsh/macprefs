@@ -43,12 +43,12 @@
   "description": "Command and library to export macOS preferences.",
   "devDependencies": {
     "@prettier/plugin-xml": "^3.4.2",
-    "cspell": "^10.3.6",
+    "cspell": "^10.4.0",
     "markdownlint-cli2": "^0.23.3",
     "prettier": "^3.9.10",
     "prettier-plugin-ini": "^1.3.0",
     "prettier-plugin-sort-json": "^4.2.0",
-    "prettier-plugin-toml": "^3.0.2",
+    "prettier-plugin-toml": "^4.0.0",
     "pyright": "^1.1.414"
   },
   "files": ["LICENSE.txt", "README.md", "man/macprefs.1"],
